@@ -1,0 +1,14 @@
+llvm
+sancus
+sancus-main
+linux-sgx
+rust
+*.swp
+*.bak
+*.o
+tags
+uu
+Makefile.local
+compile_commands.json
+linux-sgx
+rust-sgx-sdk

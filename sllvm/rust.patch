@@ -1,0 +1,14 @@
+diff --git a/src/librustc_trans/attributes.rs b/src/librustc_trans/attributes.rs
+index 8309c91ab2..d1f18d8fc0 100644
+--- a/src/librustc_trans/attributes.rs
++++ b/src/librustc_trans/attributes.rs
+@@ -121,6 +121,9 @@ pub fn from_fn_attrs(cx: &CodegenCx, llfn: ValueRef, id: DefId) {
+             unwind(llfn, true);
+         } else if attr.check_name("rustc_allocator_nounwind") {
+             unwind(llfn, false);
++        } else if attr.check_name("sllvm") {
++            llvm::AddFunctionAttrStringValue(
++                llfn, Function, cstr("sllvm-eentry\0"), cstr("true\0"));
+         }
+     }
+ 

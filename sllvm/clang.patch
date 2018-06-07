@@ -1,0 +1,54 @@
+Index: include/clang/Basic/Attr.td
+===================================================================
+--- include/clang/Basic/Attr.td	(revision 327628)
++++ include/clang/Basic/Attr.td	(working copy)
+@@ -1465,6 +1465,12 @@
+   let Documentation = [AssumeAlignedDocs];
+ }
+ 
++def EEntry : InheritableAttr {
++  let Spellings = [GCC<"eentry">, Keyword<"eentry">];
++  let Subjects = SubjectList<[Function]>;
++  let Documentation = [Undocumented];
++}
++
+ def AllocAlign : InheritableAttr {
+   let Spellings = [GCC<"alloc_align">];
+   let Subjects = SubjectList<[HasFunctionProto]>;
+@@ -1472,6 +1478,7 @@
+   let Documentation = [AllocAlignDocs];
+ }
+ 
++
+ def NoReturn : InheritableAttr {
+   let Spellings = [GCC<"noreturn">, Declspec<"noreturn">];
+   // FIXME: Does GCC allow this on the function instead?
+Index: lib/CodeGen/CodeGenModule.cpp
+===================================================================
+--- lib/CodeGen/CodeGenModule.cpp	(revision 327628)
++++ lib/CodeGen/CodeGenModule.cpp	(working copy)
+@@ -1438,6 +1438,10 @@
+   setLinkageForGV(F, FD);
+   setGVProperties(F, FD);
+ 
++  if (FD->getAttr<EEntryAttr>()) {
++    F->addFnAttr("sllvm-eentry", "true");
++  }
++
+   if (FD->getAttr<PragmaClangTextSectionAttr>()) {
+     F->addFnAttr("implicit-section-name");
+   }
+Index: lib/Sema/SemaDeclAttr.cpp
+===================================================================
+--- lib/Sema/SemaDeclAttr.cpp	(revision 327628)
++++ lib/Sema/SemaDeclAttr.cpp	(working copy)
+@@ -5894,6 +5894,9 @@
+   case AttributeList::AT_IFunc:
+     handleIFuncAttr(S, D, AL);
+     break;
++  case AttributeList::AT_EEntry:
++    handleSimpleAttribute<EEntryAttr>(S, D, AL);
++    break;
+   case AttributeList::AT_Alias:
+     handleAliasAttr(S, D, AL);
+     break;

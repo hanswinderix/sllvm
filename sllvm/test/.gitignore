@@ -1,0 +1,14 @@
+*.ll
+*sllvm*.s
+*legacy*.s
+enclave1.s
+enclave2.s
+main.s
+provides.ld
+*.o
+*.objdump
+a.out
+hello
+sancus_sim.fst
+sim-input.bin
+sim-output.bin

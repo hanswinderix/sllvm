@@ -1,0 +1,621 @@
+Index: include/llvm/IR/CallingConv.h
+===================================================================
+--- include/llvm/IR/CallingConv.h	(revision 327628)
++++ include/llvm/IR/CallingConv.h	(working copy)
+@@ -220,6 +220,10 @@
+     /// shader if tessellation is in use, or otherwise the vertex shader.
+     AMDGPU_ES = 96,
+ 
++    /// Calling convention used for Sancus entry functions.
++    SANCUS_ENTRY = 97,
++    SANCUS_DISPATCH = 98,
++
+     /// The highest possible calling convention ID. Must be some 2^k - 1.
+     MaxID = 1023
+   };
+Index: include/llvm/IR/Intrinsics.td
+===================================================================
+--- include/llvm/IR/Intrinsics.td	(revision 327628)
++++ include/llvm/IR/Intrinsics.td	(working copy)
+@@ -967,6 +967,14 @@
+ 
+ def int_ssa_copy : Intrinsic<[llvm_any_ty], [LLVMMatchType<0>],
+                              [IntrNoMem, Returned<0>]>;
++
++//===----- SLLVM intrinsics ----------------------------------------------===//
++
++def int_sllvm_eenter : Intrinsic<[], []>;  // Enter enclave entry point
++def int_sllvm_eexit : Intrinsic<[], []>;   // Exit enclave entry point
++def int_sllvm_excall : Intrinsic<[], []>;  // Enclave exit calls
++def int_sllvm_eresume : Intrinsic<[], []>; // Resume from enclave exit call
++
+ //===----------------------------------------------------------------------===//
+ // Target-specific intrinsics
+ //===----------------------------------------------------------------------===//
+Index: lib/Support/GraphWriter.cpp
+===================================================================
+--- lib/Support/GraphWriter.cpp	(revision 327628)
++++ lib/Support/GraphWriter.cpp	(working copy)
+@@ -169,6 +169,21 @@
+       return false;
+   }
+ #endif
++  // xdot
++  if (S.TryFindProgram("xdot|xdot.py", ViewerPath)) {
++    std::vector<const char *> args;
++    args.push_back(ViewerPath.c_str());
++    args.push_back(Filename.c_str());
++
++    args.push_back("-f");
++    args.push_back(getProgramName(program));
++
++    args.push_back(nullptr);
++
++    errs() << "Running 'xdot.py' program... ";
++    return ExecGraphViewer(ViewerPath, args, Filename, wait, ErrMsg);
++  }
++
+   if (S.TryFindProgram("xdg-open", ViewerPath)) {
+     std::vector<const char *> args;
+     args.push_back(ViewerPath.c_str());
+@@ -190,21 +205,6 @@
+     return ExecGraphViewer(ViewerPath, args, Filename, wait, ErrMsg);
+   }
+ 
+-  // xdot
+-  if (S.TryFindProgram("xdot|xdot.py", ViewerPath)) {
+-    std::vector<const char *> args;
+-    args.push_back(ViewerPath.c_str());
+-    args.push_back(Filename.c_str());
+-
+-    args.push_back("-f");
+-    args.push_back(getProgramName(program));
+-
+-    args.push_back(nullptr);
+-
+-    errs() << "Running 'xdot.py' program... ";
+-    return ExecGraphViewer(ViewerPath, args, Filename, wait, ErrMsg);
+-  }
+-
+   enum ViewerKind {
+     VK_None,
+     VK_OSXOpen,
+Index: lib/Target/MSP430/MSP430AsmPrinter.cpp
+===================================================================
+--- lib/Target/MSP430/MSP430AsmPrinter.cpp	(revision 327628)
++++ lib/Target/MSP430/MSP430AsmPrinter.cpp	(working copy)
+@@ -14,6 +14,8 @@
+ 
+ #include "InstPrinter/MSP430InstPrinter.h"
+ #include "MSP430.h"
++#include "llvm/SLLVM.h"
++#include "MSP430Sancus.h"
+ #include "MSP430InstrInfo.h"
+ #include "MSP430MCInstLower.h"
+ #include "MSP430TargetMachine.h"
+@@ -54,11 +56,30 @@
+     bool PrintAsmMemoryOperand(const MachineInstr *MI,
+                                unsigned OpNo, unsigned AsmVariant,
+                                const char *ExtraCode, raw_ostream &O) override;
++
++    void EmitEndOfAsmFile(Module &) override;
++
+     void EmitInstruction(const MachineInstr *MI) override;
+   };
+ } // end of anonymous namespace
+ 
++void MSP430AsmPrinter::EmitEndOfAsmFile(Module &M) {
++  if (sllvm::isPM(&M)) {
++    // TODO: Have section names generated
++    // TODO: Use OutStreamer.setSection, pushSection or something similar
++    OutStreamer->EmitRawText(
++        "\t.section\t.sllvm.text." + sllvm::getPMName(&M) + ",\"ax\",@progbits");
++    OutStreamer->EmitRawText(sllvm::sancus::asm_eenter);
++    OutStreamer->EmitRawText(sllvm::sancus::asm_eexit);
++    OutStreamer->EmitRawText(sllvm::sancus::asm_excall);
++    OutStreamer->EmitRawText(sllvm::sancus::asm_eresume);
+ 
++    // TODO: Use OutStreamer.setSection, pushSection or something similar
++    OutStreamer->EmitRawText("\t.text");
++    OutStreamer->EmitRawText(sllvm::sancus::asm_protect);
++  }
++}
++
+ void MSP430AsmPrinter::printOperand(const MachineInstr *MI, int OpNum,
+                                     raw_ostream &O, const char *Modifier) {
+   const MachineOperand &MO = MI->getOperand(OpNum);
+Index: lib/Target/MSP430/MSP430ISelLowering.cpp
+===================================================================
+--- lib/Target/MSP430/MSP430ISelLowering.cpp	(revision 327628)
++++ lib/Target/MSP430/MSP430ISelLowering.cpp	(working copy)
+@@ -13,12 +13,15 @@
+ 
+ #include "MSP430ISelLowering.h"
+ #include "MSP430.h"
++#include "MSP430Sancus.h"
+ #include "MSP430MachineFunctionInfo.h"
+ #include "MSP430Subtarget.h"
+ #include "MSP430TargetMachine.h"
++#include "llvm/SLLVM.h"
+ #include "llvm/CodeGen/CallingConvLower.h"
+ #include "llvm/CodeGen/MachineFrameInfo.h"
+ #include "llvm/CodeGen/MachineFunction.h"
++#include "llvm/CodeGen/MachineModuleInfo.h"
+ #include "llvm/CodeGen/MachineInstrBuilder.h"
+ #include "llvm/CodeGen/MachineRegisterInfo.h"
+ #include "llvm/CodeGen/SelectionDAGISel.h"
+@@ -431,26 +434,47 @@
+ static void AnalyzeArguments(CCState &State,
+                              SmallVectorImpl<CCValAssign> &ArgLocs,
+                              const SmallVectorImpl<ArgT> &Args) {
+-  static const MCPhysReg CRegList[] = {
+-    MSP430::R12, MSP430::R13, MSP430::R14, MSP430::R15
+-  };
+-  static const unsigned CNbRegs = array_lengthof(CRegList);
+-  static const MCPhysReg BuiltinRegList[] = {
+-    MSP430::R8, MSP430::R9, MSP430::R10, MSP430::R11,
+-    MSP430::R12, MSP430::R13, MSP430::R14, MSP430::R15
+-  };
+-  static const unsigned BuiltinNbRegs = array_lengthof(BuiltinRegList);
++  if (State.getCallingConv() == CallingConv::SANCUS_DISPATCH)
++    return;
+ 
+   ArrayRef<MCPhysReg> RegList;
+   unsigned NbRegs;
+ 
+-  bool Builtin = (State.getCallingConv() == CallingConv::MSP430_BUILTIN);
+-  if (Builtin) {
+-    RegList = BuiltinRegList;
+-    NbRegs = BuiltinNbRegs;
+-  } else {
+-    RegList = CRegList;
+-    NbRegs = CNbRegs;
++  switch (State.getCallingConv()) {
++    default:
++      report_fatal_error("Unsupported calling convention");
++    case CallingConv::MSP430_BUILTIN:
++      {
++        static const MCPhysReg BuiltinRegList[] = {
++          MSP430::R8, MSP430::R9, MSP430::R10, MSP430::R11,
++          MSP430::R12, MSP430::R13, MSP430::R14, MSP430::R15
++        };
++        static const unsigned BuiltinNbRegs = array_lengthof(BuiltinRegList);
++        RegList = BuiltinRegList;
++        NbRegs = BuiltinNbRegs;
++      }
++      break;
++    case CallingConv::Fast:
++    case CallingConv::C:
++      {
++        static const MCPhysReg CRegList[] = {
++          MSP430::R12, MSP430::R13, MSP430::R14, MSP430::R15
++        };
++        static const unsigned CNbRegs = array_lengthof(CRegList);
++        RegList = CRegList;
++        NbRegs = CNbRegs;
++      }
++      break;
++    case CallingConv::SANCUS_ENTRY:
++      {
++        static const MCPhysReg SRegList[] = {
++          MSP430::R6, MSP430::R12, MSP430::R13, MSP430::R14, MSP430::R15
++        };
++        static const unsigned SNbRegs = array_lengthof(SRegList);
++        RegList = SRegList;
++        NbRegs = SNbRegs;
++      }
++      break;
+   }
+ 
+   if (State.isVarArg()) {
+@@ -461,6 +485,7 @@
+   SmallVector<unsigned, 4> ArgsParts;
+   ParseFunctionArgs(Args, ArgsParts);
+ 
++  bool Builtin = (State.getCallingConv() == CallingConv::MSP430_BUILTIN);
+   if (Builtin) {
+     assert(ArgsParts.size() == 2 &&
+         "Builtin calling convention requires two arguments");
+@@ -549,6 +574,8 @@
+     report_fatal_error("Unsupported calling convention");
+   case CallingConv::C:
+   case CallingConv::Fast:
++  case CallingConv::SANCUS_ENTRY:
++  case CallingConv::SANCUS_DISPATCH:
+     return LowerCCCArguments(Chain, CallConv, isVarArg, Ins, dl, DAG, InVals);
+   case CallingConv::MSP430_INTR:
+     if (Ins.empty())
+@@ -580,7 +607,9 @@
+   case CallingConv::MSP430_BUILTIN:
+   case CallingConv::Fast:
+   case CallingConv::C:
+-    return LowerCCCCallTo(Chain, Callee, CallConv, isVarArg, isTailCall,
++  case CallingConv::SANCUS_ENTRY:
++  case CallingConv::SANCUS_DISPATCH:
++    return LowerCCCCallTo(CLI, Chain, Callee, CallConv, isVarArg, isTailCall,
+                           Outs, OutVals, Ins, dl, DAG, InVals);
+   case CallingConv::MSP430_INTR:
+     report_fatal_error("ISRs cannot be called directly");
+@@ -774,9 +803,167 @@
+   return DAG.getNode(Opc, dl, MVT::Other, RetOps);
+ }
+ 
++SDValue MSP430TargetLowering::saveStack(SDValue Chain,
++                                        const SDLoc &dl,
++                                        SelectionDAG &DAG,
++                                        const Module *M,
++                                        StringRef gName) const {
++  auto PtrVT = getPointerTy(DAG.getDataLayout());
++  GlobalVariable * GV = M->getGlobalVariable(gName, true);
++  assert (GV != nullptr);
++  SDValue GA = DAG.getGlobalAddress(GV, dl, MVT::i16);
++  SDValue SP = DAG.getRegister(MSP430::SP, PtrVT);
++  return DAG.getStore(Chain, dl, SP, GA, MachinePointerInfo());
++}
++
++SDValue MSP430TargetLowering::restoreStack(SDValue Chain,
++                                           const SDLoc &dl,
++                                           SelectionDAG &DAG,
++                                           const Module *M,
++                                           StringRef gName) const {
++  auto PtrVT = getPointerTy(DAG.getDataLayout());
++  GlobalVariable *GV = M->getGlobalVariable(gName, true);
++  assert(GV != nullptr);
++  // TODO: Is MVT::i16 type correct (and all the others that I used) ?
++  SDValue G = DAG.getGlobalAddress(GV, dl, PtrVT);
++  SDValue L = DAG.getLoad(PtrVT, dl, Chain, G, MachinePointerInfo());
++  return DAG.getCopyToReg(Chain, dl, MSP430::SP, L);
++}
++
++SDValue MSP430TargetLowering::pushOnStack(SDValue Chain,
++                                         const SDLoc &dl,
++                                         SelectionDAG &DAG,
++                                         SDValue V) const {
++  // TODO: Isn't there a simpler way (like just a simple push...)?
++  //        (and why can't we add directly to the register?)
++  auto PtrVT = getPointerTy(DAG.getDataLayout());
++  SDValue Size = DAG.getIntPtrConstant(2, dl);
++  SDValue OldSP = DAG.getCopyFromReg(Chain, dl, MSP430::SP, PtrVT);
++  SDValue NewSP = DAG.getNode(ISD::SUB, dl, PtrVT, OldSP, Size);
++  Chain = DAG.getCopyToReg(Chain, dl, MSP430::SP, NewSP);
++  SDValue SP = DAG.getRegister(MSP430::SP, PtrVT);
++  return DAG.getStore(Chain, dl, V, SP, MachinePointerInfo());
++}
++
++// TODO: Move (part of it) to SLLVM.h
++static bool isEXCallToUnprotecedCode(TargetLowering::CallLoweringInfo &CLI) {
++  if (CLI.CS.getInstruction() == nullptr)
++    return false;
++  const Module * M = CLI.CS.getCaller()->getParent();
++  if (sllvm::isPM(M)) {
++    const Function *CF = CLI.CS.getCalledFunction();
++    assert (CF != nullptr && "Indirect calls are not allowed in enclaves");
++    return (CLI.CallConv != CallingConv::SANCUS_ENTRY) && CF->isDeclaration();
++  }
++  return false;
++}
++
++// TODO: - Not sure if this is the right place to put this...
++//       - Maybe part of the logic related to R7 can be integrated in 
++//           AnalyzeArguments()
++//       - Refactor/Document !
++SDValue MSP430TargetLowering::lowerSancusCall(
++    CallLoweringInfo &CLI,
++    SDValue Chain,
++    const SDLoc &dl,
++    SelectionDAG &DAG) const {
++
++  if (CLI.CS.getInstruction() == nullptr)
++    return Chain;
++
++  const Module * M = CLI.CS.getCaller()->getParent();
++
++  if ( (! sllvm::isPM(M)) && (CLI.CallConv != CallingConv::SANCUS_ENTRY) )
++    return Chain;
++
++  auto PtrVT = getPointerTy(DAG.getDataLayout());
++
++  // Retrieve the after-call-label (ACL)
++  MachineFunction &MF = DAG.getMachineFunction();
++  MCSymbol *Sym = MF.getMMI().getContext().createDirectionalLocalSymbol(0);
++  SDValue ACL = DAG.getMCSymbol(Sym, PtrVT);
++
++  if (sllvm::isPM(M)) {
++    const Function *CF = CLI.CS.getCalledFunction();
++    assert (CF != nullptr && "Indirect calls are not allowed in enclaves");
++
++    // Retrieve the dispatcher
++    Function *F = M->getFunction(sllvm::sancus::fname_dispatch);
++    assert (F != nullptr && "Enclave dispatcher not found");
++    SDValue D = DAG.getGlobalAddress(F, dl, MVT::i16);
++
++    if (CLI.CallConv == CallingConv::SANCUS_ENTRY) {
++      assert (CF->isDeclaration() && "External call expected");
++      Chain = DAG.getCopyToReg(Chain, dl, MSP430::R7, D);
++    }
++
++    if (CF->isDeclaration()) {  // Ignore internal calls
++      Chain = pushOnStack(Chain, dl, DAG, ACL);
++      Chain = saveStack(Chain, dl, DAG, M, sllvm::sancus::local_r1);
++    }
++
++    if (isEXCallToUnprotecedCode(CLI)) {
++      Chain = restoreStack(Chain, dl, DAG, M, sllvm::sancus::global_r1);
++      Chain = pushOnStack(Chain, dl, DAG, D);
++      SDValue C = DAG.getConstant(sllvm::sancus::R6_URet, dl, MVT::i16);
++      Chain = DAG.getCopyToReg(Chain, dl, MSP430::R6, C);
++    }
++  }
++  else {
++    if (CLI.CallConv == CallingConv::SANCUS_ENTRY) {
++#if 0
++      Chain = DAG.getCopyToReg(Chain, dl, MSP430::R7, ACL);
++#else
++      // TODO: Find out why the simple code above asserts (Compiler bug?)
++      GlobalVariable *GV = M->getGlobalVariable(sllvm::sancus::global_pc, true);
++      assert(GV != nullptr);
++      SDValue G = DAG.getGlobalAddress(GV, dl, MVT::i16);
++      Chain = DAG.getStore(Chain, dl, ACL, G, MachinePointerInfo());
++
++      SDValue L = DAG.getLoad(PtrVT, dl, Chain, G, MachinePointerInfo());
++      Chain = DAG.getCopyToReg(Chain, dl, MSP430::R7, L);
++#endif
++
++      Chain = saveStack(Chain, dl, DAG, M, sllvm::sancus::global_r1);
++    }
++  }
++
++  return Chain;
++}
++
++// TODO: Document/Refactor
++SDValue MSP430TargetLowering::LowerSancusCallResult(
++    CallLoweringInfo &CLI,
++    SDValue Chain,
++    const SDLoc &dl,
++    SelectionDAG &DAG) const {
++
++  if (CLI.CS.getInstruction() == nullptr)
++    return Chain;
++
++  const Module * M = CLI.CS.getCaller()->getParent();
++  const Function *CF = CLI.CS.getCalledFunction();
++
++  if ( (CLI.CallConv == CallingConv::SANCUS_ENTRY)
++      || ( sllvm::isPM(M) && (CF != nullptr) && CF->isDeclaration() ) ) {
++
++    // Generate the after-call-label (ACL)
++    MachineFunction &MF = DAG.getMachineFunction();
++    MCSymbol *ACL = MF.getMMI().getContext().getDirectionalLocalSymbol(0, true);
++    Chain = DAG.getLabelNode(ISD::ANNOTATION_LABEL, dl, Chain, ACL);
++
++    if (! sllvm::isPM(M)) {
++      Chain = restoreStack(Chain, dl, DAG, M, sllvm::sancus::global_r1);
++    }
++  }
++
++  return Chain;
++}
++
+ /// LowerCCCCallTo - functions arguments are copied from virtual regs to
+ /// (physical regs)/(stack frame), CALLSEQ_START and CALLSEQ_END are emitted.
+ SDValue MSP430TargetLowering::LowerCCCCallTo(
++    TargetLowering::CallLoweringInfo &CLI,
+     SDValue Chain, SDValue Callee, CallingConv::ID CallConv, bool isVarArg,
+     bool isTailCall, const SmallVectorImpl<ISD::OutputArg> &Outs,
+     const SmallVectorImpl<SDValue> &OutVals,
+@@ -792,6 +979,8 @@
+   unsigned NumBytes = CCInfo.getNextStackOffset();
+   auto PtrVT = getPointerTy(DAG.getDataLayout());
+ 
++  Chain = lowerSancusCall(CLI, Chain, dl, DAG);
++
+   Chain = DAG.getCALLSEQ_START(Chain, NumBytes, 0, dl);
+ 
+   SmallVector<std::pair<unsigned, SDValue>, 4> RegsToPass;
+@@ -888,10 +1077,19 @@
+     Ops.push_back(DAG.getRegister(RegsToPass[i].first,
+                                   RegsToPass[i].second.getValueType()));
+ 
++  // R7 is live into Sancus entry calls
++  if (CLI.CallConv == CallingConv::SANCUS_ENTRY)
++      Ops.push_back(DAG.getRegister(MSP430::R7, PtrVT));
++
+   if (InFlag.getNode())
+     Ops.push_back(InFlag);
+-
+-  Chain = DAG.getNode(MSP430ISD::CALL, dl, NodeTys, Ops);
++  
++  if (isEXCallToUnprotecedCode(CLI)) {
++    Chain = DAG.getNode(MSP430ISD::BRCALL, dl, NodeTys, Ops);
++  } 
++  else {
++    Chain = DAG.getNode(MSP430ISD::CALL, dl, NodeTys, Ops);
++  }
+   InFlag = Chain.getValue(1);
+ 
+   // Create the CALLSEQ_END node.
+@@ -901,8 +1099,10 @@
+ 
+   // Handle result values, copying them out of physregs into vregs that we
+   // return.
+-  return LowerCallResult(Chain, InFlag, CallConv, isVarArg, Ins, dl,
+-                         DAG, InVals);
++  Chain = LowerCallResult(CLI, Chain, InFlag, CallConv, isVarArg, Ins, dl,
++                          DAG, InVals);
++
++  return Chain;
+ }
+ 
+ /// LowerCallResult - Lower the result values of a call into the
+@@ -909,6 +1109,7 @@
+ /// appropriate copies out of appropriate physical registers.
+ ///
+ SDValue MSP430TargetLowering::LowerCallResult(
++    TargetLowering::CallLoweringInfo &CLI,
+     SDValue Chain, SDValue InFlag, CallingConv::ID CallConv, bool isVarArg,
+     const SmallVectorImpl<ISD::InputArg> &Ins, const SDLoc &dl,
+     SelectionDAG &DAG, SmallVectorImpl<SDValue> &InVals) const {
+@@ -928,6 +1129,8 @@
+     InVals.push_back(Chain.getValue(0));
+   }
+ 
++  Chain = LowerSancusCallResult(CLI, Chain, dl, DAG);
++
+   return Chain;
+ }
+ 
+@@ -1343,6 +1546,7 @@
+   case MSP430ISD::RLA:                return "MSP430ISD::RLA";
+   case MSP430ISD::RRC:                return "MSP430ISD::RRC";
+   case MSP430ISD::CALL:               return "MSP430ISD::CALL";
++  case MSP430ISD::BRCALL:             return "MSP430ISD::BRCALL";
+   case MSP430ISD::Wrapper:            return "MSP430ISD::Wrapper";
+   case MSP430ISD::BR_CC:              return "MSP430ISD::BR_CC";
+   case MSP430ISD::CMP:                return "MSP430ISD::CMP";
+Index: lib/Target/MSP430/MSP430ISelLowering.h
+===================================================================
+--- lib/Target/MSP430/MSP430ISelLowering.h	(revision 327628)
++++ lib/Target/MSP430/MSP430ISelLowering.h	(working copy)
+@@ -40,6 +40,9 @@
+       /// instruction, which includes a bunch of information.
+       CALL,
+ 
++      /// BRCALL - Behaves like a call put does not push the return address
++      BRCALL,
++
+       /// Wrapper - A wrapper node for TargetConstantPool, TargetExternalSymbol,
+       /// and TargetGlobalAddress.
+       Wrapper,
+@@ -128,7 +131,19 @@
+                                       MachineBasicBlock *BB) const;
+ 
+   private:
+-    SDValue LowerCCCCallTo(SDValue Chain, SDValue Callee,
++    SDValue saveStack(SDValue Chain, const SDLoc &dl, SelectionDAG &DAG,
++                      const Module *M, StringRef gName) const;
++    SDValue restoreStack(SDValue Chain, const SDLoc &dl, SelectionDAG &DAG,
++                         const Module *M, StringRef gName) const;
++    SDValue pushOnStack(SDValue Chain, const SDLoc &dl, SelectionDAG &DAG,
++                       SDValue V) const;
++    SDValue lowerSancusCall(CallLoweringInfo &CLI, SDValue Chain,
++                            const SDLoc &dl, SelectionDAG &DAG) const;
++    SDValue LowerSancusCallResult(CallLoweringInfo &CLI, SDValue Chain,
++                                  const SDLoc &dl, SelectionDAG &DAG) const;
++
++    SDValue LowerCCCCallTo(CallLoweringInfo &CLI,
++                           SDValue Chain, SDValue Callee,
+                            CallingConv::ID CallConv, bool isVarArg,
+                            bool isTailCall,
+                            const SmallVectorImpl<ISD::OutputArg> &Outs,
+@@ -143,7 +158,8 @@
+                               const SDLoc &dl, SelectionDAG &DAG,
+                               SmallVectorImpl<SDValue> &InVals) const;
+ 
+-    SDValue LowerCallResult(SDValue Chain, SDValue InFlag,
++    SDValue LowerCallResult(CallLoweringInfo &CLI,
++                            SDValue Chain, SDValue InFlag,
+                             CallingConv::ID CallConv, bool isVarArg,
+                             const SmallVectorImpl<ISD::InputArg> &Ins,
+                             const SDLoc &dl, SelectionDAG &DAG,
+Index: lib/Target/MSP430/MSP430InstrInfo.cpp
+===================================================================
+--- lib/Target/MSP430/MSP430InstrInfo.cpp	(revision 327628)
++++ lib/Target/MSP430/MSP430InstrInfo.cpp	(working copy)
+@@ -324,6 +324,12 @@
+     case MSP430::SAR8r1c:
+     case MSP430::SAR16r1c:
+       return 4;
++    case MSP430::eexit:
++    case MSP430::eenter:
++    case MSP430::excall:
++    case MSP430::eresume:
++      // TODO: Not sure what ... (but code asserts when case is left out)
++      return 12;
+     }
+   case MSP430II::Size2Bytes:
+     return 2;
+Index: lib/Target/MSP430/MSP430InstrInfo.td
+===================================================================
+--- lib/Target/MSP430/MSP430InstrInfo.td	(revision 327628)
++++ lib/Target/MSP430/MSP430InstrInfo.td	(working copy)
+@@ -51,6 +51,8 @@
+ 
+ def MSP430call    : SDNode<"MSP430ISD::CALL", SDT_MSP430Call,
+                      [SDNPHasChain, SDNPOutGlue, SDNPOptInGlue, SDNPVariadic]>;
++def MSP430brcall  : SDNode<"MSP430ISD::BRCALL", SDT_MSP430Call,
++                     [SDNPHasChain, SDNPOutGlue, SDNPOptInGlue, SDNPVariadic]>;
+ def MSP430callseq_start :
+                  SDNode<"ISD::CALLSEQ_START", SDT_MSP430CallSeqStart,
+                         [SDNPHasChain, SDNPOutGlue]>;
+@@ -165,6 +167,40 @@
+ def NOP : Pseudo<(outs), (ins), "nop", []>;
+ 
+ //===----------------------------------------------------------------------===//
++//  SLLVM instructions
++//
++
++def eenter : Pseudo<(outs), (ins),
++                    // In case this is a return from a call to unprotected code,
++                    //  the sp should be saved before switching stacks
++                    // TODO: Is it better to do this at DAG level ?
++                    //          (see X86 for example)
++                    "cmp\t#0xfffe, r6\n\t"
++                    "jne\t1f\n\t"
++                    "mov\tr1, &sllvm_r1\n"
++                    "1:\n\t"
++                    // Switch stack
++                    "mov\t&sllvm_lr1, r1\n\t"
++                    "call\t#sllvm_eenter"
++                    ,[(int_sllvm_eenter)]>;
++
++def eexit : Pseudo<(outs), (ins),
++                   "call\t#sllvm_eexit\n\t"
++                   // Save stack
++                   "mov\tr1, &sllvm_lr1\n\t"
++                   // Push return address
++                   "push\tr7"
++                   ,[(int_sllvm_eexit)]>;
++
++def excall : Pseudo<(outs), (ins),
++                   "call\t#sllvm_excall"
++                   ,[(int_sllvm_excall)]>;
++
++def eresume : Pseudo<(outs), (ins),
++                   "call\t#sllvm_eresume"
++                   ,[(int_sllvm_eresume)]>;
++
++//===----------------------------------------------------------------------===//
+ //  Control Flow Instructions...
+ //
+ 
+@@ -226,6 +262,15 @@
+     def CALLm     : II16m<0x0,
+                           (outs), (ins memsrc:$dst),
+                           "call\t${dst:mem}", [(MSP430call (load addr:$dst))]>;
++    def BRCALLi   : II16i<0x0,
++                          (outs), (ins i16imm:$dst),
++                          "br\t$dst", [(MSP430brcall imm:$dst)]>;
++    def BRCALLr   : II16r<0x0,
++                          (outs), (ins GR16:$dst),
++                          "br\t$dst", [(MSP430brcall GR16:$dst)]>;
++    def BRCALLm   : II16m<0x0,
++                          (outs), (ins memsrc:$dst),
++                          "br\t${dst:mem}", [(MSP430brcall (load addr:$dst))]>;
+   }
+ 
+ 
+Index: lib/Target/MSP430/MSP430MCInstLower.cpp
+===================================================================
+--- lib/Target/MSP430/MSP430MCInstLower.cpp	(revision 327628)
++++ lib/Target/MSP430/MSP430MCInstLower.cpp	(working copy)
+@@ -139,6 +139,9 @@
+     case MachineOperand::MO_ExternalSymbol:
+       MCOp = LowerSymbolOperand(MO, GetExternalSymbolSymbol(MO));
+       break;
++    case MachineOperand::MO_MCSymbol:
++      MCOp = LowerSymbolOperand(MO, MO.getMCSymbol());
++      break;
+     case MachineOperand::MO_JumpTableIndex:
+       MCOp = LowerSymbolOperand(MO, GetJumpTableSymbol(MO));
+       break;

@@ -1,2 +1,2 @@
-# sllvm
+# SLLVM
 Security Enhanced LLVM
