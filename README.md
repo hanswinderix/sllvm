@@ -2,6 +2,11 @@
 
 This is the main source code respository for SLLVM.
 
+The directory 
+[sllvm/lib/Transforms/SancusModuleCreator](sllvm/lib/Transforms/SancusModuleCreator)
+contains source code from the offically supported Sancus toolchain 
+(https://github.com/sancus-pma) and is added here for convenience.
+
 ## Building from Source
 
 1. Make sure you have installed the dependencies:
