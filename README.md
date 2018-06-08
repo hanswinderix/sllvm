@@ -12,6 +12,7 @@ This is the main source code respository for SLLVM.
    * `curl`
    * `git`
    * `svn`
+   * `msp430-elf-gcc`
 
 2. Clone the source with git:
 
