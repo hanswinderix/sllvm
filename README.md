@@ -12,7 +12,21 @@ This is the main source code respository for SLLVM.
    $ git clone https://github.com/hanswinderix/sllvm.git
    $ cd sllvm
    ```
-3. Build and install:
+
+3. Create a Makefile.local for local build configuration
+
+4. Fetch other repositories and configure the build
+
+   ```sh
+   $ make sllvm-checkout
+   $ make sllvm-configure
+   $ make sllvm-apply-full-patch
+   ```
+7. Build and install:
+
+   ```sh
+   $ make sllvm-install
+   ```
 
 ## License
 
