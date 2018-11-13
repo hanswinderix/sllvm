@@ -1,10 +1,10 @@
 Index: include/llvm/IR/CallingConv.h
 ===================================================================
---- include/llvm/IR/CallingConv.h	(revision 327628)
+--- include/llvm/IR/CallingConv.h	(revision 346644)
 +++ include/llvm/IR/CallingConv.h	(working copy)
-@@ -220,6 +220,10 @@
-     /// shader if tessellation is in use, or otherwise the vertex shader.
-     AMDGPU_ES = 96,
+@@ -223,6 +223,10 @@
+     // Calling convention between AArch64 Advanced SIMD functions
+     AArch64_VectorCall = 97,
  
 +    /// Calling convention used for Sancus entry functions.
 +    SANCUS_ENTRY = 97,
@@ -15,9 +15,9 @@ Index: include/llvm/IR/CallingConv.h
    };
 Index: include/llvm/IR/Intrinsics.td
 ===================================================================
---- include/llvm/IR/Intrinsics.td	(revision 327628)
+--- include/llvm/IR/Intrinsics.td	(revision 346644)
 +++ include/llvm/IR/Intrinsics.td	(working copy)
-@@ -967,6 +967,14 @@
+@@ -1046,6 +1046,14 @@
  
  def int_ssa_copy : Intrinsic<[llvm_any_ty], [LLVMMatchType<0>],
                               [IntrNoMem, Returned<0>]>;
@@ -34,44 +34,40 @@ Index: include/llvm/IR/Intrinsics.td
  //===----------------------------------------------------------------------===//
 Index: lib/Support/GraphWriter.cpp
 ===================================================================
---- lib/Support/GraphWriter.cpp	(revision 327628)
+--- lib/Support/GraphWriter.cpp	(revision 346644)
 +++ lib/Support/GraphWriter.cpp	(working copy)
-@@ -169,6 +169,21 @@
-       return false;
-   }
- #endif
+@@ -153,6 +153,19 @@
+   std::string ViewerPath;
+   GraphSession S;
+ 
 +  // xdot
 +  if (S.TryFindProgram("xdot|xdot.py", ViewerPath)) {
-+    std::vector<const char *> args;
-+    args.push_back(ViewerPath.c_str());
-+    args.push_back(Filename.c_str());
++    std::vector<StringRef> args;
++    args.push_back(ViewerPath);
++    args.push_back(Filename);
 +
 +    args.push_back("-f");
 +    args.push_back(getProgramName(program));
-+
-+    args.push_back(nullptr);
 +
 +    errs() << "Running 'xdot.py' program... ";
 +    return ExecGraphViewer(ViewerPath, args, Filename, wait, ErrMsg);
 +  }
 +
-   if (S.TryFindProgram("xdg-open", ViewerPath)) {
-     std::vector<const char *> args;
-     args.push_back(ViewerPath.c_str());
-@@ -190,21 +205,6 @@
+ #ifdef __APPLE__
+   wait &= !ViewBackground;
+   if (S.TryFindProgram("open", ViewerPath)) {
+@@ -185,19 +198,6 @@
      return ExecGraphViewer(ViewerPath, args, Filename, wait, ErrMsg);
    }
  
 -  // xdot
 -  if (S.TryFindProgram("xdot|xdot.py", ViewerPath)) {
--    std::vector<const char *> args;
--    args.push_back(ViewerPath.c_str());
--    args.push_back(Filename.c_str());
+-    std::vector<StringRef> args;
+-    args.push_back(ViewerPath);
+-    args.push_back(Filename);
 -
 -    args.push_back("-f");
 -    args.push_back(getProgramName(program));
--
--    args.push_back(nullptr);
 -
 -    errs() << "Running 'xdot.py' program... ";
 -    return ExecGraphViewer(ViewerPath, args, Filename, wait, ErrMsg);
@@ -82,7 +78,7 @@ Index: lib/Support/GraphWriter.cpp
      VK_OSXOpen,
 Index: lib/Target/MSP430/MSP430AsmPrinter.cpp
 ===================================================================
---- lib/Target/MSP430/MSP430AsmPrinter.cpp	(revision 327628)
+--- lib/Target/MSP430/MSP430AsmPrinter.cpp	(revision 346644)
 +++ lib/Target/MSP430/MSP430AsmPrinter.cpp	(working copy)
 @@ -14,6 +14,8 @@
  
@@ -126,7 +122,7 @@ Index: lib/Target/MSP430/MSP430AsmPrinter.cpp
    const MachineOperand &MO = MI->getOperand(OpNum);
 Index: lib/Target/MSP430/MSP430ISelLowering.cpp
 ===================================================================
---- lib/Target/MSP430/MSP430ISelLowering.cpp	(revision 327628)
+--- lib/Target/MSP430/MSP430ISelLowering.cpp	(revision 346644)
 +++ lib/Target/MSP430/MSP430ISelLowering.cpp	(working copy)
 @@ -13,12 +13,15 @@
  
@@ -475,7 +471,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.cpp
    case MSP430ISD::CMP:                return "MSP430ISD::CMP";
 Index: lib/Target/MSP430/MSP430ISelLowering.h
 ===================================================================
---- lib/Target/MSP430/MSP430ISelLowering.h	(revision 327628)
+--- lib/Target/MSP430/MSP430ISelLowering.h	(revision 346644)
 +++ lib/Target/MSP430/MSP430ISelLowering.h	(working copy)
 @@ -40,6 +40,9 @@
        /// instruction, which includes a bunch of information.
@@ -520,7 +516,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.h
                              const SDLoc &dl, SelectionDAG &DAG,
 Index: lib/Target/MSP430/MSP430InstrInfo.cpp
 ===================================================================
---- lib/Target/MSP430/MSP430InstrInfo.cpp	(revision 327628)
+--- lib/Target/MSP430/MSP430InstrInfo.cpp	(revision 346644)
 +++ lib/Target/MSP430/MSP430InstrInfo.cpp	(working copy)
 @@ -324,6 +324,12 @@
      case MSP430::SAR8r1c:
@@ -537,7 +533,7 @@ Index: lib/Target/MSP430/MSP430InstrInfo.cpp
      return 2;
 Index: lib/Target/MSP430/MSP430InstrInfo.td
 ===================================================================
---- lib/Target/MSP430/MSP430InstrInfo.td	(revision 327628)
+--- lib/Target/MSP430/MSP430InstrInfo.td	(revision 346644)
 +++ lib/Target/MSP430/MSP430InstrInfo.td	(working copy)
 @@ -51,6 +51,8 @@
  
@@ -607,7 +603,7 @@ Index: lib/Target/MSP430/MSP430InstrInfo.td
  
 Index: lib/Target/MSP430/MSP430MCInstLower.cpp
 ===================================================================
---- lib/Target/MSP430/MSP430MCInstLower.cpp	(revision 327628)
+--- lib/Target/MSP430/MSP430MCInstLower.cpp	(revision 346644)
 +++ lib/Target/MSP430/MSP430MCInstLower.cpp	(working copy)
 @@ -139,6 +139,9 @@
      case MachineOperand::MO_ExternalSymbol:

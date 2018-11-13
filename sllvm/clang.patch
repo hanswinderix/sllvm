@@ -1,8 +1,8 @@
 Index: include/clang/Basic/Attr.td
 ===================================================================
---- include/clang/Basic/Attr.td	(revision 327628)
+--- include/clang/Basic/Attr.td	(revision 346644)
 +++ include/clang/Basic/Attr.td	(working copy)
-@@ -1465,6 +1465,12 @@
+@@ -1542,6 +1542,12 @@
    let Documentation = [AssumeAlignedDocs];
  }
  
@@ -15,7 +15,7 @@ Index: include/clang/Basic/Attr.td
  def AllocAlign : InheritableAttr {
    let Spellings = [GCC<"alloc_align">];
    let Subjects = SubjectList<[HasFunctionProto]>;
-@@ -1472,6 +1478,7 @@
+@@ -1549,6 +1555,7 @@
    let Documentation = [AllocAlignDocs];
  }
  
@@ -25,9 +25,9 @@ Index: include/clang/Basic/Attr.td
    // FIXME: Does GCC allow this on the function instead?
 Index: lib/CodeGen/CodeGenModule.cpp
 ===================================================================
---- lib/CodeGen/CodeGenModule.cpp	(revision 327628)
+--- lib/CodeGen/CodeGenModule.cpp	(revision 346644)
 +++ lib/CodeGen/CodeGenModule.cpp	(working copy)
-@@ -1438,6 +1438,10 @@
+@@ -1572,6 +1572,10 @@
    setLinkageForGV(F, FD);
    setGVProperties(F, FD);
  
@@ -35,20 +35,20 @@ Index: lib/CodeGen/CodeGenModule.cpp
 +    F->addFnAttr("sllvm-eentry", "true");
 +  }
 +
-   if (FD->getAttr<PragmaClangTextSectionAttr>()) {
-     F->addFnAttr("implicit-section-name");
-   }
+   if (const auto *CSA = FD->getAttr<CodeSegAttr>())
+     F->setSection(CSA->getName());
+   else if (const auto *SA = FD->getAttr<SectionAttr>())
 Index: lib/Sema/SemaDeclAttr.cpp
 ===================================================================
---- lib/Sema/SemaDeclAttr.cpp	(revision 327628)
+--- lib/Sema/SemaDeclAttr.cpp	(revision 346644)
 +++ lib/Sema/SemaDeclAttr.cpp	(working copy)
-@@ -5894,6 +5894,9 @@
-   case AttributeList::AT_IFunc:
+@@ -6110,6 +6110,9 @@
+   case ParsedAttr::AT_IFunc:
      handleIFuncAttr(S, D, AL);
      break;
 +  case AttributeList::AT_EEntry:
 +    handleSimpleAttribute<EEntryAttr>(S, D, AL);
 +    break;
-   case AttributeList::AT_Alias:
+   case ParsedAttr::AT_Alias:
      handleAliasAttr(S, D, AL);
      break;
