@@ -95,17 +95,22 @@ SGXFLAGS+=--sgx-transform
 .PRECIOUS: %.sllvm.x86_64.sgx.ll
 .PRECIOUS: %.sllvm.x86_64.sgx.s
 
-#all: a.out.objdump
-#all: hello.objdump
+all: test.objdump
 
-#all: enclave1.sllvm.x86_64.sgx.o
-#all: enclave1.legacy.opt.s
+#all: a.out.objdump
 #all: enclave1.sllvm.msp430.sancus.s
 #all: enclave2.sllvm.msp430.sancus.s
-#all: main.legacy.opt.s
+#all: enclave3.sllvm.msp430.sancus.s
 #all: main.sllvm.msp430.sancus.s
+
+#all: enclave1.legacy.opt.s
+#all: main.legacy.opt.s
+
 #all: enclave1.sllvm.x86_64.sgx.ll
-all: enclave4.sllvm.msp430.ll
+#all: enclave1.sllvm.x86_64.sgx.o
+
+#all: hello.objdump
+#all: enclave4.sllvm.msp430.ll
 
 #############################################################################
 %.ll: %.c
@@ -189,6 +194,14 @@ a.out: panic.o
 a.out.objdump: a.out
 	${MSP430OBJDUMP} -D a.out > $@
 
+test: sancus.o
+test: test.sllvm.msp430.sancus.o
+test: enclave.sllvm.msp430.sancus.o
+	${MSP430LD} ${MSP430LDFLAGS} $^ -o $@
+
+test.objdump: test
+	${MSP430OBJDUMP} -D test > $@
+
 hello: sancus.o
 hello: hello.sllvm.msp430.sancus.o
 hello: enclave4.sllvm.msp430.sancus.o
@@ -224,6 +237,7 @@ clean:
 	${RM} *.objdump
 	${RM} a.out
 	${RM} hello
+	${RM} test
 	${RM} sancus_sim.fst
 	${RM} sancus_sim.fst.hier
 	${RM} sim-input.bin
