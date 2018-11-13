@@ -95,7 +95,7 @@ sllvm-status:
 	svn status ${LLVM_SRCDIR}
 	svn status ${LLVM_SRCDIR}/tools/clang
 	#svn status ${LLVM_SRCDIR}/projects/test-suite
-	cd ${RUST_BASEDIR} && git status
+	#cd ${RUST_BASEDIR} && git status
 
 sllvm-configure:
 	mkdir -p ${LLVM_OBJDIR}
@@ -115,7 +115,7 @@ sllvm-install:
 sllvm-create-patch:
 	cd ${LLVM_SRCDIR} && svn diff > ${SLLVM_BASEDIR}/llvm.patch
 	cd ${LLVM_SRCDIR}/tools/clang && svn diff > ${SLLVM_BASEDIR}/clang.patch
-	cd ${RUST_BASEDIR} && git diff > ${SLLVM_BASEDIR}/rust.patch
+	#cd ${RUST_BASEDIR} && git diff > ${SLLVM_BASEDIR}/rust.patch
 
 sllvm-revert:
 	svn stat ${LLVM_SRCDIR} | grep '^M' | tr -s ' ' | cut -d' ' -f2 | xargs svn revert
