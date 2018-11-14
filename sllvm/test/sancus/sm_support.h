@@ -3,9 +3,9 @@
 
 #ifdef ENABLE_SANCUS
 
-#include <stddef.h>
+#include "config.h"
 
-#define CONFIG_SECURITY 64
+#include <stddef.h>
 
 /**
  * Type used to represent the internal ID of an SM assigned by Sancus.
@@ -45,6 +45,17 @@ struct SancusModule
 #define __PE(name) __sm_##name##_public_end
 #define __SS(name) __sm_##name##_secret_start
 #define __SE(name) __sm_##name##_secret_end
+
+#define __OUTSIDE_SM( p, sm )                                                  \
+    ( ((void*) p < (void*) &__PS(sm)) || ((void*) p >= (void*) &__PE(sm)) ) && \
+    ( ((void*) p < (void*) &__SS(sm)) || ((void*) p >= (void*) &__SE(sm)) )
+
+/*
+ * Returns true iff whole buffer [p,p+len-1] is outside of the sm SancusModule
+ */
+#define sancus_is_outside_sm( sm, p, len)                                       \
+    ( __OUTSIDE_SM(p, sm) && __OUTSIDE_SM((p+len-1), sm) )
+
 
 /**
  * This macro can be used to declare a SancusModule structure.

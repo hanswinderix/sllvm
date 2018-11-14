@@ -1,4 +1,4 @@
-#include "sm_support.h"
+#include "sancus/sm_support.h"
 
 int SM_ENTRY(enclave) enclave_public_get_secret(void);
 

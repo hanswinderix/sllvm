@@ -23,9 +23,11 @@ SSIM=/home/hans/kul/sancus/local/bin/sancus-sim
 MCU=msp430f1121
 
 CLANGFLAGS=
+LEGACYCLANGFLAGS=
 MSP430LDFLAGS=
 MSP430GCCFLAGS=
 RUSTCFLAGS=
+INCFLAGS=
 
 -include Makefile.local
 
@@ -39,10 +41,19 @@ SSIMFLAGS=
 SancusModuleCreator=${SLLVM_HOME}/lib/SancusModuleCreator.so
 SLLVMLIB=${SLLVM_HOME}/lib/SLLVM.so
 
+INCFLAGS+=-I.
+
 CLANGFLAGS+=${INCFLAGS}
 CLANGFLAGS+=-Werror
 CLANGFLAGS+=-O0
 CLANGFLAGS+=-emit-llvm
+
+# Flags needed to compile sancus-examples 
+# TODO: Should be platform independent
+LEGACYCLANGFLAGS+=-I /usr/msp430/include
+LEGACYCLANGFLAGS+=-I /usr/local/share/sancus-support/include # for sm_io.h
+#LEGACYCLANGFLAGS+=-I /usr/lib/gcc/msp430/4.6.3/include
+#LEGACYCLANGFLAGS+=-I /usr/local/share/sancus-compiler/include
 
 MSP430CLANGFLAGS+=${CLANGFLAGS}
 MSP430CLANGFLAGS+=-D__$(shell echo $(MCU) | tr a-z A-Z)__
@@ -95,7 +106,10 @@ SGXFLAGS+=--sgx-transform
 .PRECIOUS: %.sllvm.x86_64.sgx.ll
 .PRECIOUS: %.sllvm.x86_64.sgx.s
 
-all: test.objdump
+all: sancus-example1.legacy.opt.s
+
+#all: test.objdump
+#all: enclave.legacy.opt.s
 
 #all: a.out.objdump
 #all: enclave1.sllvm.msp430.sancus.s
@@ -121,7 +135,7 @@ all: test.objdump
 
 #############################################################################
 %.legacy.ll: %.c
-	${SANCUSCLANG} ${MSP430CLANGFLAGS} -DENABLE_SANCUS -S -c $< -o $@
+	${SANCUSCLANG} ${MSP430CLANGFLAGS} ${LEGACYCLANGFLAGS} -DENABLE_SANCUS -S -c $< -o $@
 
 %.legacy.opt.ll: %.legacy.ll
 	${OPT} ${SANCUSOPTFLAGS} -S $< -o $@ > /dev/null

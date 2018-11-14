@@ -1,4 +1,4 @@
-#include "sm_support.h"
+#include "sancus/sm_support.h"
 
 DECLARE_SM(enclave, 42);
 

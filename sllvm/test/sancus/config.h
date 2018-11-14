@@ -1,0 +1,6 @@
+#ifndef SANCUS_SUPPORT_CONFIG_H
+#define SANCUS_SUPPORT_CONFIG_H
+
+#define CONFIG_SECURITY 64
+
+#endif

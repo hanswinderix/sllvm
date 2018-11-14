@@ -1,4 +1,4 @@
-#include "sm_support.h"
+#include "sancus/sm_support.h"
 
 /* External unprotected function */
 int abs(int j);
