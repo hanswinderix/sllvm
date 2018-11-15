@@ -23,7 +23,6 @@ SSIM=/home/hans/kul/sancus/local/bin/sancus-sim
 MCU=msp430f1121
 
 CLANGFLAGS=
-LEGACYCLANGFLAGS=
 MSP430LDFLAGS=
 MSP430GCCFLAGS=
 RUSTCFLAGS=
@@ -41,19 +40,20 @@ SSIMFLAGS=
 SancusModuleCreator=${SLLVM_HOME}/lib/SancusModuleCreator.so
 SLLVMLIB=${SLLVM_HOME}/lib/SLLVM.so
 
-INCFLAGS+=-I.
+# Include flags needed to compile the sancus-examples 
+# TODO: Should be platform independent
+# TODO: Only required when compiling the Sancus examples
+# TODO: Not required for SGX
+INCFLAGS+=-I .  # To be able to angle bracket include sancus/sm_support.h
+INCFLAGS+=-I /usr/msp430/include
+INCFLAGS+=-I /usr/local/share/sancus-support/include # for sm_io.h
+#INCFLAGS+=-I /usr/lib/gcc/msp430/4.6.3/include
+#INCFLAGS+=-I /usr/local/share/sancus-compiler/include
 
 CLANGFLAGS+=${INCFLAGS}
 CLANGFLAGS+=-Werror
 CLANGFLAGS+=-O0
 CLANGFLAGS+=-emit-llvm
-
-# Flags needed to compile sancus-examples 
-# TODO: Should be platform independent
-LEGACYCLANGFLAGS+=-I /usr/msp430/include
-LEGACYCLANGFLAGS+=-I /usr/local/share/sancus-support/include # for sm_io.h
-#LEGACYCLANGFLAGS+=-I /usr/lib/gcc/msp430/4.6.3/include
-#LEGACYCLANGFLAGS+=-I /usr/local/share/sancus-compiler/include
 
 MSP430CLANGFLAGS+=${CLANGFLAGS}
 MSP430CLANGFLAGS+=-D__$(shell echo $(MCU) | tr a-z A-Z)__
@@ -96,7 +96,6 @@ SGXFLAGS+=--sgx-transform
 .PRECIOUS: %.legacy.ll
 .PRECIOUS: %.legacy.opt.ll
 .PRECIOUS: %.legacy.opt.s
-.PRECIOUS: %.sllvm.ll
 .PRECIOUS: %.sllvm.msp430.ll
 .PRECIOUS: %.sllvm.msp430.opt1.ll
 .PRECIOUS: %.sllvm.msp430.sancus.ll
@@ -109,7 +108,7 @@ SGXFLAGS+=--sgx-transform
 all: sancus-example1.legacy.opt.s
 
 #all: test.objdump
-#all: enclave.legacy.opt.s
+all: enclave.legacy.opt.s
 
 #all: a.out.objdump
 #all: enclave1.sllvm.msp430.sancus.s
@@ -135,7 +134,7 @@ all: sancus-example1.legacy.opt.s
 
 #############################################################################
 %.legacy.ll: %.c
-	${SANCUSCLANG} ${MSP430CLANGFLAGS} ${LEGACYCLANGFLAGS} -DENABLE_SANCUS -S -c $< -o $@
+	${SANCUSCLANG} ${MSP430CLANGFLAGS} -DENABLE_SANCUS -S -c $< -o $@
 
 %.legacy.opt.ll: %.legacy.ll
 	${OPT} ${SANCUSOPTFLAGS} -S $< -o $@ > /dev/null
