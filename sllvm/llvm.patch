@@ -1,6 +1,6 @@
 Index: include/llvm/IR/CallingConv.h
 ===================================================================
---- include/llvm/IR/CallingConv.h	(revision 346644)
+--- include/llvm/IR/CallingConv.h	(revision 346950)
 +++ include/llvm/IR/CallingConv.h	(working copy)
 @@ -223,6 +223,10 @@
      // Calling convention between AArch64 Advanced SIMD functions
@@ -15,9 +15,9 @@ Index: include/llvm/IR/CallingConv.h
    };
 Index: include/llvm/IR/Intrinsics.td
 ===================================================================
---- include/llvm/IR/Intrinsics.td	(revision 346644)
+--- include/llvm/IR/Intrinsics.td	(revision 346950)
 +++ include/llvm/IR/Intrinsics.td	(working copy)
-@@ -1046,6 +1046,14 @@
+@@ -1050,6 +1050,14 @@
  
  def int_ssa_copy : Intrinsic<[llvm_any_ty], [LLVMMatchType<0>],
                               [IntrNoMem, Returned<0>]>;
@@ -34,7 +34,7 @@ Index: include/llvm/IR/Intrinsics.td
  //===----------------------------------------------------------------------===//
 Index: lib/Support/GraphWriter.cpp
 ===================================================================
---- lib/Support/GraphWriter.cpp	(revision 346644)
+--- lib/Support/GraphWriter.cpp	(revision 346950)
 +++ lib/Support/GraphWriter.cpp	(working copy)
 @@ -153,6 +153,19 @@
    std::string ViewerPath;
@@ -78,7 +78,7 @@ Index: lib/Support/GraphWriter.cpp
      VK_OSXOpen,
 Index: lib/Target/MSP430/MSP430AsmPrinter.cpp
 ===================================================================
---- lib/Target/MSP430/MSP430AsmPrinter.cpp	(revision 346644)
+--- lib/Target/MSP430/MSP430AsmPrinter.cpp	(revision 346950)
 +++ lib/Target/MSP430/MSP430AsmPrinter.cpp	(working copy)
 @@ -14,6 +14,8 @@
  
@@ -122,7 +122,7 @@ Index: lib/Target/MSP430/MSP430AsmPrinter.cpp
    const MachineOperand &MO = MI->getOperand(OpNum);
 Index: lib/Target/MSP430/MSP430ISelLowering.cpp
 ===================================================================
---- lib/Target/MSP430/MSP430ISelLowering.cpp	(revision 346644)
+--- lib/Target/MSP430/MSP430ISelLowering.cpp	(revision 346950)
 +++ lib/Target/MSP430/MSP430ISelLowering.cpp	(working copy)
 @@ -13,12 +13,15 @@
  
@@ -461,9 +461,9 @@ Index: lib/Target/MSP430/MSP430ISelLowering.cpp
    return Chain;
  }
  
-@@ -1343,6 +1546,7 @@
-   case MSP430ISD::RLA:                return "MSP430ISD::RLA";
+@@ -1333,6 +1536,7 @@
    case MSP430ISD::RRC:                return "MSP430ISD::RRC";
+   case MSP430ISD::RRCL:               return "MSP430ISD::RRCL";
    case MSP430ISD::CALL:               return "MSP430ISD::CALL";
 +  case MSP430ISD::BRCALL:             return "MSP430ISD::BRCALL";
    case MSP430ISD::Wrapper:            return "MSP430ISD::Wrapper";
@@ -471,9 +471,9 @@ Index: lib/Target/MSP430/MSP430ISelLowering.cpp
    case MSP430ISD::CMP:                return "MSP430ISD::CMP";
 Index: lib/Target/MSP430/MSP430ISelLowering.h
 ===================================================================
---- lib/Target/MSP430/MSP430ISelLowering.h	(revision 346644)
+--- lib/Target/MSP430/MSP430ISelLowering.h	(revision 346950)
 +++ lib/Target/MSP430/MSP430ISelLowering.h	(working copy)
-@@ -40,6 +40,9 @@
+@@ -43,6 +43,9 @@
        /// instruction, which includes a bunch of information.
        CALL,
  
@@ -483,7 +483,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.h
        /// Wrapper - A wrapper node for TargetConstantPool, TargetExternalSymbol,
        /// and TargetGlobalAddress.
        Wrapper,
-@@ -128,7 +131,19 @@
+@@ -132,7 +135,19 @@
                                        MachineBasicBlock *BB) const;
  
    private:
@@ -504,7 +504,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.h
                             CallingConv::ID CallConv, bool isVarArg,
                             bool isTailCall,
                             const SmallVectorImpl<ISD::OutputArg> &Outs,
-@@ -143,7 +158,8 @@
+@@ -147,7 +162,8 @@
                                const SDLoc &dl, SelectionDAG &DAG,
                                SmallVectorImpl<SDValue> &InVals) const;
  
@@ -516,26 +516,26 @@ Index: lib/Target/MSP430/MSP430ISelLowering.h
                              const SDLoc &dl, SelectionDAG &DAG,
 Index: lib/Target/MSP430/MSP430InstrInfo.cpp
 ===================================================================
---- lib/Target/MSP430/MSP430InstrInfo.cpp	(revision 346644)
+--- lib/Target/MSP430/MSP430InstrInfo.cpp	(revision 346950)
 +++ lib/Target/MSP430/MSP430InstrInfo.cpp	(working copy)
-@@ -324,6 +324,12 @@
-     case MSP430::SAR8r1c:
-     case MSP430::SAR16r1c:
-       return 4;
-+    case MSP430::eexit:
-+    case MSP430::eenter:
-+    case MSP430::excall:
-+    case MSP430::eresume:
-+      // TODO: Not sure what ... (but code asserts when case is left out)
-+      return 12;
-     }
-   case MSP430II::Size2Bytes:
-     return 2;
+@@ -314,6 +314,12 @@
+     return TII.getInlineAsmLength(MI.getOperand(0).getSymbolName(),
+                                   *MF->getTarget().getMCAsmInfo());
+   }
++  case MSP430::eexit:
++  case MSP430::eenter:
++  case MSP430::excall:
++  case MSP430::eresume:
++    // TODO: Not sure what ... (but code asserts when case is left out)
++    return 12;
+   }
+ 
+   return Desc.getSize();
 Index: lib/Target/MSP430/MSP430InstrInfo.td
 ===================================================================
---- lib/Target/MSP430/MSP430InstrInfo.td	(revision 346644)
+--- lib/Target/MSP430/MSP430InstrInfo.td	(revision 346950)
 +++ lib/Target/MSP430/MSP430InstrInfo.td	(working copy)
-@@ -51,6 +51,8 @@
+@@ -53,6 +53,8 @@
  
  def MSP430call    : SDNode<"MSP430ISD::CALL", SDT_MSP430Call,
                       [SDNPHasChain, SDNPOutGlue, SDNPOptInGlue, SDNPVariadic]>;
@@ -544,13 +544,14 @@ Index: lib/Target/MSP430/MSP430InstrInfo.td
  def MSP430callseq_start :
                   SDNode<"ISD::CALLSEQ_START", SDT_MSP430CallSeqStart,
                          [SDNPHasChain, SDNPOutGlue]>;
-@@ -165,6 +167,40 @@
- def NOP : Pseudo<(outs), (ins), "nop", []>;
+@@ -223,6 +225,42 @@
+ }
  
  //===----------------------------------------------------------------------===//
 +//  SLLVM instructions
 +//
 +
++let isCodeGenOnly = 1 in {
 +def eenter : Pseudo<(outs), (ins),
 +                    // In case this is a return from a call to unprotected code,
 +                    //  the sp should be saved before switching stacks
@@ -572,6 +573,7 @@ Index: lib/Target/MSP430/MSP430InstrInfo.td
 +                   // Push return address
 +                   "push\tr7"
 +                   ,[(int_sllvm_eexit)]>;
++}
 +
 +def excall : Pseudo<(outs), (ins),
 +                   "call\t#sllvm_excall"
@@ -585,27 +587,27 @@ Index: lib/Target/MSP430/MSP430InstrInfo.td
  //  Control Flow Instructions...
  //
  
-@@ -226,6 +262,15 @@
-     def CALLm     : II16m<0x0,
-                           (outs), (ins memsrc:$dst),
-                           "call\t${dst:mem}", [(MSP430call (load addr:$dst))]>;
-+    def BRCALLi   : II16i<0x0,
-+                          (outs), (ins i16imm:$dst),
-+                          "br\t$dst", [(MSP430brcall imm:$dst)]>;
-+    def BRCALLr   : II16r<0x0,
-+                          (outs), (ins GR16:$dst),
-+                          "br\t$dst", [(MSP430brcall GR16:$dst)]>;
-+    def BRCALLm   : II16m<0x0,
-+                          (outs), (ins memsrc:$dst),
-+                          "br\t${dst:mem}", [(MSP430brcall (load addr:$dst))]>;
-   }
+@@ -292,6 +330,15 @@
+   def CALLm     : II16m<0b101,
+                         (outs), (ins memsrc:$src),
+                         "call\t$src", [(MSP430call (load addr:$src))]>;
++  def BRCALLi   : II16i<0b101,
++                        (outs), (ins i16imm:$imm),
++                        "br\t$imm", [(MSP430brcall imm:$imm)]>;
++  def BRCALLr   : II16r<0b101,
++                        (outs), (ins GR16:$rs),
++                        "br\t$rs", [(MSP430brcall GR16:$rs)]>;
++  def BRCALLm   : II16m<0b101,
++                        (outs), (ins memsrc:$src),
++                        "br\t$src", [(MSP430brcall (load addr:$src))]>;
+ }
  
- 
+ //===----------------------------------------------------------------------===//
 Index: lib/Target/MSP430/MSP430MCInstLower.cpp
 ===================================================================
---- lib/Target/MSP430/MSP430MCInstLower.cpp	(revision 346644)
+--- lib/Target/MSP430/MSP430MCInstLower.cpp	(revision 346950)
 +++ lib/Target/MSP430/MSP430MCInstLower.cpp	(working copy)
-@@ -139,6 +139,9 @@
+@@ -142,6 +142,9 @@
      case MachineOperand::MO_ExternalSymbol:
        MCOp = LowerSymbolOperand(MO, GetExternalSymbolSymbol(MO));
        break;
