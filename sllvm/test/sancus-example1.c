@@ -3,6 +3,8 @@
 #include <sancus/sm_support.h>
 #include <sancus_support/sm_io.h>
 
+extern struct SancusModule hello;
+
 void exit_success(void);
 
 /* ======== HELLO WORLD SM ======== */

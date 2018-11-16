@@ -105,10 +105,11 @@ SGXFLAGS+=--sgx-transform
 .PRECIOUS: %.sllvm.x86_64.sgx.ll
 .PRECIOUS: %.sllvm.x86_64.sgx.s
 
-all: sancus-example1.legacy.opt.s
+#all: sancus-example1.legacy.opt.s
+all: sancus-example1.sllvm.msp430.sancus.s
 
 #all: test.objdump
-all: enclave.legacy.opt.s
+#all: enclave.legacy.opt.s
 
 #all: a.out.objdump
 #all: enclave1.sllvm.msp430.sancus.s

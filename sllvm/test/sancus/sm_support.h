@@ -1,8 +1,6 @@
 #ifndef SM_SUPPORT_H
 #define SM_SUPPORT_H
 
-#ifdef ENABLE_SANCUS
-
 #include "config.h"
 
 #include <stddef.h>
@@ -56,6 +54,7 @@ struct SancusModule
 #define sancus_is_outside_sm( sm, p, len)                                       \
     ( __OUTSIDE_SM(p, sm) && __OUTSIDE_SM((p+len-1), sm) )
 
+#ifdef ENABLE_SANCUS
 
 /**
  * This macro can be used to declare a SancusModule structure.
@@ -89,6 +88,8 @@ struct SancusModule
 
 #define DECLARE_MMIO_SM(name, secret_start, secret_end, vendor)     \
     DECLARE_MMIO_SM_AUX(name, secret_start, secret_end, vendor)
+
+#endif
 
 /**
  * Enables the protection of the given module.
@@ -393,6 +394,8 @@ always_inline sm_id sancus_get_caller_id(void)
  */
 unsigned sancus_call(void* entry, entry_idx index, ...);
 
+#ifdef ENABLE_SANCUS
+
 void __unprotected_entry(void);
 extern char __unprotected_sp;
 
@@ -432,6 +435,8 @@ extern char __unprotected_sp;
  * @endcode
  */
 #define SM_DATA(name)  SM_FUNC(name)
+
+#endif
 
 /**
  * Macro to create an ISR inside an SM. Inside the ISR, you can use the variable
@@ -546,7 +551,7 @@ extern char __unprotected_sp;
 
 #undef always_inline
 
-#else
+#ifdef ENABLE_SLLVM
 
 #define DECLARE_SM(name, vendor_id)
 #define SM_DATA(name)
