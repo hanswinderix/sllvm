@@ -1,6 +1,6 @@
 Index: include/llvm/IR/CallingConv.h
 ===================================================================
---- include/llvm/IR/CallingConv.h	(revision 346950)
+--- include/llvm/IR/CallingConv.h	(revision 347196)
 +++ include/llvm/IR/CallingConv.h	(working copy)
 @@ -223,6 +223,10 @@
      // Calling convention between AArch64 Advanced SIMD functions
@@ -15,7 +15,7 @@ Index: include/llvm/IR/CallingConv.h
    };
 Index: include/llvm/IR/Intrinsics.td
 ===================================================================
---- include/llvm/IR/Intrinsics.td	(revision 346950)
+--- include/llvm/IR/Intrinsics.td	(revision 347196)
 +++ include/llvm/IR/Intrinsics.td	(working copy)
 @@ -1050,6 +1050,14 @@
  
@@ -34,7 +34,7 @@ Index: include/llvm/IR/Intrinsics.td
  //===----------------------------------------------------------------------===//
 Index: lib/Support/GraphWriter.cpp
 ===================================================================
---- lib/Support/GraphWriter.cpp	(revision 346950)
+--- lib/Support/GraphWriter.cpp	(revision 347196)
 +++ lib/Support/GraphWriter.cpp	(working copy)
 @@ -153,6 +153,19 @@
    std::string ViewerPath;
@@ -78,7 +78,7 @@ Index: lib/Support/GraphWriter.cpp
      VK_OSXOpen,
 Index: lib/Target/MSP430/MSP430AsmPrinter.cpp
 ===================================================================
---- lib/Target/MSP430/MSP430AsmPrinter.cpp	(revision 346950)
+--- lib/Target/MSP430/MSP430AsmPrinter.cpp	(revision 347196)
 +++ lib/Target/MSP430/MSP430AsmPrinter.cpp	(working copy)
 @@ -14,6 +14,8 @@
  
@@ -122,7 +122,7 @@ Index: lib/Target/MSP430/MSP430AsmPrinter.cpp
    const MachineOperand &MO = MI->getOperand(OpNum);
 Index: lib/Target/MSP430/MSP430ISelLowering.cpp
 ===================================================================
---- lib/Target/MSP430/MSP430ISelLowering.cpp	(revision 346950)
+--- lib/Target/MSP430/MSP430ISelLowering.cpp	(revision 347196)
 +++ lib/Target/MSP430/MSP430ISelLowering.cpp	(working copy)
 @@ -13,12 +13,15 @@
  
@@ -140,7 +140,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.cpp
  #include "llvm/CodeGen/MachineInstrBuilder.h"
  #include "llvm/CodeGen/MachineRegisterInfo.h"
  #include "llvm/CodeGen/SelectionDAGISel.h"
-@@ -431,26 +434,47 @@
+@@ -436,26 +439,47 @@
  static void AnalyzeArguments(CCState &State,
                               SmallVectorImpl<CCValAssign> &ArgLocs,
                               const SmallVectorImpl<ArgT> &Args) {
@@ -204,7 +204,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.cpp
    }
  
    if (State.isVarArg()) {
-@@ -461,6 +485,7 @@
+@@ -466,6 +490,7 @@
    SmallVector<unsigned, 4> ArgsParts;
    ParseFunctionArgs(Args, ArgsParts);
  
@@ -212,7 +212,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.cpp
    if (Builtin) {
      assert(ArgsParts.size() == 2 &&
          "Builtin calling convention requires two arguments");
-@@ -549,6 +574,8 @@
+@@ -554,6 +579,8 @@
      report_fatal_error("Unsupported calling convention");
    case CallingConv::C:
    case CallingConv::Fast:
@@ -221,7 +221,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.cpp
      return LowerCCCArguments(Chain, CallConv, isVarArg, Ins, dl, DAG, InVals);
    case CallingConv::MSP430_INTR:
      if (Ins.empty())
-@@ -580,7 +607,9 @@
+@@ -585,7 +612,9 @@
    case CallingConv::MSP430_BUILTIN:
    case CallingConv::Fast:
    case CallingConv::C:
@@ -232,7 +232,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.cpp
                            Outs, OutVals, Ins, dl, DAG, InVals);
    case CallingConv::MSP430_INTR:
      report_fatal_error("ISRs cannot be called directly");
-@@ -774,9 +803,167 @@
+@@ -779,9 +808,167 @@
    return DAG.getNode(Opc, dl, MVT::Other, RetOps);
  }
  
@@ -400,7 +400,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.cpp
      SDValue Chain, SDValue Callee, CallingConv::ID CallConv, bool isVarArg,
      bool isTailCall, const SmallVectorImpl<ISD::OutputArg> &Outs,
      const SmallVectorImpl<SDValue> &OutVals,
-@@ -792,6 +979,8 @@
+@@ -797,6 +984,8 @@
    unsigned NumBytes = CCInfo.getNextStackOffset();
    auto PtrVT = getPointerTy(DAG.getDataLayout());
  
@@ -409,7 +409,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.cpp
    Chain = DAG.getCALLSEQ_START(Chain, NumBytes, 0, dl);
  
    SmallVector<std::pair<unsigned, SDValue>, 4> RegsToPass;
-@@ -888,10 +1077,19 @@
+@@ -893,10 +1082,19 @@
      Ops.push_back(DAG.getRegister(RegsToPass[i].first,
                                    RegsToPass[i].second.getValueType()));
  
@@ -431,7 +431,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.cpp
    InFlag = Chain.getValue(1);
  
    // Create the CALLSEQ_END node.
-@@ -901,8 +1099,10 @@
+@@ -906,8 +1104,10 @@
  
    // Handle result values, copying them out of physregs into vregs that we
    // return.
@@ -444,7 +444,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.cpp
  }
  
  /// LowerCallResult - Lower the result values of a call into the
-@@ -909,6 +1109,7 @@
+@@ -914,6 +1114,7 @@
  /// appropriate copies out of appropriate physical registers.
  ///
  SDValue MSP430TargetLowering::LowerCallResult(
@@ -452,7 +452,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.cpp
      SDValue Chain, SDValue InFlag, CallingConv::ID CallConv, bool isVarArg,
      const SmallVectorImpl<ISD::InputArg> &Ins, const SDLoc &dl,
      SelectionDAG &DAG, SmallVectorImpl<SDValue> &InVals) const {
-@@ -928,6 +1129,8 @@
+@@ -933,6 +1134,8 @@
      InVals.push_back(Chain.getValue(0));
    }
  
@@ -461,7 +461,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.cpp
    return Chain;
  }
  
-@@ -1333,6 +1536,7 @@
+@@ -1348,6 +1551,7 @@
    case MSP430ISD::RRC:                return "MSP430ISD::RRC";
    case MSP430ISD::RRCL:               return "MSP430ISD::RRCL";
    case MSP430ISD::CALL:               return "MSP430ISD::CALL";
@@ -471,7 +471,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.cpp
    case MSP430ISD::CMP:                return "MSP430ISD::CMP";
 Index: lib/Target/MSP430/MSP430ISelLowering.h
 ===================================================================
---- lib/Target/MSP430/MSP430ISelLowering.h	(revision 346950)
+--- lib/Target/MSP430/MSP430ISelLowering.h	(revision 347196)
 +++ lib/Target/MSP430/MSP430ISelLowering.h	(working copy)
 @@ -43,6 +43,9 @@
        /// instruction, which includes a bunch of information.
@@ -516,7 +516,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.h
                              const SDLoc &dl, SelectionDAG &DAG,
 Index: lib/Target/MSP430/MSP430InstrInfo.cpp
 ===================================================================
---- lib/Target/MSP430/MSP430InstrInfo.cpp	(revision 346950)
+--- lib/Target/MSP430/MSP430InstrInfo.cpp	(revision 347196)
 +++ lib/Target/MSP430/MSP430InstrInfo.cpp	(working copy)
 @@ -314,6 +314,12 @@
      return TII.getInlineAsmLength(MI.getOperand(0).getSymbolName(),
@@ -533,7 +533,7 @@ Index: lib/Target/MSP430/MSP430InstrInfo.cpp
    return Desc.getSize();
 Index: lib/Target/MSP430/MSP430InstrInfo.td
 ===================================================================
---- lib/Target/MSP430/MSP430InstrInfo.td	(revision 346950)
+--- lib/Target/MSP430/MSP430InstrInfo.td	(revision 347196)
 +++ lib/Target/MSP430/MSP430InstrInfo.td	(working copy)
 @@ -53,6 +53,8 @@
  
@@ -605,7 +605,7 @@ Index: lib/Target/MSP430/MSP430InstrInfo.td
  //===----------------------------------------------------------------------===//
 Index: lib/Target/MSP430/MSP430MCInstLower.cpp
 ===================================================================
---- lib/Target/MSP430/MSP430MCInstLower.cpp	(revision 346950)
+--- lib/Target/MSP430/MSP430MCInstLower.cpp	(revision 347196)
 +++ lib/Target/MSP430/MSP430MCInstLower.cpp	(working copy)
 @@ -142,6 +142,9 @@
      case MachineOperand::MO_ExternalSymbol:
