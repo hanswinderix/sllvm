@@ -73,6 +73,7 @@ sllvm_eresume:
   )";
 
   // TODO: Paramterize (Module, tag, nonce, vendor_id)
+  // TODO: Have symbol names generated (sllvm_data_*, sllvm_text_*)
   constexpr const char* asm_protect = R"(
 	.globl	sllvm_protect
 	.p2align	1
