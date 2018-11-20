@@ -158,6 +158,70 @@ void SancusTransformation::createDispatchBody(Module &M, Function *D) {
   }
 }
 
+// Generate code to support the officially supported (aka legacy) API,
+// required for compiling the example code of the officially supported 
+// (aka legacy) Sancus development environment
+void SancusTransformation::supportLegacyAPI(Module &M) {
+  LLVMContext &C = M.getContext();
+
+  // TODO: Have typenames generated
+  // SancusModule
+  auto SancusModuleTy = M.getTypeByName("struct.SancusModule");
+  if (SancusModuleTy == nullptr) {
+    SancusModuleTy = StructType::create(C, 
+    { 
+      Type::getInt16Ty(C), 
+      Type::getInt16Ty(C), 
+      Type::getInt8PtrTy(C),
+      Type::getInt8PtrTy(C),
+      Type::getInt8PtrTy(C),
+      Type::getInt8PtrTy(C),
+      Type::getInt8PtrTy(C) 
+    }, 
+    "struct.SancusModule");
+  }
+  else {
+    // Type is defined by including "sm_support.h" 
+    //    (declares part of the legacy API)
+    //
+    // TODO: Assert type is as expected 
+    //            {int16, int16, int8*, int8*, int8*, int8*, int8*}
+  }
+
+  auto V = ConstantDataArray::getString(M.getContext(), getPMName(&M));
+  auto GV = new GlobalVariable(
+      M, V->getType(), true, GlobalValue::PrivateLinkage, V);
+  // TODO add 'unnamed_addr' attribute
+  GV->setAlignment(1);
+  // TODO: GV Should not be part of the secret section
+
+  Constant *IdxList[] = {
+    Constant::getNullValue(Type::getInt8Ty(C)),
+    Constant::getNullValue(Type::getInt8Ty(C))
+  };
+
+  // TODO: Have symbol names generated
+  // TODO: Paramterize (vendor_id)
+  Constant *Vals[] = {
+    ConstantInt::get(Type::getInt16Ty(C), 0),
+    ConstantInt::get(Type::getInt16Ty(C), 1234), // Vendor id
+    ConstantExpr::getInBoundsGetElementPtr(V->getType(), GV, IdxList),
+    M.getOrInsertGlobal("sllvm_text_section_start", Type::getInt8Ty(C)),
+    M.getOrInsertGlobal("sllvm_text_section_end", Type::getInt8Ty(C)),
+    M.getOrInsertGlobal("sllvm_data_section_start", Type::getInt8Ty(C)),
+    M.getOrInsertGlobal("sllvm_data_section_end", Type::getInt8Ty(C))
+  };
+
+  auto Init = ConstantStruct::get(SancusModuleTy, Vals);
+  GV = dyn_cast<GlobalVariable>(
+      M.getOrInsertGlobal(getPMName(&M), SancusModuleTy));
+  GV->setConstant(false);
+  GV->setLinkage(GlobalValue::ExternalLinkage);
+  GV->setInitializer(Init);
+  GV->setDSOLocal(true);
+  GV->setAlignment(2);
+}
+
 void SancusTransformation::createDispatch(Module &M) {
   Type * VoidTy = Type::getVoidTy(M.getContext());
   Type * Int16Ty = Type::getInt16Ty(M.getContext());
@@ -230,6 +294,7 @@ void SancusTransformation::handleEnclave(Module &M) {
   if (getAnalysis<SLLVMAnalysis>().getResults().isPM()) {
     handleGlobals(M);
     createDispatch(M);
+    supportLegacyAPI(M);
   }
 }
 

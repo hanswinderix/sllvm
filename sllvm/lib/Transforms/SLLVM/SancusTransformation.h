@@ -27,6 +27,8 @@ namespace sllvm {
       void handleCalls(Module &M);
 
       void handleEnclave(Module &M);
+
+      void supportLegacyAPI(Module &M);
   };
 }
 
