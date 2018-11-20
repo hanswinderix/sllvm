@@ -39,10 +39,14 @@ struct SancusModule
     void* secret_end;       ///< End address of the secret section
 };
 
+#ifdef ENABLE_SANCUS // TODO Rename to ENABLE_LEGACY
+
 #define __PS(name) __sm_##name##_public_start
 #define __PE(name) __sm_##name##_public_end
 #define __SS(name) __sm_##name##_secret_start
 #define __SE(name) __sm_##name##_secret_end
+
+#endif
 
 #define __OUTSIDE_SM( p, sm )                                                  \
     ( ((void*) p < (void*) &__PS(sm)) || ((void*) p >= (void*) &__PE(sm)) ) && \
@@ -54,7 +58,7 @@ struct SancusModule
 #define sancus_is_outside_sm( sm, p, len)                                       \
     ( __OUTSIDE_SM(p, sm) && __OUTSIDE_SM((p+len-1), sm) )
 
-#ifdef ENABLE_SANCUS
+#ifdef ENABLE_SANCUS // TODO Rename to ENABLE_LEGACY
 
 /**
  * This macro can be used to declare a SancusModule structure.
@@ -394,7 +398,7 @@ always_inline sm_id sancus_get_caller_id(void)
  */
 unsigned sancus_call(void* entry, entry_idx index, ...);
 
-#ifdef ENABLE_SANCUS
+#ifdef ENABLE_SANCUS // TODO Rename to ENABLE_LEGACY
 
 void __unprotected_entry(void);
 extern char __unprotected_sp;
@@ -553,7 +557,14 @@ extern char __unprotected_sp;
 
 #ifdef ENABLE_SLLVM
 
-#define DECLARE_SM(name, vendor_id)
+#define __PS(name) sllvm_text_section_start
+#define __PE(name) sllvm_text_section_end
+#define __SS(name) sllvm_data_section_start
+#define __SE(name) sllvm_data_section_end
+
+#define DECLARE_SM(name, vendor_id)                              \
+    extern char __PS(name), __PE(name), __SS(name), __SE(name);  \
+    extern struct SancusModule name
 #define SM_DATA(name)
 #define SM_FUNC(name)
 
