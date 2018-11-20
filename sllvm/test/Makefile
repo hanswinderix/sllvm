@@ -30,7 +30,7 @@ INCFLAGS=
 
 -include Makefile.local
 
-SIM=hello
+SIM=hello2
 SIM=a.out
 
 SSIMFLAGS=
@@ -41,7 +41,7 @@ SancusModuleCreator=${SLLVM_HOME}/lib/SancusModuleCreator.so
 SLLVMLIB=${SLLVM_HOME}/lib/SLLVM.so
 
 # Include flags needed to compile the sancus-examples 
-# TODO: Should be platform independent
+# TODO: Should be platform independent (don't hardcode /usr/local/share...)
 # TODO: Only required when compiling the Sancus examples
 # TODO: Not required for SGX
 INCFLAGS+=-I .  # To be able to angle bracket include sancus/sm_support.h
@@ -69,6 +69,16 @@ RUSTCFLAGS+=--crate-type lib
 RUSTCFLAGS+=--emit llvm-ir
 
 MSP430LDFLAGS+=-Tmsp430-sllvm.x
+
+# Linker flags needed to compile the sancus-examples 
+# TODO: Only required when compiling the Sancus examples
+# TODO: Should be platform independent (don't hardcode /usr/local/share...)
+MSP430LDFLAGS+=-L/usr/local/share/sancus-support/lib/
+MSP430LDFLAGS+=-lsm-io
+MSP430LDFLAGS+=-ldev
+MSP430LDFLAGS+=-L/usr/local/share/sancus-compiler/lib/
+MSP430LDFLAGS+=-lsancus-sm-support
+#MSP430LDFLAGS+=-lsancus-host-support
 
 LLCFLAGS=
 LLCFLAGS+=-O3
@@ -105,8 +115,9 @@ SGXFLAGS+=--sgx-transform
 .PRECIOUS: %.sllvm.x86_64.sgx.ll
 .PRECIOUS: %.sllvm.x86_64.sgx.s
 
-#all: sancus-example1.legacy.opt.s
-all: sancus-example1.sllvm.msp430.sancus.s
+all: hello
+#all: hello.legacy.opt.s
+#all: hello.sllvm.msp430.sancus.s
 
 #all: test.objdump
 #all: enclave.legacy.opt.s
@@ -123,7 +134,7 @@ all: sancus-example1.sllvm.msp430.sancus.s
 #all: enclave1.sllvm.x86_64.sgx.ll
 #all: enclave1.sllvm.x86_64.sgx.o
 
-#all: hello.objdump
+#all: hello2.objdump
 #all: enclave4.sllvm.msp430.ll
 
 #############################################################################
@@ -218,11 +229,15 @@ test.objdump: test
 
 hello: sancus.o
 hello: hello.sllvm.msp430.sancus.o
-hello: enclave4.sllvm.msp430.sancus.o
-hello: panic.o
+	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
+
+hello2: sancus.o
+hello2: hello.sllvm.msp430.sancus.o
+hello2: enclave4.sllvm.msp430.sancus.o
+hello2: panic.o
 	${MSP430LD} ${MSP430LDFLAGS} $^ -lsm-io -o $@
 
-hello.objdump: hello
+hello2.objdump: hello
 	${MSP430OBJDUMP} -D hello > $@
 
 .PHONY: enclave1-diff
@@ -250,7 +265,7 @@ clean:
 	${RM} *.o
 	${RM} *.objdump
 	${RM} a.out
-	${RM} hello
+	${RM} hello2
 	${RM} test
 	${RM} sancus_sim.fst
 	${RM} sancus_sim.fst.hier
