@@ -1,0 +1,62 @@
+[*]
+[*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
+[*] Thu Nov  1 18:05:33 2018
+[*]
+[dumpfile] "sancus_sim.fst"
+[dumpfile_mtime] "Thu Nov  1 18:04:57 2018"
+[dumpfile_size] 974305
+[savefile] "waveform_view.gtkw"
+[timestart] 311987100
+[size] 1855 1056
+[pos] -1 -1
+*-16.000000 312225000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb_openMSP430.
+[treeopen] tb_openMSP430.dut.
+[treeopen] tb_openMSP430.dut.dbg_0.
+[treeopen] tb_openMSP430.dut.execution_unit_0.
+[treeopen] tb_openMSP430.dut.frontend_0.
+[sst_width] 229
+[signals_width] 158
+[sst_expanded] 1
+[sst_vpaned_height] 632
+@28
+tb_openMSP430.dut.mclk
+@820
+tb_openMSP430.msp_debug_0.inst_full[255:0]
+tb_openMSP430.msp_debug_0.i_state[255:0]
+tb_openMSP430.msp_debug_0.e_state[255:0]
+@22
+tb_openMSP430.msp_debug_0.inst_pc[15:0]
+@200
+-
+@28
+tb_openMSP430.dut.execution_unit_0.exec_sm
+@22
+tb_openMSP430.dut.frontend_0.irq[13:0]
+@28
+tb_openMSP430.dut.frontend_0.sm_violation
+tb_openMSP430.dut.frontend_0.inst_irq_rst
+tb_openMSP430.dut.execution_unit_0.handling_irq
+@200
+-
+@22
+tb_openMSP430.dut.execution_unit_0.mab[15:0]
+tb_openMSP430.dut.execution_unit_0.mdb_in[15:0]
+tb_openMSP430.dut.execution_unit_0.mdb_out[15:0]
+@28
+tb_openMSP430.dut.execution_unit_0.mb_wr[1:0]
+tb_openMSP430.dut.execution_unit_0.irq_mb_wr
+tb_openMSP430.dut.execution_unit_0.irq_sp_mb_wr
+@22
+tb_openMSP430.dut.execution_unit_0.register_file_0.r1[15:0]
+@200
+-
+@28
+tb_openMSP430.dut.frontend_0.irq_detect
+@22
+tb_openMSP430.dut.frontend_0.e_state[4:0]
+tb_openMSP430.dut.frontend_0.e_state_nxt[4:0]
+@23
+tb_openMSP430.timerA_0.tar[15:0]
+[pattern_trace] 1
+[pattern_trace] 0
