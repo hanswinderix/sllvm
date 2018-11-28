@@ -1,10 +1,10 @@
-#include "sancus/sm_support.h"
+#include <sancus_support/sm_io.h>
 
-int SM_ENTRY(enclave) enclave_public_get_secret(void);
-
-__attribute__((section(".init9"),aligned(2)))
 int main(void)
 {
-  /* Call to enclave code from unprotected code */
-  return enclave_public_get_secret();
+  msp430_io_init();
+
+  pr_info("Hello World");
+
+  EXIT();
 }

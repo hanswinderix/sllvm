@@ -8,9 +8,9 @@ CLANG=${SLLVM_HOME}/bin/clang
 RUSTC=rustc
 OPT=${SLLVM_HOME}/bin/opt
 LLC=${SLLVM_HOME}/bin/llc
-MSP430GCC=msp430-gcc
+MSP430GCC=msp430-elf-gcc
 MSP430LD=${MSP430GCC}
-MSP430OBJDUMP=msp430-objdump
+MSP430OBJDUMP=msp430-elf-objdump
 EDGER8R=${SGX_HOME}/build/linux/sgx_edger8r
 
 SANCUSCLANG=clang
@@ -18,9 +18,10 @@ SANCUSLLC=llc
 
 DIFF=meld
 
-SSIM=/home/hans/kul/sancus/local/bin/sancus-sim
+SSIM=sancus-sim
 
-MCU=msp430f1121
+#MCU=msp430f1121
+MCU=msp430f149
 
 CLANGFLAGS=
 MSP430LDFLAGS=
@@ -30,12 +31,13 @@ INCFLAGS=
 
 -include Makefile.local
 
-SIM=hello2
+SIM=hello
 SIM=a.out
+SIM=test
 
 SSIMFLAGS=
-#SSIMFLAGS+=--ram-size 256
-#SSIMFLAGS+=--rom-size 1K
+SSIMFLAGS+=--ram 16K
+SSIMFLAGS+=--rom 41K
 
 SancusModuleCreator=${SLLVM_HOME}/lib/SancusModuleCreator.so
 SLLVMLIB=${SLLVM_HOME}/lib/SLLVM.so
@@ -45,7 +47,9 @@ SLLVMLIB=${SLLVM_HOME}/lib/SLLVM.so
 # TODO: Only required when compiling the Sancus examples
 # TODO: Not required for SGX
 INCFLAGS+=-I .  # To be able to angle bracket include sancus/sm_support.h
-INCFLAGS+=-I /usr/msp430/include
+#INCFLAGS+=-I /usr/msp430/include
+INCFLAGS+=-I /usr/local/include
+INCFLAGS+=-I /usr/local/msp430-elf/include
 INCFLAGS+=-I /usr/local/share/sancus-support/include # for sm_io.h
 #INCFLAGS+=-I /usr/lib/gcc/msp430/4.6.3/include
 #INCFLAGS+=-I /usr/local/share/sancus-compiler/include
@@ -59,6 +63,9 @@ MSP430CLANGFLAGS+=${CLANGFLAGS}
 MSP430CLANGFLAGS+=-D__$(shell echo $(MCU) | tr a-z A-Z)__
 MSP430CLANGFLAGS+=-target msp430-elf
 
+MSP430GCCFLAGS+=-mmcu=${MCU}
+MSP430GCCFLAGS+=${INCFLAGS}
+
 X86_64CLANGFLAGS+=${CLANGFLAGS}
 X86_64CLANGFLAGS+=-target x86_64
 
@@ -68,12 +75,15 @@ RUSTCFLAGS+=--crate-type lib
 #RUSTCFLAGS+=--sysroot ~/.xargo/
 RUSTCFLAGS+=--emit llvm-ir
 
-MSP430LDFLAGS+=-Tmsp430-sllvm.x
+#MSP430LDFLAGS+=-Tmsp430-sllvm.x
+MSP430LDFLAGS+=-mmcu=${MCU}
+MSP430LDFLAGS+=-Tmsp430-elf-sllvm.x
 
 # Linker flags needed to compile the sancus-examples 
 # TODO: Only required when compiling the Sancus examples
 # TODO: Should be platform independent (don't hardcode /usr/local/share...)
 MSP430LDFLAGS+=-L/usr/local/share/sancus-support/lib/
+MSP430LDFLAGS+=-L/usr/local/include
 MSP430LDFLAGS+=-lsm-io
 MSP430LDFLAGS+=-ldev
 MSP430LDFLAGS+=-L/usr/local/share/sancus-compiler/lib/
@@ -115,11 +125,11 @@ SGXFLAGS+=--sgx-transform
 .PRECIOUS: %.sllvm.x86_64.sgx.ll
 .PRECIOUS: %.sllvm.x86_64.sgx.s
 
-all: hello
+#all: hello.objdump
 #all: hello.legacy.opt.s
 #all: hello.sllvm.msp430.sancus.s
 
-#all: test.objdump
+all: test.objdump
 #all: enclave.legacy.opt.s
 
 #all: a.out.objdump
@@ -221,8 +231,8 @@ a.out.objdump: a.out
 
 test: sancus.o
 test: test.sllvm.msp430.sancus.o
-test: enclave.sllvm.msp430.sancus.o
-	${MSP430LD} ${MSP430LDFLAGS} $^ -o $@
+#test: enclave.sllvm.msp430.sancus.o
+	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
 test.objdump: test
 	${MSP430OBJDUMP} -D test > $@
@@ -231,14 +241,17 @@ hello: sancus.o
 hello: hello.sllvm.msp430.sancus.o
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
+hello.objdump: hello
+	${MSP430OBJDUMP} -D hello > $@
+
 hello2: sancus.o
 hello2: hello.sllvm.msp430.sancus.o
 hello2: enclave4.sllvm.msp430.sancus.o
 hello2: panic.o
 	${MSP430LD} ${MSP430LDFLAGS} $^ -lsm-io -o $@
 
-hello2.objdump: hello
-	${MSP430OBJDUMP} -D hello > $@
+hello2.objdump: hello2
+	${MSP430OBJDUMP} -D hello2 > $@
 
 .PHONY: enclave1-diff
 enclave1-diff:
