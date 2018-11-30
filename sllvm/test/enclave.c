@@ -2,7 +2,9 @@
 
 DECLARE_SM(enclave, 42);
 
+static int secret;
+
 int SM_ENTRY(enclave) enclave_public_get_secret(void)
 {
-  return 10;
+  return ++secret;
 }

@@ -31,9 +31,7 @@ INCFLAGS=
 
 -include Makefile.local
 
-SIM=hello
-SIM=a.out
-SIM=test
+SIM=test2
 
 SSIMFLAGS=
 SSIMFLAGS+=--ram 16K
@@ -129,7 +127,8 @@ SGXFLAGS+=--sgx-transform
 #all: hello.legacy.opt.s
 #all: hello.sllvm.msp430.sancus.s
 
-all: test.objdump
+#all: test.objdump
+all: test2.objdump
 #all: enclave.legacy.opt.s
 
 #all: a.out.objdump
@@ -231,11 +230,18 @@ a.out.objdump: a.out
 
 test: sancus.o
 test: test.sllvm.msp430.sancus.o
-#test: enclave.sllvm.msp430.sancus.o
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
 test.objdump: test
 	${MSP430OBJDUMP} -D test > $@
+
+test2: sancus.o
+test2: test2.sllvm.msp430.sancus.o
+test2: enclave.sllvm.msp430.sancus.o
+	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
+
+test2.objdump: test2
+	${MSP430OBJDUMP} -D test2 > $@
 
 hello: sancus.o
 hello: hello.sllvm.msp430.sancus.o
@@ -280,6 +286,7 @@ clean:
 	${RM} a.out
 	${RM} hello2
 	${RM} test
+	${RM} test2
 	${RM} sancus_sim.fst
 	${RM} sancus_sim.fst.hier
 	${RM} sim-input.bin

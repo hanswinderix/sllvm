@@ -9,6 +9,7 @@ provides.ld
 *.objdump
 a.out
 test
+test2
 hello
 sancus_sim.fst
 sim-input.bin
