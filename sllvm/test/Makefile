@@ -73,7 +73,6 @@ RUSTCFLAGS+=--crate-type lib
 #RUSTCFLAGS+=--sysroot ~/.xargo/
 RUSTCFLAGS+=--emit llvm-ir
 
-#MSP430LDFLAGS+=-Tmsp430-sllvm.x
 MSP430LDFLAGS+=-mmcu=${MCU}
 MSP430LDFLAGS+=-Tmsp430-elf-sllvm.x
 
