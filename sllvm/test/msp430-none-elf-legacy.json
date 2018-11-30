@@ -7,7 +7,7 @@
   "default-codegen-units": 1,
   "env": "",
   "executables": true,
-  "linker": "msp430-gcc",
+  "linker": "msp430-elf-gcc",
   "linker-flavor": "gcc",
   "llvm-target": "msp430-none-elf",
   "max-atomic-width": 0,
