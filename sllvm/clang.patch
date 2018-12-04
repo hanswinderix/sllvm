@@ -1,8 +1,8 @@
 Index: include/clang/Basic/Attr.td
 ===================================================================
---- include/clang/Basic/Attr.td	(revision 347535)
+--- include/clang/Basic/Attr.td	(revision 348238)
 +++ include/clang/Basic/Attr.td	(working copy)
-@@ -1540,6 +1540,12 @@
+@@ -1559,6 +1559,12 @@
    let Documentation = [AssumeAlignedDocs];
  }
  
@@ -15,7 +15,7 @@ Index: include/clang/Basic/Attr.td
  def AllocAlign : InheritableAttr {
    let Spellings = [GCC<"alloc_align">];
    let Subjects = SubjectList<[HasFunctionProto]>;
-@@ -1547,6 +1553,7 @@
+@@ -1566,6 +1572,7 @@
    let Documentation = [AllocAlignDocs];
  }
  
@@ -25,9 +25,9 @@ Index: include/clang/Basic/Attr.td
    // FIXME: Does GCC allow this on the function instead?
 Index: lib/CodeGen/CodeGenModule.cpp
 ===================================================================
---- lib/CodeGen/CodeGenModule.cpp	(revision 347535)
+--- lib/CodeGen/CodeGenModule.cpp	(revision 348238)
 +++ lib/CodeGen/CodeGenModule.cpp	(working copy)
-@@ -1557,6 +1557,10 @@
+@@ -1566,6 +1566,10 @@
    setLinkageForGV(F, FD);
    setGVProperties(F, FD);
  
@@ -40,9 +40,9 @@ Index: lib/CodeGen/CodeGenModule.cpp
    else if (const auto *SA = FD->getAttr<SectionAttr>())
 Index: lib/Sema/SemaDeclAttr.cpp
 ===================================================================
---- lib/Sema/SemaDeclAttr.cpp	(revision 347535)
+--- lib/Sema/SemaDeclAttr.cpp	(revision 348238)
 +++ lib/Sema/SemaDeclAttr.cpp	(working copy)
-@@ -6110,6 +6110,9 @@
+@@ -6181,6 +6181,9 @@
    case ParsedAttr::AT_IFunc:
      handleIFuncAttr(S, D, AL);
      break;
