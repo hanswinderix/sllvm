@@ -22,6 +22,8 @@ namespace sllvm {
 
       void createDispatch(Module &M);
       
+      void setSections(Module &M);
+
       void createDispatchBody(Module &M, Function *D);
 
       void handleCalls(Module &M);

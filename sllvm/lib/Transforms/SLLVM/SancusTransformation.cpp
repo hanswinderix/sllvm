@@ -204,7 +204,7 @@ void SancusTransformation::supportLegacyAPI(Module &M) {
   // TODO: Paramterize (vendor_id)
   Constant *Vals[] = {
     ConstantInt::get(Type::getInt16Ty(C), 0),
-    ConstantInt::get(Type::getInt16Ty(C), 1234), // Vendor id
+    ConstantInt::get(Type::getInt16Ty(C), 0x1234), // Vendor id
     ConstantExpr::getInBoundsGetElementPtr(V->getType(), GV, IdxList),
     M.getOrInsertGlobal("sllvm_text_section_start", Type::getInt8Ty(C)),
     M.getOrInsertGlobal("sllvm_text_section_end", Type::getInt8Ty(C)),
@@ -298,14 +298,10 @@ void SancusTransformation::handleEnclave(Module &M) {
   }
 }
 
-static bool isProtected(GlobalObject *G) {
-  return G->hasPrivateLinkage() || G->hasInternalLinkage();
-}
-
-static void setSections(Module &M) {
+void SancusTransformation::setSections(Module &M) {
   // Globals
   for (auto GVI = M.global_begin(), E = M.global_end(); GVI != E; GVI++) {
-    if (isProtected(&*GVI)) {
+    if (getAnalysis<SLLVMAnalysis>().getResults().isEData(&*GVI)) {
       if (GVI->isConstant()) {
         // TODO Have section names generated
         GVI->setSection(Twine(".sllvm.text.", getPMName(&M)).str());
@@ -319,7 +315,7 @@ static void setSections(Module &M) {
 
   // Functions
   for (Function& F : M) {
-    if (isProtected(&F)) {
+    if (F.hasLocalLinkage()) { // TODO: Use SLLVMAnalysis for this
       // TODO Have section names generated
       F.setSection(Twine(".sllvm.text.", getPMName(&M)).str());
     }

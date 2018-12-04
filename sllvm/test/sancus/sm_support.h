@@ -562,17 +562,16 @@ extern char __unprotected_sp;
 #define __SS(name) sllvm_data_section_start
 #define __SE(name) sllvm_data_section_end
 
-#define DECLARE_SM(name, vendor_id)                              \
-    extern char __PS(name), __PE(name), __SS(name), __SE(name);  \
-    extern struct SancusModule name
-#define SM_DATA(name)
-#define SM_FUNC(name)
+#define DECLARE_SM(name, vendor_id)  \
+    extern char __PS(name);          \
+    extern char __PE(name);          \
+    extern char __SS(name);          \
+    extern char __SE(name);          \
+    extern struct SancusModule name;
 
-#ifdef ENABLE_SLLVM
+#define SM_DATA(name) static
+#define SM_FUNC(name) static
 #define SM_ENTRY(name) __attribute__((eentry))
-#else
-#define SM_ENTRY(name)
-#endif
 
 #endif
 

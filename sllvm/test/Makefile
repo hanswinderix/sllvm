@@ -31,7 +31,7 @@ INCFLAGS=
 
 -include Makefile.local
 
-SIM=test2
+SIM=foo
 
 SSIMFLAGS=
 SSIMFLAGS+=--ram 16K
@@ -122,12 +122,14 @@ SGXFLAGS+=--sgx-transform
 .PRECIOUS: %.sllvm.x86_64.sgx.ll
 .PRECIOUS: %.sllvm.x86_64.sgx.s
 
+all: foo.objdump
+
 #all: hello.objdump
 #all: hello.legacy.opt.s
 #all: hello.sllvm.msp430.sancus.s
 
 #all: test.objdump
-all: test2.objdump
+#all: test2.objdump
 #all: enclave.legacy.opt.s
 
 #all: a.out.objdump
@@ -216,6 +218,9 @@ sancus.o: sancus.c
 panic.o: panic.s
 	$(MSP430GCC) ${MSP430GCCFLAGS} -c $<
 
+
+#----------------------------------------------------------------------------
+
 a.out: sancus.o
 a.out: main.sllvm.msp430.sancus.o
 #a.out: enclave4.sllvm.msp430.sancus.o
@@ -227,12 +232,16 @@ a.out: panic.o
 a.out.objdump: a.out
 	${MSP430OBJDUMP} -D a.out > $@
 
+#----------------------------------------------------------------------------
+
 test: sancus.o
 test: test.sllvm.msp430.sancus.o
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
 test.objdump: test
 	${MSP430OBJDUMP} -D test > $@
+
+#----------------------------------------------------------------------------
 
 test2: sancus.o
 test2: test2.sllvm.msp430.sancus.o
@@ -242,12 +251,25 @@ test2: enclave.sllvm.msp430.sancus.o
 test2.objdump: test2
 	${MSP430OBJDUMP} -D test2 > $@
 
+#----------------------------------------------------------------------------
+
+foo: sancus.o
+foo: foo.sllvm.msp430.sancus.o
+	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
+
+foo.objdump: foo
+	${MSP430OBJDUMP} -D foo > $@
+
+#----------------------------------------------------------------------------
+
 hello: sancus.o
 hello: hello.sllvm.msp430.sancus.o
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
 hello.objdump: hello
 	${MSP430OBJDUMP} -D hello > $@
+
+#----------------------------------------------------------------------------
 
 hello2: sancus.o
 hello2: hello.sllvm.msp430.sancus.o

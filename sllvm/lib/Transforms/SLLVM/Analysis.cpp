@@ -37,11 +37,13 @@ SLLVMAnalysisResults::SLLVMAnalysisResults(const Module &M) : _isPM(false) {
               EXDefs.insert(CF);
             }
             if (isPM()) {
-              // TODO: Treat intrinsic calls as exit calls too ? (except for
-              //         the EENTER and EEXIT intrinsics of course)
-              if (CF->isDeclaration() && (! CF->isIntrinsic())) {
-                EXCalls.insert(&I);
-                EXDefs.insert(CF);
+              if (sllvm::isEEntry(&F) || F.hasLocalLinkage()) {
+                // TODO: Treat intrinsic calls as exit calls too ? (except for
+                //         the EENTER and EEXIT intrinsics of course)
+                if (CF->isDeclaration() && (! CF->isIntrinsic())) {
+                  EXCalls.insert(&I);
+                  EXDefs.insert(CF);
+                }
               }
             }
           }
@@ -51,8 +53,13 @@ SLLVMAnalysisResults::SLLVMAnalysisResults(const Module &M) : _isPM(false) {
   }
 
   for (auto GVI = M.global_begin(), E = M.global_end(); GVI != E; GVI++) {
-    if (! GVI->isDeclaration()) {
-      EData.insert(&*GVI);
+    if (GVI->hasLocalLinkage()) {
+      // TODO: Not sure if the following line is correct for excluding
+      //       string literals from the enclave data. Probably it is excluding
+      //       too much. Rewrite it so that only string literals are excluded.
+      if (! (GVI->isConstant() && GVI->hasAtLeastLocalUnnamedAddr()) ) {
+        EData.insert(&*GVI);
+      }
     }
   }
 }
