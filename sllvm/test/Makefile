@@ -31,7 +31,7 @@ INCFLAGS=
 
 -include Makefile.local
 
-SIM=foo
+SIM=fileio
 
 SSIMFLAGS=
 SSIMFLAGS+=--ram 16K
@@ -122,7 +122,7 @@ SGXFLAGS+=--sgx-transform
 .PRECIOUS: %.sllvm.x86_64.sgx.ll
 .PRECIOUS: %.sllvm.x86_64.sgx.s
 
-all: foo.objdump
+all: fileio.objdump
 
 #all: hello.objdump
 #all: hello.legacy.opt.s
@@ -259,6 +259,17 @@ foo: foo.sllvm.msp430.sancus.o
 
 foo.objdump: foo
 	${MSP430OBJDUMP} -D foo > $@
+
+#----------------------------------------------------------------------------
+
+fileio.sllvm.msp430.ll: CLANGFLAGS+=-DTEST_DATA=\""hello"\"
+
+fileio: sancus.o
+fileio: fileio.sllvm.msp430.sancus.o
+	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
+
+fileio.objdump: fileio
+	${MSP430OBJDUMP} -D fileio > $@
 
 #----------------------------------------------------------------------------
 
