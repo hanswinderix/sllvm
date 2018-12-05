@@ -31,7 +31,7 @@ INCFLAGS=
 
 -include Makefile.local
 
-SIM=fileio
+SIM=foo
 
 SSIMFLAGS=
 SSIMFLAGS+=--ram 16K
@@ -122,7 +122,13 @@ SGXFLAGS+=--sgx-transform
 .PRECIOUS: %.sllvm.x86_64.sgx.ll
 .PRECIOUS: %.sllvm.x86_64.sgx.s
 
-all: fileio.objdump
+##############################################################################
+# Sancus examples
+
+#all: fileio.objdump
+all: foo.objdump # There are two tests with a foo module
+
+##############################################################################
 
 #all: hello.objdump
 #all: hello.legacy.opt.s
