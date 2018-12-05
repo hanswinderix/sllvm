@@ -264,6 +264,8 @@ foo.objdump: foo
 
 fileio.sllvm.msp430.ll: CLANGFLAGS+=-DTEST_DATA=\""hello"\"
 
+fileio: MSP430LDFLAGS+=-ldev-fileio
+
 fileio: sancus.o
 fileio: fileio.sllvm.msp430.sancus.o
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
