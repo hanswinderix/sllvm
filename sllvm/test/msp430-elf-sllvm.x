@@ -148,7 +148,7 @@ SECTIONS
     /* .gnu.warning sections are handled specially by elf32.em.  */
     *(.gnu.warning)
     *(.interp .hash .dynsym .dynstr .gnu.version*)
-    INCLUDE msp430-sllvm-text.x
+    INCLUDE msp430-elf-sllvm-text.x
     PROVIDE (__etext = .);
     PROVIDE (_etext = .);
     PROVIDE (etext = .);
@@ -178,7 +178,7 @@ SECTIONS
        we can shorten the on-disk segment size.  */
     . = ALIGN(2);
     *(.sdata .sdata.* .gnu.linkonce.s.* D_2 D_1)
-    INCLUDE msp430-sllvm-data.x
+    INCLUDE msp430-elf-sllvm-data.x
     . = ALIGN(2);
     _edata = .;
     PROVIDE (edata = .);

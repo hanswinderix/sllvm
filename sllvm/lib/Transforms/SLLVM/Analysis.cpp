@@ -32,9 +32,14 @@ SLLVMAnalysisResults::SLLVMAnalysisResults(const Module &M) : _isPM(false) {
         if (auto CS = ImmutableCallSite(&I)) {
           const Function *CF = CS.getCalledFunction();
           if (CF != nullptr) { // TODO: Forbid indirect calls in enclaves
-            if (CF->isDeclaration() && sllvm::isEEntry(CF)) {
-              EECalls.insert(&I);
-              EXDefs.insert(CF);
+            if (sllvm::isEEntry(CF)) {
+              if (! F.hasLocalLinkage() ) { // public functions
+                EECalls.insert(&I);
+              }
+              if ( CF->isDeclaration() ) {
+                EECalls.insert(&I);
+                EXDefs.insert(CF);
+              }
             }
             if (isPM()) {
               if (sllvm::isEEntry(&F) || F.hasLocalLinkage()) {

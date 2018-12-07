@@ -206,10 +206,19 @@ void SancusTransformation::supportLegacyAPI(Module &M) {
     ConstantInt::get(Type::getInt16Ty(C), 0),
     ConstantInt::get(Type::getInt16Ty(C), 0x1234), // Vendor id
     ConstantExpr::getInBoundsGetElementPtr(V->getType(), GV, IdxList),
-    M.getOrInsertGlobal("sllvm_text_section_start", Type::getInt8Ty(C)),
-    M.getOrInsertGlobal("sllvm_text_section_end", Type::getInt8Ty(C)),
-    M.getOrInsertGlobal("sllvm_data_section_start", Type::getInt8Ty(C)),
-    M.getOrInsertGlobal("sllvm_data_section_end", Type::getInt8Ty(C))
+
+    M.getOrInsertGlobal(
+        Twine("sllvm_" + getPMName(&M) + "_text_section_start").str(),
+        Type::getInt8Ty(C)),
+    M.getOrInsertGlobal(
+        Twine("sllvm_" + getPMName(&M) + "_text_section_end").str(),
+        Type::getInt8Ty(C)),
+    M.getOrInsertGlobal(
+        Twine("sllvm_" + getPMName(&M) + "_data_section_start").str(),
+        Type::getInt8Ty(C)),
+    M.getOrInsertGlobal(
+        Twine("sllvm_" + getPMName(&M)+ "_data_section_end").str(),
+        Type::getInt8Ty(C))
   };
 
   auto Init = ConstantStruct::get(SancusModuleTy, Vals);
@@ -336,9 +345,9 @@ bool SancusTransformation::runOnModule(Module &M) {
 
   Type * Int16Ty = Type::getInt16Ty(M.getContext());
   M.getOrInsertGlobal(sancus::global_r1, Int16Ty);
-  if (! getAnalysis<SLLVMAnalysis>().getResults().isPM()) {
+  //if (! getAnalysis<SLLVMAnalysis>().getResults().isPM()) {
     M.getOrInsertGlobal(sancus::global_pc, Int16Ty); // TODO: Remove
-  }
+  //}
 
   if (getAnalysis<SLLVMAnalysis>().getResults().isPM()) {
     setSections(M);

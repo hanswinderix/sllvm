@@ -557,10 +557,10 @@ extern char __unprotected_sp;
 
 #ifdef ENABLE_SLLVM
 
-#define __PS(name) sllvm_text_section_start
-#define __PE(name) sllvm_text_section_end
-#define __SS(name) sllvm_data_section_start
-#define __SE(name) sllvm_data_section_end
+#define __PS(name) sllvm_##name##_text_section_start
+#define __PE(name) sllvm_##name##_text_section_end
+#define __SS(name) sllvm_##name##_data_section_start
+#define __SE(name) sllvm_##name##_data_section_end
 
 #define DECLARE_SM(name, vendor_id)  \
     extern char __PS(name);          \

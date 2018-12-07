@@ -11,6 +11,10 @@ a.out
 test
 test2
 hello
+arith
 sancus_sim.fst
+sancus_sim.fst.hier
 sim-input.bin
 sim-output.bin
+msp430-elf-sllvm-text.x
+msp430-elf-sllvm-data.x
