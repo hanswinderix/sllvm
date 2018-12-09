@@ -85,6 +85,7 @@ MSP430LDFLAGS+=-lsm-io
 MSP430LDFLAGS+=-ldev
 MSP430LDFLAGS+=-L/usr/local/share/sancus-compiler/lib/
 MSP430LDFLAGS+=-lsancus-sm-support
+#MSP430LDFLAGS+=-Wl,-gc-sections
 #MSP430LDFLAGS+=-lsancus-host-support
 
 LLCFLAGS=
