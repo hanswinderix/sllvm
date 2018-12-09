@@ -51,6 +51,9 @@ sllvm-checkout:
 	${RM} ${LLVM_SRCDIR}/lib/Target/MSP430/MSP430Sancus.h
 	ln -s ${SLLVM_BASEDIR}/lib/Target/MSP430/MSP430Sancus.h \
 	      ${LLVM_SRCDIR}/lib/Target/MSP430/MSP430Sancus.h
+	${RM} ${LLVM_SRCDIR}/lib/Target/MSP430/MSP430RTLInternalizer.cpp
+	ln -s ${SLLVM_BASEDIR}/lib/Target/MSP430/MSP430RTLInternalizer.cpp \
+	      ${LLVM_SRCDIR}/lib/Target/MSP430/MSP430RTLInternalizer.cpp
 	${RM} ${LLVM_SRCDIR}/include/llvm/SLLVM.h
 	ln -s ${SLLVM_BASEDIR}/include/llvm/SLLVM.h \
 	      ${LLVM_SRCDIR}/include/llvm/SLLVM.h
