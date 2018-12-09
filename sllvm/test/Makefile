@@ -89,6 +89,12 @@ MSP430LDFLAGS+=-lsancus-sm-support
 
 LLCFLAGS=
 LLCFLAGS+=-O3
+#LLCFLAGS+=-view-dag-combine1-dags  # DAG before first optimization pass.
+#LLCFLAGS+=-view-legalize-dags      # DAG before legalization
+#LLCFLAGS+=-view-dag-combine2-dags  # DAG before second optimization pass
+#LLCFLAGS+=-view-isel-dags          # DAG before select phase
+#LLCFLAGS+=-view-sched-dags         # DAG before scheduling
+#LLCFLAGS+=-view-sunit-dags         # display scheduler's dependency graph
 
 SANCUSOPTFLAGS=
 SANCUSOPTFLAGS+=--load ${SancusModuleCreator}
