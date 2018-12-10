@@ -324,7 +324,7 @@ void SancusTransformation::setSections(Module &M) {
 
   // Functions
   for (Function& F : M) {
-    if (F.hasLocalLinkage()) { // TODO: Use SLLVMAnalysis for this
+    if (F.hasLocalLinkage()) { // TODO: Use SLLVMAnalysis for this (or sllvm.h?)
       // TODO Have section names generated
       F.setSection(Twine(".sllvm.text.", getPMName(&M)).str());
     }
