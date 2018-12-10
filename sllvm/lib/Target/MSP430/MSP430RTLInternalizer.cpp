@@ -6,6 +6,7 @@
 #include "llvm/CodeGen/MachineInstrBuilder.h"
 #include "llvm/Support/MathExtras.h"
 #include "llvm/Target/TargetMachine.h"
+#include "llvm/SLLVM.h"
 
 using namespace llvm;
 
@@ -22,6 +23,8 @@ class MSP430RTLInternalizer : public MachineFunctionPass {
 
   MachineFunction *MF;
   const MSP430InstrInfo *TII;
+
+  void internalize(MachineInstr &MI);
 
 public:
   static char ID;
@@ -41,6 +44,20 @@ public:
 char MSP430RTLInternalizer::ID = 0;
 }
 
+void MSP430RTLInternalizer::internalize(MachineInstr &MI) {
+  MachineOperand *MO = MI.operands_begin();
+  if (MO->isSymbol()) {
+    if (StringRef(MO->getSymbolName()).startswith("__mspabi")) {
+      // TODO: Fix mem leak
+      std::string * N = new std::string();
+      N->append(MO->getSymbolName());
+      N->append("_");
+      N->append(sllvm::getPMName(MI.getMF()->getFunction().getParent()));
+      *MO = MachineOperand::CreateES(N->c_str());
+    }
+  }
+}
+
 bool MSP430RTLInternalizer::runOnMachineFunction(MachineFunction &mf) {
   MF = &mf;
   TII = static_cast<const MSP430InstrInfo *>(MF->getSubtarget().getInstrInfo());
@@ -52,6 +69,24 @@ bool MSP430RTLInternalizer::runOnMachineFunction(MachineFunction &mf) {
 
   LLVM_DEBUG(dbgs() << "\n********** " << getPassName() << " **********\n");
 #endif
+
+  // TODO: Move the logic in the condition to sllvm.h in a method 
+  //             isPMInternal() or so...
+  //       and refactor also the other lib/Target/MSP430 files
+  if (! (    sllvm::isPM(mf.getFunction().getParent()) 
+          && mf.getFunction().hasLocalLinkage()) ) {
+    return false;
+  }
+
+  for (auto MBB = MF->begin(), E = MF->end(); MBB != E; ++MBB) {
+    for (auto MI = MBB->begin(), EE = MBB->end(); MI != EE; ++MI) {
+      //TII->getInstSizeInBytes(*MI);
+      //if (MI->isCall())
+      if (MI->getOpcode() == MSP430::CALLi) {
+        internalize(*MI);
+      }
+    }
+  }
 
   bool MadeChange = false;
 
