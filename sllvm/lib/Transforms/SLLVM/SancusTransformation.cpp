@@ -33,14 +33,17 @@ getOrCreateEEntryStub(Module &M, const Function *F) {
   return std::make_pair(S, GV);
 }
 
-static GlobalVariable *newGlobalVariable(Module &M, const char *N, Type *T) {
-  return new GlobalVariable(M,
+static GlobalVariable *newSecretVariable(Module &M, const char *N, Type *T) {
+  auto result = new GlobalVariable(M,
       T,
       false,
       //TODO: GlobalVariable::LinkageTypes::PrivateLinkage,
       GlobalVariable::LinkageTypes::InternalLinkage,
       Constant::getNullValue(T),
       N);
+  // TODO Have section names generated
+  result->setSection(Twine(".sllvm.data.", getPMName(&M)).str());
+  return result;
 }
 
 void SancusTransformation::handleGlobals(Module &M) {
@@ -50,7 +53,7 @@ void SancusTransformation::handleGlobals(Module &M) {
   Type *Int16Ty = IRB.getInt16Ty();
   // TODO: Stack size should be command-line argument
   Type *ArTy = ArrayType::get(Int16Ty, 30);
-  auto S = newGlobalVariable(M, sancus::local_stack, ArTy);
+  auto S = newSecretVariable(M, sancus::local_stack, ArTy);
 
   Constant *IdxList[] = {
     ConstantInt::get(Int16Ty, 0),
@@ -60,15 +63,15 @@ void SancusTransformation::handleGlobals(Module &M) {
 
   auto C = ConstantExpr::getGetElementPtr(nullptr, S, IdxList);
 
-  auto GV = newGlobalVariable(M, sancus::local_r1, C->getType());
+  auto GV = newSecretVariable(M, sancus::local_r1, C->getType());
   GV->setInitializer(C);
 
-  newGlobalVariable(M, sancus::local_r4, Int16Ty);
-  newGlobalVariable(M, sancus::local_r5, Int16Ty);
-  newGlobalVariable(M, sancus::local_r8, Int16Ty);
-  newGlobalVariable(M, sancus::local_r9, Int16Ty);
-  newGlobalVariable(M, sancus::local_r10, Int16Ty);
-  newGlobalVariable(M, sancus::local_r11, Int16Ty);
+  newSecretVariable(M, sancus::local_r4, Int16Ty);
+  newSecretVariable(M, sancus::local_r5, Int16Ty);
+  newSecretVariable(M, sancus::local_r8, Int16Ty);
+  newSecretVariable(M, sancus::local_r9, Int16Ty);
+  newSecretVariable(M, sancus::local_r10, Int16Ty);
+  newSecretVariable(M, sancus::local_r11, Int16Ty);
 
   for (auto GVI = M.global_begin(), E = M.global_end(); GVI != E; GVI++) {
     if (getAnalysis<SLLVMAnalysis>().getResults().isEData(&*GVI)) {
