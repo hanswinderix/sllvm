@@ -1,6 +1,6 @@
 #include <sancus_support/sm_io.h>
 
-DECLARE_SM(enclave, 42);
+DECLARE_SM(enclave, 0x1234);
 
 static int secret;
 
