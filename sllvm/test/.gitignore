@@ -12,6 +12,8 @@ test
 test2
 hello
 arith
+sensor
+foo
 sancus_sim.fst
 sancus_sim.fst.hier
 sim-input.bin
