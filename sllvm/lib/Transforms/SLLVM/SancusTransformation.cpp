@@ -116,18 +116,26 @@ void SancusTransformation::createDispatchBody(Module &M, Function *D) {
       // TODO: Have function generate label names
       BasicBlock * BB = BasicBlock::Create(C, Twine("sw.", F.getName()), D);
       SI->addCase(ConstantInt::get(Int16Ty, id), BB);
+      IRB.SetInsertPoint(BB);
 
       // TODO: There should be a more idiomatic way to do this
       //   -> use Argument::getArgNo()
       std::vector<Value *> args;
       auto DAI = D->arg_begin();
+      auto FAI = F.arg_begin();
       for (unsigned i = 0, e = F.arg_size(); i != e; ++i) {
         DAI++;
         assert(DAI != D->arg_end());
-        args.push_back(DAI);
+        assert(FAI != F.arg_end());
+        if (FAI->getType()->isPointerTy()) {
+          args.push_back(IRB.CreateIntToPtr(DAI, FAI->getType()));
+        }
+        else {
+          args.push_back(DAI);
+        }
+        FAI++;
       }
 
-      IRB.SetInsertPoint(BB);
       IRB.CreateCall(&F, args);
       //TODO Optimise as follows
       //     CI->setCallingConv(CallingConv::SANCUS_DISPATCH);
