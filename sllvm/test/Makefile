@@ -31,7 +31,7 @@ INCFLAGS=
 
 -include Makefile.local
 
-SIM=arith
+SIM=sensor
 
 SSIMFLAGS=
 SSIMFLAGS+=--ram 16K
@@ -134,7 +134,8 @@ SGXFLAGS+=--sgx-transform
 
 #all: fileio.objdump
 #all: foo.objdump # There are two tests with a foo module.objdump
-all: arith.objdump
+#all: arith.objdump
+all: sensor.objdump
 
 ##############################################################################
 
@@ -312,6 +313,21 @@ arith: main.sllvm.msp430.sancus.o
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
 arith.objdump: arith
+	${MSP430OBJDUMP} -D $< > $@
+
+#----------------------------------------------------------------------------
+
+sensor.sllvm.msp430.ll: CLANGFLAGS+=-Wno-return-type
+
+sensor: sancus.o
+sensor: sensor.sllvm.msp430.sancus.o
+sensor: reader.sllvm.msp430.sancus.o
+sensor: main.sllvm.msp430.sancus.o
+	ln -f msp430-sensor-text.x msp430-elf-sllvm-text.x
+	ln -f msp430-sensor-data.x msp430-elf-sllvm-data.x
+	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
+
+sensor.objdump: sensor
 	${MSP430OBJDUMP} -D $< > $@
 
 #----------------------------------------------------------------------------

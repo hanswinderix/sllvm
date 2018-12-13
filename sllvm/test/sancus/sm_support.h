@@ -568,10 +568,13 @@ extern char __unprotected_sp;
     extern char __SS(name);          \
     extern char __SE(name);          \
     extern struct SancusModule name;
+#define DECLARE_MMIO_SM(name, secret_start, secret_end, vendor) \
+  DECLARE_SM(name, vendor)
 
 #define SM_DATA(name) static
 #define SM_FUNC(name) static
 #define SM_ENTRY(name) __attribute__((eentry))
+#define SM_MMIO_ENTRY(name) __attribute__((eentry))
 
 #endif
 
