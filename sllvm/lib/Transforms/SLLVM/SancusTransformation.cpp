@@ -52,13 +52,13 @@ void SancusTransformation::handleGlobals(Module &M) {
 
   Type *Int16Ty = IRB.getInt16Ty();
   // TODO: Stack size should be command-line argument
-  Type *ArTy = ArrayType::get(Int16Ty, 30);
+  Type *ArTy = ArrayType::get(Int16Ty, 128);
   auto S = newSecretVariable(M, sancus::local_stack, ArTy);
 
   Constant *IdxList[] = {
     ConstantInt::get(Int16Ty, 0),
     // TODO: Stack size should be command-line argument
-    ConstantInt::get(Int16Ty, 29)
+    ConstantInt::get(Int16Ty, 127)
   };
 
   auto C = ConstantExpr::getGetElementPtr(nullptr, S, IdxList);
