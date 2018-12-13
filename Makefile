@@ -93,7 +93,7 @@ sllvm-update:
 	svn update ${LLVM_SRCDIR}/tools/clang
 	#svn update ${LLVM_SRCDIR}/projects/test-suite
 	#git pull   ${RUST_BASEDIR}/
-	git pull
+	#git pull
 
 sllvm-status:
 	svn status ${LLVM_SRCDIR}
