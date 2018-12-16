@@ -47,6 +47,8 @@ static GlobalVariable *newSecretVariable(Module &M, const char *N, Type *T) {
 }
 
 static GlobalVariable *newMACVariable(Module &M, const Function *F) {
+  // TODO: Rename MAC to hash?
+  // TODO: Store MAC/HASH in protected text section?
   LLVMContext &Ctx = M.getContext();
   IRBuilder<> IRB(Ctx);
   Type *Int8Ty = IRB.getInt8Ty();
