@@ -91,6 +91,13 @@ sllvm_protect:
 	ret
   )";
 
+  constexpr const char* asm_attest = R"(
+	.p2align	1
+	.type	sllvm_attest,@function
+sllvm_sllvm_attest:
+	ret
+  )";
+
 } }
 
 #endif
