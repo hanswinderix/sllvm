@@ -1,7 +1,7 @@
-sllvm_sensor_data_section_start = .;
+sllvm_pm_sensor_data_start = .;
 *(.sllvm.data.sensor)
-sllvm_sensor_data_section_end = .;
+sllvm_pm_sensor_data_end = .;
 
-sllvm_reader_data_section_start = .;
+sllvm_pm_reader_data_start = .;
 *(.sllvm.data.reader)
-sllvm_reader_data_section_end = .;
+sllvm_pm_reader_data_end = .;

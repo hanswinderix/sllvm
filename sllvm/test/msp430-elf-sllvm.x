@@ -149,6 +149,7 @@ SECTIONS
     *(.gnu.warning)
     *(.interp .hash .dynsym .dynstr .gnu.version*)
     INCLUDE msp430-elf-sllvm-text.x
+    *(.sllvm.mac.*)
     PROVIDE (__etext = .);
     PROVIDE (_etext = .);
     PROVIDE (etext = .);
