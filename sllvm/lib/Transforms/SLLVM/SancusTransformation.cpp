@@ -318,11 +318,13 @@ void SancusTransformation::handleCalls(Module &M) {
         auto CS = CallSite(&I);
 
         if (getAnalysis<SLLVMAnalysis>().getResults().isEExitCall(&I)) {
+          IRB.SetInsertPoint(&I);
           if (getAnalysis<SLLVMAnalysis>().getResults().isEEntryCall(&I)) {
             const Function *C = CS.getCalledFunction();
             newMACVariable(M, C);
+            IRB.CreateCall(
+                Intrinsic::getDeclaration(&M, Intrinsic::sllvm_attest));
           }
-          IRB.SetInsertPoint(&I);
           IRB.CreateCall(
               Intrinsic::getDeclaration(&M, Intrinsic::sllvm_excall));
         }
