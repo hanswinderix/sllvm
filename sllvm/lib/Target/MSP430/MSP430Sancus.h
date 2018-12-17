@@ -72,6 +72,7 @@ sllvm_eresume:
 	ret
   )";
 
+#if 0
   // TODO: Paramterize (Module, tag, nonce, vendor_id)
   // TODO: Have symbol names generated (sllvm_data_*, sllvm_text_*)
   constexpr const char* asm_protect = R"(
@@ -90,12 +91,21 @@ sllvm_protect:
 	mov	r15, r12
 	ret
   )";
+#endif
 
   constexpr const char* asm_attest = R"(
 	.p2align	1
 	.type	sllvm_attest,@function
 sllvm_attest:
+  ; TODO Add support for optimization
+  .word 0x1382
+  cmp #0x0000, r15
+  jz 1f
 	ret
+1:
+  call #sllvm_excall
+  mov &sllvm_r1, r1
+  call #exit
   )";
 
 } }

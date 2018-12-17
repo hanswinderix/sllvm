@@ -3,6 +3,7 @@ SLLVM_HOME=${BASEDIR}/llvm/local
 RUST_HOME=${BASEDIR}/rust/local
 SGX_HOME=${BASEDIR}/linux.sgx
 
+PYTHON=python3
 CLANG=${SLLVM_HOME}/bin/clang
 #RUSTC=${RUST_HOME}/bin/rustc
 RUSTC=rustc
@@ -31,7 +32,7 @@ INCFLAGS=
 
 -include Makefile.local
 
-SIM=sensor
+SIM=sensor.mac
 
 SSIMFLAGS=
 SSIMFLAGS+=--ram 16K
@@ -326,6 +327,7 @@ sensor: main.sllvm.msp430.sancus.o
 	ln -f msp430-sensor-text.x msp430-elf-sllvm-text.x
 	ln -f msp430-sensor-data.x msp430-elf-sllvm-data.x
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
+	$(PYTHON) ../utils/parse.py $@ $@.mac
 
 sensor.objdump: sensor
 	${MSP430OBJDUMP} -D $< > $@

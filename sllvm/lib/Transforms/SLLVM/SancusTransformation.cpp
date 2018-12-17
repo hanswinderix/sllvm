@@ -46,30 +46,28 @@ static GlobalVariable *newSecretVariable(Module &M, const char *N, Type *T) {
   return result;
 }
 
-static GlobalVariable *newMACVariable(Module &M, const Function *F) {
-  // TODO: Rename MAC to hash?
-  // TODO: Store MAC/HASH in protected text section?
+static GlobalVariable *newHashVariable(Module &M, const Function *F) {
   LLVMContext &Ctx = M.getContext();
   IRBuilder<> IRB(Ctx);
   Type *Int8Ty = IRB.getInt8Ty();
-  // TODO: MAC size should be command-line argument
+  // TODO: Hash size should be command-line argument
   Type *ArTy = ArrayType::get(Int8Ty, 8);
 
-  // TODO Have the MAC variable name generated
+  // TODO Have the hash variable name generated
   auto GV = M.getNamedGlobal(
-      ("sllvm_mac_" + getPMName(&M) + "_" + F->getName()).str());
+      ("sllvm_hash_" + getPMName(&M) + "_" + F->getName()).str());
 
   auto result = new GlobalVariable(M,
       ArTy,
       true,
       GlobalVariable::LinkageTypes::InternalLinkage,
       Constant::getNullValue(ArTy),
-      // TODO Have the MAC variable name generated
+      // TODO Have the hash variable name generated
       // TODO ADD module name to uniqufy if linkage has to be external !!!!
-      "sllvm_mac_" + getPMName(&M) + "_" + F->getName());
+      "sllvm_hash_" + getPMName(&M) + "_" + F->getName());
   // TODO Have section names generated
   result->setSection(
-      (".sllvm.mac." + getPMName(&M) + "." + F->getName()).str());
+      (".sllvm.hash." + getPMName(&M) + "." + F->getName()).str());
 
   if (GV != nullptr) {
     // TODO: Handle existing definitions more gracefully
@@ -77,7 +75,7 @@ static GlobalVariable *newMACVariable(Module &M, const Function *F) {
     //assert(GV->getType() == ArTy && "Unexpected type");
     GV->replaceAllUsesWith(result);
     GV->eraseFromParent();
-    result->setName("sllvm_mac_" + getPMName(&M) + "_" + F->getName());
+    result->setName("sllvm_hash_" + getPMName(&M) + "_" + F->getName());
   }
 
   return result;
@@ -321,7 +319,7 @@ void SancusTransformation::handleCalls(Module &M) {
           IRB.SetInsertPoint(&I);
           if (getAnalysis<SLLVMAnalysis>().getResults().isEEntryCall(&I)) {
             const Function *C = CS.getCalledFunction();
-            newMACVariable(M, C);
+            newHashVariable(M, C);
             IRB.CreateCall(
                 Intrinsic::getDeclaration(&M, Intrinsic::sllvm_attest));
           }
