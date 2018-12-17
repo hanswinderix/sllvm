@@ -32,7 +32,7 @@ INCFLAGS=
 
 -include Makefile.local
 
-SIM=sensor.mac
+SIM=sensor.hash
 
 SSIMFLAGS=
 SSIMFLAGS+=--ram 16K
@@ -136,7 +136,7 @@ SGXFLAGS+=--sgx-transform
 #all: fileio.objdump
 #all: foo.objdump # There are two tests with a foo module.objdump
 #all: arith.objdump
-all: sensor.objdump
+all: sensor.hash.objdump
 
 ##############################################################################
 
@@ -327,9 +327,11 @@ sensor: main.sllvm.msp430.sancus.o
 	ln -f msp430-sensor-text.x msp430-elf-sllvm-text.x
 	ln -f msp430-sensor-data.x msp430-elf-sllvm-data.x
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
-	$(PYTHON) ../utils/parse.py $@ $@.mac
 
-sensor.objdump: sensor
+sensor.hash: sensor
+	$(PYTHON) ../utils/parse.py $< $@
+
+sensor.hash.objdump: sensor.hash
 	${MSP430OBJDUMP} -D $< > $@
 
 #----------------------------------------------------------------------------

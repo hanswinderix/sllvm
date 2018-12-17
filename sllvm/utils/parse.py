@@ -172,11 +172,11 @@ class Loader:
     return None
 
   # Required for secure linking
-  def fill_macs(self, fname):
+  def fill_hashes(self, fname):
     shutil.copy(self.elf.get_name(), fname)
     with open(fname, 'rb+') as f:
       for pm1 in self.get_protected_modules():
-        pattern = 'sllvm_mac_%s_(\w+)' % pm1.get_name()
+        pattern = 'sllvm_hash_%s_(\w+)' % pm1.get_name()
         for match, sym in self.elf.match_symbols(pattern):
           pm2 = self.find_protected_module_by_symbol_name(match.group(1))
           assert pm2
@@ -192,4 +192,4 @@ class Loader:
 #############################################################################
 assert len(sys.argv) > 2
 l = Loader(sys.argv[1])
-l.fill_macs(sys.argv[2])
+l.fill_hashes(sys.argv[2])
