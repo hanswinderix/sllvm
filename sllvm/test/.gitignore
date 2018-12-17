@@ -18,5 +18,6 @@ sancus_sim.fst
 sancus_sim.fst.hier
 sim-input.bin
 sim-output.bin
+sim.out
 msp430-elf-sllvm-text.x
 msp430-elf-sllvm-data.x

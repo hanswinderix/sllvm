@@ -365,7 +365,7 @@ force:
 
 .PHONY: sim
 sim: ${SIM}
-	${SSIM} ${SSIMFLAGS} ${SIM}
+	unbuffer ${SSIM} ${SSIMFLAGS} ${SIM} | tee sim.out
 
 .PHONY: clean
 clean:
@@ -386,3 +386,4 @@ clean:
 	${RM} sancus_sim.fst.hier
 	${RM} sim-input.bin
 	${RM} sim-output.bin
+	${RM} sim.out
