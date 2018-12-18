@@ -101,10 +101,10 @@ class PM:
     
   def compute_identity(self):
     identity = self.get_text()
-    identity += self.get_text_start().to_bytes(2, byteorder='big')
-    identity += self.get_text_end().to_bytes(2, byteorder='big')
-    identity += self.get_data_start().to_bytes(2, byteorder='big')
-    identity += self.get_data_end().to_bytes(2, byteorder='big')
+    identity += self.get_text_start().to_bytes(2, byteorder='little')
+    identity += self.get_text_end().to_bytes(2, byteorder='little')
+    identity += self.get_data_start().to_bytes(2, byteorder='little')
+    identity += self.get_data_end().to_bytes(2, byteorder='little')
     return identity
 
   def has_symbol(self, name):
@@ -193,3 +193,10 @@ class Loader:
 assert len(sys.argv) > 2
 l = Loader(sys.argv[1])
 l.fill_hashes(sys.argv[2])
+
+#master_key=bytes.fromhex("deadbeefcafebabe")
+#vendor_id=0x1234.to_bytes(2, byteorder='little')
+#vendor_key = compute_sancus_mac(master_key, vendor_id)
+#print('vendor', vendor_key.hex())
+#for pm in l.get_protected_modules():
+#  print(pm.name, compute_sancus_mac(vendor_key, pm.get_identity()).hex())
