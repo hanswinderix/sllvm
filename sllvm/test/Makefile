@@ -329,7 +329,7 @@ sensor: main.sllvm.msp430.sancus.o
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
 sensor.hash: sensor
-	$(PYTHON) ../utils/parse.py $< $@
+	$(PYTHON) ../utils/crypto.py $< $@
 
 sensor.hash.objdump: sensor.hash
 	${MSP430OBJDUMP} -D $< > $@
