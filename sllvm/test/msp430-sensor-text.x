@@ -8,5 +8,6 @@ sllvm_pm_reader_text_start = .;
 *(.sllvm.text.dispatch.reader)  /* Make sure the dispatcher is put first */
 *(.sllvm.text.reader)
 *(.sllvm.text.reader.*)         /* Internalized runtime functions */
-*(.sllvm.hash.reader.*)         /* Hashes for secure linking */
 sllvm_pm_reader_text_end = .;
+
+*(.sllvm.hash.reader.*)         /* Hashes for secure linking */
