@@ -1,6 +1,6 @@
 Index: include/clang/Basic/Attr.td
 ===================================================================
---- include/clang/Basic/Attr.td	(revision 349308)
+--- include/clang/Basic/Attr.td	(revision 349334)
 +++ include/clang/Basic/Attr.td	(working copy)
 @@ -1569,6 +1569,12 @@
    let Documentation = [AssumeAlignedDocs];
@@ -25,7 +25,7 @@ Index: include/clang/Basic/Attr.td
    // FIXME: Does GCC allow this on the function instead?
 Index: lib/CodeGen/CodeGenModule.cpp
 ===================================================================
---- lib/CodeGen/CodeGenModule.cpp	(revision 349308)
+--- lib/CodeGen/CodeGenModule.cpp	(revision 349334)
 +++ lib/CodeGen/CodeGenModule.cpp	(working copy)
 @@ -1569,6 +1569,10 @@
    setLinkageForGV(F, FD);
@@ -40,7 +40,7 @@ Index: lib/CodeGen/CodeGenModule.cpp
    else if (const auto *SA = FD->getAttr<SectionAttr>())
 Index: lib/Sema/SemaDeclAttr.cpp
 ===================================================================
---- lib/Sema/SemaDeclAttr.cpp	(revision 349308)
+--- lib/Sema/SemaDeclAttr.cpp	(revision 349334)
 +++ lib/Sema/SemaDeclAttr.cpp	(working copy)
 @@ -6181,6 +6181,9 @@
    case ParsedAttr::AT_IFunc:

@@ -317,24 +317,29 @@ void SancusTransformation::handleCalls(Module &M) {
 
         if (getAnalysis<SLLVMAnalysis>().getResults().isEExitCall(&I)) {
           IRB.SetInsertPoint(&I);
-          if (getAnalysis<SLLVMAnalysis>().getResults().isEEntryCall(&I)) {
-            const Function *C = CS.getCalledFunction();
-            newHashVariable(M, C);
-            IRB.CreateCall(
-                Intrinsic::getDeclaration(&M, Intrinsic::sllvm_attest));
-          }
           IRB.CreateCall(
               Intrinsic::getDeclaration(&M, Intrinsic::sllvm_excall));
         }
 
         if (getAnalysis<SLLVMAnalysis>().getResults().isEEntryCall(&I)) {
-          const Function *C = CS.getCalledFunction();
-
+          IRB.SetInsertPoint(&I);
           EECalls.push_back(&I);
 
+          const Function *C = CS.getCalledFunction();
           auto S = getOrCreateEEntryStub(M, C);
 
-          IRB.SetInsertPoint(&I);
+          if (getAnalysis<SLLVMAnalysis>().getResults().isEExitCall(&I)) {
+            // TODO: There should be a better way of doing this
+            //         (Instruction selection for sllvm_attest should match 
+            //         immediates instead of registers)
+            auto HV = newHashVariable(M, C);
+            Type * Int16Ty = Type::getInt16Ty(M.getContext());
+            auto P1 = IRB.CreatePtrToInt(S.first, Int16Ty);
+            auto P2 = IRB.CreatePtrToInt(HV, Int16Ty);
+            IRB.CreateCall(Intrinsic::getDeclaration(&M, 
+                  Intrinsic::sllvm_attest), {P1, P2});
+          }
+
           SmallVector<Value *, 6> A {IRB.CreateLoad(S.second)};
           A.insert(std::end(A), CS.arg_begin(), CS.arg_end());
 
