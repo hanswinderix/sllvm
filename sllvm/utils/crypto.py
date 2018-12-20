@@ -23,9 +23,26 @@ def fill_hashes(loader, fname):
         f.seek(offset)
         f.write(hash)
 
+def wrap_text_sections(loader, fname):
+  elf = loader.get_ELF()
+  shutil.copy(elf.get_name(), fname)
+  with open(fname, 'rb+') as f:
+    for pm in loader.get_protected_modules():
+      nonce = elf.find_symbol_by_name('sllvm_nonce_%s' % pm.get_name())
+      #assert nonce != None
+      tag = elf.find_symbol_by_name('sllvm_tag_%s' % pm.get_name())
+      #assert tag != None
+      if nonce != None and tag != None:
+        print(pm.get_name())
+      #offset = elf.get_offset_of_text_addr_in_file(sym['st_value'])
+      #f.seek(offset)
+      #f.write(hash)
+
 assert len(sys.argv) > 2
 loader = loader.Loader(sys.argv[1])
-fill_hashes(loader, sys.argv[2])
+
+#fill_hashes(loader, sys.argv[2])
+wrap_text_sections(loader, sys.argv[2])
 
 #master_key=bytes.fromhex("deadbeefcafebabe")
 #vendor_id=0x1234.to_bytes(2, byteorder='little')

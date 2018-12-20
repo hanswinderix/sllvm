@@ -14,6 +14,7 @@ MSP430LD=${MSP430GCC}
 MSP430OBJDUMP=msp430-elf-objdump
 EDGER8R=${SGX_HOME}/build/linux/sgx_edger8r
 
+CRYPTO=../utils/crypto.py
 SANCUSCLANG=clang
 SANCUSLLC=llc
 
@@ -32,7 +33,7 @@ INCFLAGS=
 
 -include Makefile.local
 
-SIM=hello
+SIM=hello.wrap
 
 SSIMFLAGS=
 SSIMFLAGS+=--ram 16K
@@ -137,7 +138,7 @@ SGXFLAGS+=--sgx-transform
 #all: foo.objdump # There are two tests with a foo module.objdump
 #all: arith.objdump
 #all: sensor.hash.objdump
-all: hello.objdump
+all: hello.wrap.objdump
 
 ##############################################################################
 
@@ -316,7 +317,7 @@ sensor: main.sllvm.msp430.sancus.o
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
 sensor.hash: sensor
-	$(PYTHON) ../utils/crypto.py $< $@
+	$(PYTHON) ${CRYPTO} $< $@
 
 sensor.hash.objdump: sensor.hash
 	${MSP430OBJDUMP} -D $< > $@
@@ -327,8 +328,11 @@ hello: sancus.o
 hello: hello.sllvm.msp430.sancus.o
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
-hello.objdump: hello
-	${MSP430OBJDUMP} -D hello > $@
+hello.wrap: hello
+	$(PYTHON) ${CRYPTO} $< $@
+
+hello.wrap.objdump: hello.wrap
+	${MSP430OBJDUMP} -D $< > $@
 
 #----------------------------------------------------------------------------
 
@@ -374,3 +378,9 @@ clean:
 	${RM} sim-input.bin
 	${RM} sim-output.bin
 	${RM} sim.out
+	${RM} hello
+	${RM} foo
+	${RM} hello.wrap
+	${RM} sensor
+	${RM} sensor.hash
+	${RM} arith
