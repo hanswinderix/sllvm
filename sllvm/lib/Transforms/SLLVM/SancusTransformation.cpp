@@ -25,13 +25,15 @@ getOrCreateEEntryStub(Module &M, const Function *F) {
   Value *First;
 
   if (S == nullptr) {
-    // This must be required for an entry call from within an enclave 
-    // public enclave function.
-    // Support for public enclave functions was needed to be able to compile 
-    // the official Sancus examples.
-    assert(M.getNamedAlias(N) != nullptr);
+    // This must be for an entry call from within a public enclave function.
+    // (Support for public enclave functions was needed to be able to compile 
+    //  the official Sancus examples.) If this statement is true, then N 
+    //  should be an alias for the dispatcher...
+    auto A = M.getNamedAlias(N);
+    assert (A != nullptr);
     PointerType *T = PointerType::get(Ty, 0);
     S = M.getFunction(sancus::fname_dispatch);
+    assert(S == A->getAliasee());
     assert(S->getCallingConv() == CallingConv::SANCUS_ENTRY);
     First = ConstantExpr::getBitCast(S, T);
   }
