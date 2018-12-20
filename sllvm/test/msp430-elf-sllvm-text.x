@@ -29,4 +29,7 @@ sllvm_bar_text_section_start = .;
 sllvm_bar_text_section_end = .;
 
 /* Hashes for secure linking */
-*(.sllvm.hash.reader.*)
+*(.sllvm.hash.*)
+
+/* Wrap information */
+*(.sllvm.wrap.*)

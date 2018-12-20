@@ -502,6 +502,8 @@ extern char __unprotected_sp;
     (sm_id*)&__sm_##caller##_id_##callee;       \
 })
 
+#ifdef ENABLE_SANCUS
+
 /**
  * Macro to get the nonce used for wrapping sm.
  */
@@ -517,6 +519,8 @@ extern char __unprotected_sp;
     extern char __sm_##sm##_wrap_tag;   \
     (void*)&__sm_##sm##_wrap_tag;       \
 })
+
+#endif
 
 /**
  * Interrupt vector for the Sancus violation ISR.
@@ -561,6 +565,9 @@ extern char __unprotected_sp;
 #define __PE(name) sllvm_pm_##name##_text_end
 #define __SS(name) sllvm_pm_##name##_data_start
 #define __SE(name) sllvm_pm_##name##_data_end
+
+#define SM_GET_WRAP_NONCE(sm) sllvm_nonce_##sm
+#define SM_GET_WRAP_TAG(sm) sllvm_tag_##sm
 
 #define DECLARE_SM(name, vendor_id)  \
     extern char __PS(name);          \
