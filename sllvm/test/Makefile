@@ -32,7 +32,7 @@ INCFLAGS=
 
 -include Makefile.local
 
-SIM=sensor.hash
+SIM=hello
 
 SSIMFLAGS=
 SSIMFLAGS+=--ram 16K
@@ -136,7 +136,8 @@ SGXFLAGS+=--sgx-transform
 #all: fileio.objdump
 #all: foo.objdump # There are two tests with a foo module.objdump
 #all: arith.objdump
-all: sensor.hash.objdump
+#all: sensor.hash.objdump
+all: hello.objdump
 
 ##############################################################################
 
