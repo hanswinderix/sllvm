@@ -9,6 +9,9 @@
 
 using namespace sllvm;
 
+// TODO: MAC size should be command-line argument
+#define MAC_SIZE 8
+
 static std::pair<Value *, Value *>
 getOrCreateEEntryStub(Module &M, const Function *F) {
   assert(F != nullptr);
@@ -63,16 +66,14 @@ static GlobalVariable *newSecretVariable(Module &M, const char *N, Type *T) {
   return result;
 }
 
-static GlobalVariable *newHashVariable(Module &M, const Function *F) {
+static GlobalVariable * newArrayVariable(
+    Module &M, StringRef Name, StringRef Section, uint64_t NumElements) {
   LLVMContext &Ctx = M.getContext();
   IRBuilder<> IRB(Ctx);
   Type *Int8Ty = IRB.getInt8Ty();
-  // TODO: Hash size should be command-line argument
-  Type *ArTy = ArrayType::get(Int8Ty, 8);
+  Type *ArTy = ArrayType::get(Int8Ty, NumElements);
 
-  // TODO Have the hash variable name generated
-  auto GV = M.getNamedGlobal(
-      ("sllvm_hash_" + getPMName(&M) + "_" + F->getName()).str());
+  auto GV = M.getNamedGlobal(Name);
 
   auto result = new GlobalVariable(M,
       ArTy,
@@ -81,10 +82,9 @@ static GlobalVariable *newHashVariable(Module &M, const Function *F) {
       Constant::getNullValue(ArTy),
       // TODO Have the hash variable name generated
       // TODO ADD module name to uniqufy if linkage has to be external !!!!
-      "sllvm_hash_" + getPMName(&M) + "_" + F->getName());
+      Name);
   // TODO Have section names generated
-  result->setSection(
-      (".sllvm.hash." + getPMName(&M) + "." + F->getName()).str());
+  result->setSection(Section);
 
   if (GV != nullptr) {
     // TODO: Handle existing definitions more gracefully
@@ -92,7 +92,7 @@ static GlobalVariable *newHashVariable(Module &M, const Function *F) {
     //assert(GV->getType() == ArTy && "Unexpected type");
     GV->replaceAllUsesWith(result);
     GV->eraseFromParent();
-    result->setName("sllvm_hash_" + getPMName(&M) + "_" + F->getName());
+    result->setName(Name);
   }
 
   return result;
@@ -131,6 +131,27 @@ void SancusTransformation::handleGlobals(Module &M) {
       GVI->setLinkage(GlobalVariable::LinkageTypes::InternalLinkage);
     }
   }
+
+  // TODO: Have the following names generated
+  auto N = (".sllvm.wrap." + getPMName(&M)).str();
+  newArrayVariable(M, ("sllvm_tag_" + getPMName(&M)).str(), N, MAC_SIZE);
+
+  auto Nonce = "sllvm_nonce_" + getPMName(&M).str();
+  auto T = new GlobalVariable(M, 
+      Int16Ty,
+      false,
+      GlobalVariable::LinkageTypes::ExternalLinkage,
+      Constant::getNullValue(Int16Ty));
+  T->setSection(N);
+
+  // TODO The following logic is duplicated from newArrayVariable, fix this
+  //        (and handle assert on type more gracefully)
+  //  And maybe it is better to define these in the linker script, like
+  //  the legacy compiler?
+  auto NV = M.getNamedGlobal(Nonce);
+  NV->replaceAllUsesWith(T);
+  NV->eraseFromParent();
+  T->setName(Nonce);
 }
 
 void SancusTransformation::createDispatchBody(Module &M, Function *D) {
@@ -349,7 +370,12 @@ void SancusTransformation::handleCalls(Module &M) {
             // TODO: There should be a better way of doing this
             //         (Instruction selection for sllvm_attest should match 
             //         immediates instead of registers)
-            auto HV = newHashVariable(M, C);
+            // TODO Have the hash variable/section names generated
+            auto HN = 
+              ("sllvm_hash_" + getPMName(&M) + "_" + C->getName()).str();
+            auto SN = 
+              (".sllvm.hash." + getPMName(&M) + "." + C->getName()).str();
+            auto HV = newArrayVariable(M, HN, SN, MAC_SIZE);
             Type * Int16Ty = Type::getInt16Ty(M.getContext());
             auto P1 = IRB.CreatePtrToInt(S.first, Int16Ty);
             auto P2 = IRB.CreatePtrToInt(HV, Int16Ty);
