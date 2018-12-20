@@ -9,7 +9,7 @@
 
 using namespace sllvm;
 
-static std::pair<Function *, Value *>
+static std::pair<Value *, Value *>
 getOrCreateEEntryStub(Module &M, const Function *F) {
   assert(F != nullptr);
   Type * Int16Ty = Type::getInt16Ty(M.getContext());
@@ -20,17 +20,32 @@ getOrCreateEEntryStub(Module &M, const Function *F) {
   FunctionType *Ty = FunctionType::get(FTy->getReturnType(), P, false);
 
   //TODO: Have function names produced by function
-  Function *S = dyn_cast<Function>(M.getOrInsertFunction(
-      Twine("sllvm_", F->getName()).str(), Ty));
-  assert(S != nullptr);
-  S->setCallingConv(CallingConv::SANCUS_ENTRY);
+  auto N = Twine("sllvm_", F->getName()).str();
+  Function *S = dyn_cast<Function>(M.getOrInsertFunction(N, Ty));
+  Value *First;
+
+  if (S == nullptr) {
+    // This must be required for an entry call from within an enclave 
+    // public enclave function.
+    // Support for public enclave functions was needed to be able to compile 
+    // the official Sancus examples.
+    assert(M.getNamedAlias(N) != nullptr);
+    PointerType *T = PointerType::get(Ty, 0);
+    S = M.getFunction(sancus::fname_dispatch);
+    assert(S->getCallingConv() == CallingConv::SANCUS_ENTRY);
+    First = ConstantExpr::getBitCast(S, T);
+  }
+  else {
+    S->setCallingConv(CallingConv::SANCUS_ENTRY);
+    First = S;
+  }
 
   //TODO: Have symbol names produced by function
   GlobalVariable *GV = dyn_cast<GlobalVariable>(M.getOrInsertGlobal(
       Twine("sllvm_id_", F->getName()).str(), Int16Ty));
   GV->setConstant(true);
 
-  return std::make_pair(S, GV);
+  return std::make_pair(First, GV);
 }
 
 static GlobalVariable *newSecretVariable(Module &M, const char *N, Type *T) {
@@ -344,7 +359,7 @@ void SancusTransformation::handleCalls(Module &M) {
           A.insert(std::end(A), CS.arg_begin(), CS.arg_end());
 
           CallInst * CI = IRB.CreateCall(S.first, A);
-          CI->setCallingConv(S.first->getCallingConv());
+          CI->setCallingConv(CallingConv::SANCUS_ENTRY);
           I.replaceAllUsesWith(CI);
         }
       }
