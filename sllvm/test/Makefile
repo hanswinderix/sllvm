@@ -244,8 +244,6 @@ a.out: main.sllvm.msp430.sancus.o
 a.out: enclave1.sllvm.msp430.sancus.o
 a.out: enclave2.sllvm.msp430.sancus.o
 a.out: panic.o
-	ln -f msp430-sllvm-text.x msp430-elf-sllvm-text.x
-	ln -f msp430-sllvm-data.x msp430-elf-sllvm-data.x
 	${MSP430LD} ${MSP430LDFLAGS} $^
 
 a.out.objdump: a.out
@@ -255,8 +253,6 @@ a.out.objdump: a.out
 
 test: sancus.o
 test: test.sllvm.msp430.sancus.o
-	ln -f msp430-sllvm-text.x msp430-elf-sllvm-text.x
-	ln -f msp430-sllvm-data.x msp430-elf-sllvm-data.x
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
 test.objdump: test
@@ -267,8 +263,6 @@ test.objdump: test
 test2: sancus.o
 test2: test2.sllvm.msp430.sancus.o
 test2: enclave.sllvm.msp430.sancus.o
-	ln -f msp430-sllvm-text.x msp430-elf-sllvm-text.x
-	ln -f msp430-sllvm-data.x msp430-elf-sllvm-data.x
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
 test2.objdump: test2
@@ -278,8 +272,6 @@ test2.objdump: test2
 
 foo: sancus.o
 foo: foo.sllvm.msp430.sancus.o
-	ln -f msp430-sllvm-text.x msp430-elf-sllvm-text.x
-	ln -f msp430-sllvm-data.x msp430-elf-sllvm-data.x
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
 foo.objdump: foo
@@ -293,8 +285,6 @@ fileio: MSP430LDFLAGS+=-ldev-fileio
 
 fileio: sancus.o
 fileio: fileio.sllvm.msp430.sancus.o
-	ln -f msp430-sllvm-text.x msp430-elf-sllvm-text.x
-	ln -f msp430-sllvm-data.x msp430-elf-sllvm-data.x
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
 fileio.objdump: fileio
@@ -310,8 +300,6 @@ arith: arith.o
 arith: foo.sllvm.msp430.sancus.o
 arith: bar.sllvm.msp430.sancus.o
 arith: main.sllvm.msp430.sancus.o
-	ln -f msp430-arith-text.x msp430-elf-sllvm-text.x
-	ln -f msp430-arith-data.x msp430-elf-sllvm-data.x
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
 arith.objdump: arith
@@ -325,8 +313,6 @@ sensor: sancus.o
 sensor: sensor.sllvm.msp430.sancus.o
 sensor: reader.sllvm.msp430.sancus.o
 sensor: main.sllvm.msp430.sancus.o
-	ln -f msp430-sensor-text.x msp430-elf-sllvm-text.x
-	ln -f msp430-sensor-data.x msp430-elf-sllvm-data.x
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
 sensor.hash: sensor
@@ -339,8 +325,6 @@ sensor.hash.objdump: sensor.hash
 
 hello: sancus.o
 hello: hello.sllvm.msp430.sancus.o
-	ln -f msp430-sllvm-text.x msp430-elf-sllvm-text.x
-	ln -f msp430-sllvm-data.x msp430-elf-sllvm-data.x
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
 hello.objdump: hello
@@ -352,8 +336,6 @@ hello2: sancus.o
 hello2: hello.sllvm.msp430.sancus.o
 hello2: enclave4.sllvm.msp430.sancus.o
 hello2: panic.o
-	ln -f msp430-sllvm-text.x msp430-elf-sllvm-text.x
-	ln -f msp430-sllvm-data.x msp430-elf-sllvm-data.x
 	${MSP430LD} ${MSP430LDFLAGS} $^ -lsm-io -o $@
 
 hello2.objdump: hello2
