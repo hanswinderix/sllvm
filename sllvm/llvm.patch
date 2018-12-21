@@ -1,6 +1,6 @@
 Index: include/llvm/IR/CallingConv.h
 ===================================================================
---- include/llvm/IR/CallingConv.h	(revision 349742)
+--- include/llvm/IR/CallingConv.h	(revision 349928)
 +++ include/llvm/IR/CallingConv.h	(working copy)
 @@ -223,6 +223,10 @@
      // Calling convention between AArch64 Advanced SIMD functions
@@ -15,7 +15,7 @@ Index: include/llvm/IR/CallingConv.h
    };
 Index: include/llvm/IR/Intrinsics.td
 ===================================================================
---- include/llvm/IR/Intrinsics.td	(revision 349742)
+--- include/llvm/IR/Intrinsics.td	(revision 349928)
 +++ include/llvm/IR/Intrinsics.td	(working copy)
 @@ -1132,6 +1132,18 @@
  
@@ -38,7 +38,7 @@ Index: include/llvm/IR/Intrinsics.td
  //===----------------------------------------------------------------------===//
 Index: lib/Support/GraphWriter.cpp
 ===================================================================
---- lib/Support/GraphWriter.cpp	(revision 349742)
+--- lib/Support/GraphWriter.cpp	(revision 349928)
 +++ lib/Support/GraphWriter.cpp	(working copy)
 @@ -153,6 +153,19 @@
    std::string ViewerPath;
@@ -82,7 +82,7 @@ Index: lib/Support/GraphWriter.cpp
      VK_OSXOpen,
 Index: lib/Target/MSP430/CMakeLists.txt
 ===================================================================
---- lib/Target/MSP430/CMakeLists.txt	(revision 349742)
+--- lib/Target/MSP430/CMakeLists.txt	(revision 349928)
 +++ lib/Target/MSP430/CMakeLists.txt	(working copy)
 @@ -14,6 +14,7 @@
  
@@ -94,7 +94,7 @@ Index: lib/Target/MSP430/CMakeLists.txt
    MSP430InstrInfo.cpp
 Index: lib/Target/MSP430/MSP430.h
 ===================================================================
---- lib/Target/MSP430/MSP430.h	(revision 349742)
+--- lib/Target/MSP430/MSP430.h	(revision 349928)
 +++ lib/Target/MSP430/MSP430.h	(working copy)
 @@ -42,6 +42,7 @@
    FunctionPass *createMSP430ISelDag(MSP430TargetMachine &TM,
@@ -106,7 +106,7 @@ Index: lib/Target/MSP430/MSP430.h
  } // end namespace llvm;
 Index: lib/Target/MSP430/MSP430AsmPrinter.cpp
 ===================================================================
---- lib/Target/MSP430/MSP430AsmPrinter.cpp	(revision 349742)
+--- lib/Target/MSP430/MSP430AsmPrinter.cpp	(revision 349928)
 +++ lib/Target/MSP430/MSP430AsmPrinter.cpp	(working copy)
 @@ -14,6 +14,8 @@
  
@@ -151,7 +151,7 @@ Index: lib/Target/MSP430/MSP430AsmPrinter.cpp
    const MachineOperand &MO = MI->getOperand(OpNum);
 Index: lib/Target/MSP430/MSP430ISelLowering.cpp
 ===================================================================
---- lib/Target/MSP430/MSP430ISelLowering.cpp	(revision 349742)
+--- lib/Target/MSP430/MSP430ISelLowering.cpp	(revision 349928)
 +++ lib/Target/MSP430/MSP430ISelLowering.cpp	(working copy)
 @@ -13,12 +13,15 @@
  
@@ -506,7 +506,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.cpp
    case MSP430ISD::CMP:                return "MSP430ISD::CMP";
 Index: lib/Target/MSP430/MSP430ISelLowering.h
 ===================================================================
---- lib/Target/MSP430/MSP430ISelLowering.h	(revision 349742)
+--- lib/Target/MSP430/MSP430ISelLowering.h	(revision 349928)
 +++ lib/Target/MSP430/MSP430ISelLowering.h	(working copy)
 @@ -43,6 +43,9 @@
        /// instruction, which includes a bunch of information.
@@ -551,7 +551,7 @@ Index: lib/Target/MSP430/MSP430ISelLowering.h
                              const SDLoc &dl, SelectionDAG &DAG,
 Index: lib/Target/MSP430/MSP430InstrInfo.cpp
 ===================================================================
---- lib/Target/MSP430/MSP430InstrInfo.cpp	(revision 349742)
+--- lib/Target/MSP430/MSP430InstrInfo.cpp	(revision 349928)
 +++ lib/Target/MSP430/MSP430InstrInfo.cpp	(working copy)
 @@ -314,6 +314,13 @@
      return TII.getInlineAsmLength(MI.getOperand(0).getSymbolName(),
@@ -569,7 +569,7 @@ Index: lib/Target/MSP430/MSP430InstrInfo.cpp
    return Desc.getSize();
 Index: lib/Target/MSP430/MSP430InstrInfo.td
 ===================================================================
---- lib/Target/MSP430/MSP430InstrInfo.td	(revision 349742)
+--- lib/Target/MSP430/MSP430InstrInfo.td	(revision 349928)
 +++ lib/Target/MSP430/MSP430InstrInfo.td	(working copy)
 @@ -53,6 +53,8 @@
  
@@ -650,7 +650,7 @@ Index: lib/Target/MSP430/MSP430InstrInfo.td
  //===----------------------------------------------------------------------===//
 Index: lib/Target/MSP430/MSP430MCInstLower.cpp
 ===================================================================
---- lib/Target/MSP430/MSP430MCInstLower.cpp	(revision 349742)
+--- lib/Target/MSP430/MSP430MCInstLower.cpp	(revision 349928)
 +++ lib/Target/MSP430/MSP430MCInstLower.cpp	(working copy)
 @@ -142,6 +142,9 @@
      case MachineOperand::MO_ExternalSymbol:
@@ -664,7 +664,7 @@ Index: lib/Target/MSP430/MSP430MCInstLower.cpp
        break;
 Index: lib/Target/MSP430/MSP430TargetMachine.cpp
 ===================================================================
---- lib/Target/MSP430/MSP430TargetMachine.cpp	(revision 349742)
+--- lib/Target/MSP430/MSP430TargetMachine.cpp	(revision 349928)
 +++ lib/Target/MSP430/MSP430TargetMachine.cpp	(working copy)
 @@ -80,6 +80,7 @@
  }

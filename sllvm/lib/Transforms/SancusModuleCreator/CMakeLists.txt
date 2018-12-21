@@ -1,4 +1,5 @@
-add_llvm_loadable_module(SancusModuleCreator
+add_llvm_library(SancusModuleCreator
+  MODULE
   SancusModuleCreator.cpp
   FunctionCcInfo.cpp
   SancusModuleInfo.cpp

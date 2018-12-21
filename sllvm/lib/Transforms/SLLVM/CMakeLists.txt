@@ -1,4 +1,5 @@
-add_llvm_loadable_module(SLLVM
+add_llvm_library(SLLVM 
+  MODULE
   Analysis.cpp
   Transformation.cpp
   SancusTransformation.cpp
