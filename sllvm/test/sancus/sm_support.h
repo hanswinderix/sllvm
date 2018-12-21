@@ -566,8 +566,14 @@ extern char __unprotected_sp;
 #define __SS(name) sllvm_pm_##name##_data_start
 #define __SE(name) sllvm_pm_##name##_data_end
 
-#define SM_GET_WRAP_NONCE(sm) sllvm_nonce_##sm
-#define SM_GET_WRAP_TAG(sm) sllvm_tag_##sm
+#define SM_GET_WRAP_NONCE(sm) ({      \
+    extern unsigned sllvm_nonce_##sm; \
+    sllvm_nonce_##sm;                 \
+})
+#define SM_GET_WRAP_TAG(sm) ({                   \
+    extern char sllvm_tag_##sm[SANCUS_TAG_SIZE]; \
+    sllvm_tag_##sm;                              \
+})
 
 #define DECLARE_SM(name, vendor_id)  \
     extern char __PS(name);          \
