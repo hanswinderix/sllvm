@@ -43,12 +43,12 @@ def wrap_text_sections(loader, fname, key):
         f.seek(offset)
         f.write(wrap)
 
-        # 2) Write nonce to wrap section
+        # 2) Write nonce
         offset = elf.get_offset_of_text_addr_in_file(sym_nonce['st_value'])
         f.seek(offset)
         f.write(nonce)
 
-        # 3) Write tag to wrap section
+        # 3) Write tag
         offset = elf.get_offset_of_text_addr_in_file(sym_tag['st_value'])
         f.seek(offset)
         f.write(tag)
