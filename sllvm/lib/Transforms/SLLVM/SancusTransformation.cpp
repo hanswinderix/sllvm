@@ -149,8 +149,10 @@ void SancusTransformation::handleGlobals(Module &M) {
   //  And maybe it is better to define these in the linker script, like
   //  the legacy compiler?
   auto NV = M.getNamedGlobal(Nonce);
-  NV->replaceAllUsesWith(T);
-  NV->eraseFromParent();
+  if (NV != nullptr) {
+    NV->replaceAllUsesWith(T);
+    NV->eraseFromParent();
+  }
   T->setName(Nonce);
 }
 
