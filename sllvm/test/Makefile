@@ -33,7 +33,7 @@ INCFLAGS=
 
 -include Makefile.local
 
-SIM=hello.wrap
+SIM=sensor.hash
 
 SSIMFLAGS=
 SSIMFLAGS+=--ram 16K
@@ -137,8 +137,8 @@ SGXFLAGS+=--sgx-transform
 #all: fileio.objdump
 #all: foo.objdump # There are two tests with a foo module.objdump
 #all: arith.objdump
-#all: sensor.hash.objdump
-all: hello.wrap.objdump
+all: sensor.hash.objdump
+#all: hello.wrap.objdump
 
 ##############################################################################
 
@@ -317,7 +317,7 @@ sensor: main.sllvm.msp430.sancus.o
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
 sensor.hash: sensor
-	${CRYPTO} $< $@
+	${CRYPTO} --fill-hashes -o $@ $<
 
 sensor.hash.objdump: sensor.hash
 	${MSP430OBJDUMP} -D $< > $@
