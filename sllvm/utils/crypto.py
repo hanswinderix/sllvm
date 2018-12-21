@@ -3,6 +3,7 @@ import elf
 import loader
 import shutil
 import ccrypto
+import argparse
 
 # Required for secure linking
 def fill_hashes(loader, fname):
@@ -23,30 +24,53 @@ def fill_hashes(loader, fname):
         f.seek(offset)
         f.write(hash)
 
-def wrap_text_sections(loader, fname):
+def wrap_text_sections(loader, fname, key):
   elf = loader.get_ELF()
   shutil.copy(elf.get_name(), fname)
   with open(fname, 'rb+') as f:
     for pm in loader.get_protected_modules():
-      nonce = elf.find_symbol_by_name('sllvm_nonce_%s' % pm.get_name())
-      #assert nonce != None
-      tag = elf.find_symbol_by_name('sllvm_tag_%s' % pm.get_name())
-      #assert tag != None
-      if nonce != None and tag != None:
-        print(pm.get_name())
-      #offset = elf.get_offset_of_text_addr_in_file(sym['st_value'])
-      #f.seek(offset)
-      #f.write(hash)
+      sym_nonce = elf.find_symbol_by_name('sllvm_nonce_%s' % pm.get_name())
+      #TODO: assert sym_nonce != None
+      sym_tag = elf.find_symbol_by_name('sllvm_tag_%s' % pm.get_name())
+      #TODO: assert sym_tag != None
+      if sym_nonce != None and sym_tag != None:
+        # 1) Compute nonce, tag and wrap
+        nonce = ccrypto.sancus_wrap_sm_nonce(pm.get_name(), pm.get_text())
+        wrap, tag = ccrypto.sancus_wrap(key, nonce, pm.get_text())
 
-assert len(sys.argv) > 2
-loader = loader.Loader(sys.argv[1])
+        # 1) Write wrapped text
+        offset = elf.get_offset_of_text_addr_in_file(pm.get_text_start())
+        f.seek(offset)
+        f.write(wrap)
 
-#fill_hashes(loader, sys.argv[2])
-wrap_text_sections(loader, sys.argv[2])
+        # 2) Write nonce to wrap section
+        offset = elf.get_offset_of_text_addr_in_file(sym_nonce['st_value'])
+        f.seek(offset)
+        f.write(nonce)
 
-#master_key=bytes.fromhex("deadbeefcafebabe")
-#vendor_id=0x1234.to_bytes(2, byteorder='little')
-#vendor_key = compute_sancus_mac(master_key, vendor_id)
-#print('vendor', vendor_key.hex())
-#for pm in l.get_protected_modules():
-#  print(pm.name, compute_sancus_mac(vendor_key, pm.get_identity()).hex())
+        # 3) Write tag to wrap section
+        offset = elf.get_offset_of_text_addr_in_file(sym_tag['st_value'])
+        f.seek(offset)
+        f.write(tag)
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-k', '--key', type=lambda x: bytes.fromhex(x))
+parser.add_argument('-i', '--id', type=lambda x: int(x, 16))
+parser.add_argument('-w', '--wrap-text', action='store_true')
+parser.add_argument('-v', '--gen-vendor-key', action='store_true')
+parser.add_argument('-f', '--fill-hashes', action='store_true')
+parser.add_argument('-o', '--output-file')
+parser.add_argument('infile')
+args = parser.parse_args()
+
+loader = loader.Loader(args.infile)
+
+if args.gen_vendor_key:
+  id = args.id.to_bytes(2, byteorder='little')
+  print(ccrypto.compute_sancus_mac(args.key, id).hex())
+
+if args.wrap_text:
+  wrap_text_sections(loader, args.output_file, args.key)
+
+if args.fill_hashes:
+  loader.fill_hashes(loader, args.output_file)

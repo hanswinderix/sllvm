@@ -14,7 +14,7 @@ MSP430LD=${MSP430GCC}
 MSP430OBJDUMP=msp430-elf-objdump
 EDGER8R=${SGX_HOME}/build/linux/sgx_edger8r
 
-CRYPTO=../utils/crypto.py
+CRYPTO=$(PYTHON) ../utils/crypto.py
 SANCUSCLANG=clang
 SANCUSLLC=llc
 
@@ -317,21 +317,29 @@ sensor: main.sllvm.msp430.sancus.o
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
 sensor.hash: sensor
-	$(PYTHON) ${CRYPTO} $< $@
+	${CRYPTO} $< $@
 
 sensor.hash.objdump: sensor.hash
 	${MSP430OBJDUMP} -D $< > $@
 
 #----------------------------------------------------------------------------
 
+MASTER_KEY=deadbeefcafebabe
+VENDOR_ID=0x1234
+VENDOR_KEY=\
+ $(shell ${CRYPTO} --gen-vendor-key --key $(MASTER_KEY) --id $(VENDOR_ID) hello)
+
 hello: sancus.o
 hello: hello.sllvm.msp430.sancus.o
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
 hello.wrap: hello
-	$(PYTHON) ${CRYPTO} $< $@
+	${CRYPTO} --wrap-text --key $(VENDOR_KEY) -o $@ $<
 
-hello.wrap.objdump: hello.wrap
+hello.objdump: hello
+	${MSP430OBJDUMP} -D $< > $@
+
+hello.wrap.objdump: hello.wrap hello.objdump
 	${MSP430OBJDUMP} -D $< > $@
 
 #----------------------------------------------------------------------------
