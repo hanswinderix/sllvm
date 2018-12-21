@@ -73,4 +73,4 @@ if args.wrap_text:
   wrap_text_sections(loader, args.output_file, args.key)
 
 if args.fill_hashes:
-  loader.fill_hashes(loader, args.output_file)
+  fill_hashes(loader, args.output_file)
