@@ -16,7 +16,7 @@ class PM:
     t3 = self.elf.find_symbol_by_name('sllvm_pm_%s_data_start' % self.name)
     assert t3
     t4 = self.elf.find_symbol_by_name('sllvm_pm_%s_data_end' % self.name)
-    assert t4
+    assert t4, self.name
     STVAL = 'st_value'
     return (t1[STVAL], t2[STVAL], t3[STVAL], t4[STVAL])
     
