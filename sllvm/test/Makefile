@@ -87,7 +87,6 @@ MSP430LDFLAGS+=-lsm-io
 MSP430LDFLAGS+=-ldev
 MSP430LDFLAGS+=-L/usr/local/share/sancus-compiler/lib/
 MSP430LDFLAGS+=-lsancus-sm-support
-MSP430LDFLAGS+=-Wl,-gc-sections
 #MSP430LDFLAGS+=-lsancus-host-support
 
 LLCFLAGS=
@@ -135,7 +134,7 @@ SGXFLAGS+=--sgx-transform
 # Sancus examples
 
 #all: fileio.objdump
-#all: foo.objdump # There are two tests with a foo module.objdump
+#all: foo.objdump # There are two tests with a foo module
 #all: arith.objdump
 all: sensor.hash.objdump
 #all: hello.wrap.objdump
@@ -280,18 +279,23 @@ foo.objdump: foo
 
 #----------------------------------------------------------------------------
 
-fileio.sllvm.msp430.ll: CLANGFLAGS+=-DTEST_DATA=\""hello"\"
+TEST_DATA=hello
+
+fileio.sllvm.msp430.ll: CLANGFLAGS+=-DTEST_DATA=\""$(TEST_DATA)"\"
 
 fileio: MSP430LDFLAGS+=-ldev-fileio
 
 fileio: sancus.o
 fileio: fileio.sllvm.msp430.sancus.o
+	echo -n $(TEST_DATA) > sim-input.bin
 	${MSP430LD} $^ ${MSP430LDFLAGS} -o $@
 
 fileio.objdump: fileio
 	${MSP430OBJDUMP} -D fileio > $@
 
 #----------------------------------------------------------------------------
+
+arith: MSP430LDFLAGS+=-Wl,-gc-sections
 
 arith.o: arith.s
 	$(MSP430GCC) ${MSP430GCCFLAGS} -c $<
