@@ -1,10 +1,10 @@
 -include Makefile.local
 
-#BUILD_TYPE=Debug
-BUILD_TYPE=Release
-JOBS=4
-SANCUS_SECURITY=64
-SANCUS_KEY=deadbeefcafebabe
+BUILD_TYPE = Release # One of (Debug, Release)
+JOBS       = 4
+
+SANCUS_SECURITY = 64
+SANCUS_KEY      = deadbeefcafebabe
 
 WGET  = wget
 GIT   = git
@@ -61,9 +61,17 @@ CMAKE_FLAGS_LLVM += -DLLVM_TARGETS_TO_BUILD=MSP430
 
 CMAKE_FLAGS_SANCUS =
 CMAKE_FLAGS_SANCUS += -DCMAKE_INSTALL_PREFIX=$(INSTALLDIR)
-CMAKE_FLAGS_SANCUS += -DSECURITY=$(SANCUS_SECURITY)
-CMAKE_FLAGS_SANCUS += -DMASTER_KEY=$(SANCUS_KEY)
-#CMAKE_FLAGS_SANCUS += -DMSP430_GCC_PREFIX=msp430-elf
+CMAKE_FLAGS_SANCUS += -DMSP430_GCC_PREFIX=msp430-elf
+
+CMAKE_FLAGS_SANCUS_COMPILER =
+CMAKE_FLAGS_SANCUS_COMPILER += $(CMAKE_FLAGS_SANCUS)
+CMAKE_FLAGS_SANCUS_COMPILER += -DSECURITY=$(SANCUS_SECURITY)
+#CMAKE_FLAGS_SANCUS_COMPILER += -DMASTER_KEY=$(SANCUS_KEY)
+
+CMAKE_FLAGS_SANCUS_SUPPORT =
+CMAKE_FLAGS_SANCUS_SUPPORT += $(CMAKE_FLAGS_SANCUS)
+#CMAKE_FLAGS_SANCUS_SUPPORT += -DSECURITY=$(SANCUS_SECURITY)
+#CMAKE_FLAGS_SANCUS_SUPPORT += -DMASTER_KEY=$(SANCUS_KEY)
 
 CONFIGURE_FLAGS_COMMON =
 CONFIGURE_FLAGS_COMMON += --target=msp430-elf
@@ -101,6 +109,16 @@ MAKE_FLAGS_LEGACY_SANCUS += MASTER_KEY=$(SANCUS_KEY)
 .PHONY: all
 all: 
 
+.PHONY: full
+full:
+	$(MAKE) clean
+	$(MAKE) configure
+	$(MAKE) install-mspgcc
+	$(MAKE) build-and-install-sancus-core
+	$(MAKE) build-and-install-sancus-compiler
+	$(MAKE) build-and-install-sancus-support
+	$(MAKE) install-llvm
+
 .PHONY: fetch
 fetch: fetch-mspgcc
 fetch: fetch-llvm
@@ -113,14 +131,15 @@ configure: configure-legacy-sancus
 	$(MKDIR) $(INSTALLDIR)
 
 .PHONY: install-llvm
-install-llvm:
+install-llvm: build-llvm
 	$(CMAKE) --build $(BUILDDIR_LLVM) --target install -- -j$(JOBS)
 
 .PHONY: install-mspgcc
-install-mspgcc:
+install-mspgcc: build-mspgcc
 	$(MAKE) -C $(BUILDDIR_BINUTILS) install # DESTDIR=$(INSTALLDIR)
 	$(MAKE) -C $(BUILDDIR_GCC) install # DESTDIR=$(INSTALLDIR)
-	#TODO: $(UNZIP) $(TI_MSPGCC_SUPPORT_ZIP)
+	$(UNZIP) $(TI_MSPGCC_SUPPORT_ZIP)
+	cp -R $(TI_MSPGCC_SUPPORT)/include $(INSTALLDIR)
 
 .PHONY: fetch-llvm
 fetch-llvm:
@@ -131,6 +150,11 @@ fetch-llvm:
 fetch-legacy-sancus:
 	$(GIT) clone $(LEGACY_SANCUS_FORK) $(SRCDIR_LEGACY_SANCUS)
 	cd $(SRCDIR_LEGACY_SANCUS) && $(GIT) remote add upstream $(LEGACY_SANCUS_REPO)
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) install_deps
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) sancus-core
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) sancus-compiler
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) sancus-support
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) sancus-examples
 
 .PHONY: fetch-mpsgcc
 fetch-mspgcc:
@@ -159,7 +183,6 @@ configure-llvm:
 
 .PHONY: configure-legacy-sancus
 configure-legacy-sancus:
-	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) install_deps
 	$(MKDIR) $(BUILDDIR_SANCUS_COMPILER)
 	$(MKDIR) $(BUILDDIR_SANCUS_SUPPORT)
 
@@ -170,13 +193,13 @@ build-and-install-sancus-core:
 .PHONY: build-and-install-legacy-sancus-compiler
 build-and-install-legacy-sancus-compiler:
 	cd $(BUILDDIR_SANCUS_COMPILER) && \
-		$(CMAKE) $(CMAKE_FLAGS_SANCUS) $(SRCDIR_SANCUS_COMPILER)
+		$(CMAKE) $(CMAKE_FLAGS_SANCUS_COMPILER) $(SRCDIR_SANCUS_COMPILER)
 	$(CMAKE) --build $(BUILDDIR_SANCUS_COMPILER) --target install
 
 .PHONY: build-and-install-sancus-support
 build-and-install-sancus-support:
 	cd $(BUILDDIR_SANCUS_SUPPORT) && \
-		$(CMAKE) $(CMAKE_FLAGS_SANCUS) $(SRCDIR_SANCUS_SUPPORT)
+		$(CMAKE) $(CMAKE_FLAGS_SANCUS_SUPPORT) $(SRCDIR_SANCUS_SUPPORT)
 	$(CMAKE) --build $(BUILDDIR_SANCUS_SUPPORT) --target install
 
 .PHONY: build-llvm
