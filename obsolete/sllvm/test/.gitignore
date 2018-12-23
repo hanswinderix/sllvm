@@ -22,3 +22,4 @@ sim.out
 sensor.hash
 hello.wrap
 x
+Makefile.local
