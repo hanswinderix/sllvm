@@ -17,7 +17,7 @@ CMAKE = cmake
 BUILDDIR   = $(PWD)/build
 INSTALLDIR = $(PWD)/install
 
-LLVM_FORK          = https://github.com/hanswinderix/llvm.git
+SLLVM_REPO         = https://github.com/hanswinderix/llvm.git
 CLANG_FORK         = https://github.com/hanswinderix/clang.git
 LEGACY_SANCUS_REPO = https://github.com/sancus-pma/sancus-main.git
 LEGACY_SANCUS_FORK = https://github.com/hanswinderix/sancus-main.git
@@ -28,20 +28,20 @@ TI_MSPGCC_VER         = 7.3.2.154
 TI_MSPGCC_VER_SUP     = 1.206
 TI_MSPGCC_NAME        = msp430-gcc-$(TI_MSPGCC_VER)-source-patches
 TI_MSPGCC_TBZ         = $(TI_MSPGCC_NAME).tar.bz2
-TI_MSPGCC_SUPPORT     = msp430-gcc-support-files-$(TI_MSPGCC_VER_SUP)
-TI_MSPGCC_SUPPORT_ZIP = $(TI_MSPGCC_SUPPORT).zip
+TI_MSPGCC_SUPPORT     = msp430-gcc-support-files
+TI_MSPGCC_SUPPORT_ZIP = $(TI_MSPGCC_SUPPORT)-$(TI_MSPGCC_VER_SUP).zip
 
 SRCDIR_LEGACY_SANCUS   = $(PWD)/sancus-main
 SRCDIR_SANCUS_COMPILER = $(SRCDIR_LEGACY_SANCUS)/sancus-compiler
 SRCDIR_SANCUS_SUPPORT  = $(SRCDIR_LEGACY_SANCUS)/sancus-support
-SRCDIR_LLVM            = $(PWD)/llvm
-SRCDIR_CLANG           = $(SRCDIR_LLVM)/src/tools/clang
+SRCDIR_SLLVM           = $(PWD)/sllvm
+SRCDIR_CLANG           = $(SRCDIR_SLLVM)/src/tools/clang
 SRCDIR_MSPGCC          = $(PWD)/$(TI_MSPGCC_NAME)
 SRCDIR_GCC             = $(SRCDIR_MSPGCC)/gcc
 SRCDIR_BINUTILS        = $(SRCDIR_MSPGCC)/binutils
 SRCDIR_NEWLIB          = $(SRCDIR_MSPGCC)/newlib
 
-BUILDDIR_LLVM     = $(BUILDDIR)/llvm
+BUILDDIR_SLLVM    = $(BUILDDIR)/sllvm
 BUILDDIR_GCC      = $(BUILDDIR)/gcc
 BUILDDIR_BINUTILS = $(BUILDDIR)/binutils
 BUILDDIR_GDB      = $(BUILDDIR)/gdb
@@ -49,15 +49,15 @@ BUILDDIR_GDB      = $(BUILDDIR)/gdb
 BUILDDIR_SANCUS_COMPILER = $(BUILDDIR)/sancus-compiler
 BUILDDIR_SANCUS_SUPPORT  = $(BUILDDIR)/sancus-support
 
-CMAKE_FLAGS_LLVM =
-CMAKE_FLAGS_LLVM += -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
-CMAKE_FLAGS_LLVM += -DCMAKE_INSTALL_PREFIX=$(INSTALLDIR)
-CMAKE_FLAGS_LLVM += -DLLVM_USE_LINKER=gold
-CMAKE_FLAGS_LLVM += -DLLVM_ENABLE_ASSERTIONS=ON
-CMAKE_FLAGS_LLVM += -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-#CMAKE_FLAGS_LLVM += -DLLVM_BUILD_TOOLS=OFF
-CMAKE_FLAGS_LLVM += -DLLVM_TARGETS_TO_BUILD=MSP430
-#CMAKE_FLAGS_LLVM +=-DLLVM_TARGETS_TO_BUILD="MSP430;X86"
+CMAKE_FLAGS_SLLVM =
+CMAKE_FLAGS_SLLVM += -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
+CMAKE_FLAGS_SLLVM += -DCMAKE_INSTALL_PREFIX=$(INSTALLDIR)
+CMAKE_FLAGS_SLLVM += -DLLVM_USE_LINKER=gold
+CMAKE_FLAGS_SLLVM += -DLLVM_ENABLE_ASSERTIONS=ON
+CMAKE_FLAGS_SLLVM += -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+#CMAKE_FLAGS_SLLVM += -DLLVM_BUILD_TOOLS=OFF
+CMAKE_FLAGS_SLLVM += -DLLVM_TARGETS_TO_BUILD=MSP430
+#CMAKE_FLAGS_SLLVM +=-DLLVM_TARGETS_TO_BUILD="MSP430;X86"
 
 CMAKE_FLAGS_SANCUS =
 CMAKE_FLAGS_SANCUS += -DCMAKE_INSTALL_PREFIX=$(INSTALLDIR)
@@ -109,42 +109,38 @@ MAKE_FLAGS_LEGACY_SANCUS += MASTER_KEY=$(SANCUS_KEY)
 .PHONY: all
 all: 
 
-.PHONY: full
-full:
+.PHONY: clean-install
+clean-install:
 	$(MAKE) clean
 	$(MAKE) configure
-	$(MAKE) install-mspgcc
-	$(MAKE) build-and-install-sancus-core
-	$(MAKE) build-and-install-sancus-compiler
-	$(MAKE) build-and-install-sancus-support
-	$(MAKE) install-llvm
+	$(MAKE) install
+	
+.PHONY: install
+install:
+	$(MAKE) install-mspgcc-binutils
+	$(MAKE) install-mspgcc-gcc
+	$(MAKE) install-sancus-core
+	$(MAKE) install-legacy-sancus-compiler
+	$(MAKE) install-sancus-support
+	$(MAKE) install-sllvm
 
 .PHONY: fetch
 fetch: fetch-mspgcc
-fetch: fetch-llvm
+fetch: fetch-sllvm
 fetch: fetch-legacy-sancus
 
 .PHONY: configure
 configure: configure-mspgcc
-configure: configure-llvm
+configure: configure-sllvm
 configure: configure-legacy-sancus
 	$(MKDIR) $(INSTALLDIR)
 
-.PHONY: install-llvm
-install-llvm: build-llvm
-	$(CMAKE) --build $(BUILDDIR_LLVM) --target install -- -j$(JOBS)
-
-.PHONY: install-mspgcc
-install-mspgcc: build-mspgcc
-	$(MAKE) -C $(BUILDDIR_BINUTILS) install # DESTDIR=$(INSTALLDIR)
-	$(MAKE) -C $(BUILDDIR_GCC) install # DESTDIR=$(INSTALLDIR)
-	$(UNZIP) $(TI_MSPGCC_SUPPORT_ZIP)
-	cp -R $(TI_MSPGCC_SUPPORT)/include $(INSTALLDIR)
-
-.PHONY: fetch-llvm
-fetch-llvm:
-	$(GIT) clone $(LLVM_FORK) $(SRCDIR_LLVM)
-	$(GIT) clone $(CLANG_FORK) $(SRCDIR_CLANG)
+.PHONY: fetch-mpsgcc
+fetch-mspgcc:
+	$(WGET) $(TI_MSPGCC_URL)/$(TI_MSPGCC_TBZ)
+	$(TAR) -jxf $(TI_MSPGCC_TBZ)
+	cd $(SRCDIR_MSPGCC) && $(SH) README-apply-patches.sh
+	$(WGET) $(TI_MSPGCC_URL)/$(TI_MSPGCC_SUPPORT_ZIP)
 
 .PHONY: fetch-legacy-sancus
 fetch-legacy-sancus:
@@ -156,14 +152,12 @@ fetch-legacy-sancus:
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) sancus-support
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) sancus-examples
 
-.PHONY: fetch-mpsgcc
-fetch-mspgcc:
-	$(WGET) $(TI_MSPGCC_URL)/$(TI_MSPGCC_TBZ)
-	$(TAR) -jxf $(TI_MSPGCC_TBZ)
-	cd $(SRCDIR_MSPGCC) && $(SH) README-apply-patches.sh
-	$(WGET) $(TI_MSPGCC_URL)/$(TI_MSPGCC_SUPPORT_ZIP)
+.PHONY: fetch-sllvm
+fetch-sllvm:
+	$(GIT) clone $(SLLVM_FORK) $(SRCDIR_SLLVM)
+	$(GIT) clone $(CLANG_FORK) $(SRCDIR_CLANG)
 
-# Inspired on $(SRCDIR_MSPGCC)/README-build.sh
+# Based on $(SRCDIR_MSPGCC)/README-build.sh
 .PHONY: configure-mspgcc
 configure-mspgcc:
 	cd $(SRCDIR_GCC) && $(SH) ./contrib/download_prerequisites
@@ -176,40 +170,62 @@ configure-mspgcc:
 		$(SRCDIR_BINUTILS)/configure $(CONFIGURE_FLAGS_BINUTILS)
 	cd $(BUILDDIR_GCC) && $(SRCDIR_GCC)/configure $(CONFIGURE_FLAGS_BINUTILS)
 
-.PHONY: configure-llvm
-configure-llvm:
-	$(MKDIR) $(BUILDDIR_LLVM)
-	cd $(BUILDDIR_LLVM) && $(CMAKE) $(CMAKE_FLAGS_LLVM) $(SRCDIR_LLVM)
+.PHONY: configure-sllvm
+configure-sllvm:
+	$(MKDIR) $(BUILDDIR_SLLVM)
+	cd $(BUILDDIR_SLLVM) && $(CMAKE) $(CMAKE_FLAGS_SLLVM) $(SRCDIR_SLLVM)
 
-.PHONY: configure-legacy-sancus
-configure-legacy-sancus:
-	$(MKDIR) $(BUILDDIR_SANCUS_COMPILER)
+.PHONY: build-mspgcc-binutils
+build-mspgcc-binutils:
+	$(MAKE) -C $(BUILDDIR_BINUTILS) -j$(JOBS)
+
+.PHONY: build-mspgcc-gcc
+build-mspgcc-gcc:
+	export PATH=$(INSTALLDIR)/bin:$$PATH; $(MAKE) -C $(BUILDDIR_GCC) -j$(JOBS)
+
+.PHONY: build-sancus-support
+build-sancus-support:
 	$(MKDIR) $(BUILDDIR_SANCUS_SUPPORT)
-
-.PHONY: build-and-install-sancus-core
-build-and-install-sancus-core:
-	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) $(MAKE_FLAGS_LEGACY_SANCUS) core-build
-
-.PHONY: build-and-install-legacy-sancus-compiler
-build-and-install-legacy-sancus-compiler:
-	cd $(BUILDDIR_SANCUS_COMPILER) && \
-		$(CMAKE) $(CMAKE_FLAGS_SANCUS_COMPILER) $(SRCDIR_SANCUS_COMPILER)
-	$(CMAKE) --build $(BUILDDIR_SANCUS_COMPILER) --target install
-
-.PHONY: build-and-install-sancus-support
-build-and-install-sancus-support:
 	cd $(BUILDDIR_SANCUS_SUPPORT) && \
 		$(CMAKE) $(CMAKE_FLAGS_SANCUS_SUPPORT) $(SRCDIR_SANCUS_SUPPORT)
+
+.PHONY: build-sllvm
+build-sllvm:
+	$(CMAKE) --build $(BUILDDIR_SLLVM) -- -j$(JOBS)
+
+.PHONY: install-mspgcc-binutils
+install-mspgcc-binutils: build-mspgcc-binutils
+	$(MAKE) -C $(BUILDDIR_BINUTILS) install
+
+.PHONY: install-mspgcc-gcc
+install-mspgcc-gcc: build-mspgcc-gcc
+	$(MAKE) -C $(BUILDDIR_GCC) install
+	$(RM) -r $(TI_MSPGCC_SUPPORT)
+	$(UNZIP) $(TI_MSPGCC_SUPPORT_ZIP)
+	$(MKDIR) $(INSTALLDIR)/include
+	cp -R $(TI_MSPGCC_SUPPORT)/include/* $(INSTALLDIR)/include
+
+.PHONY: install-sancus-core
+install-sancus-core:
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) $(MAKE_FLAGS_LEGACY_SANCUS) core-build
+
+.PHONY: build-legacy-sancus-compiler
+build-legacy-sancus-compiler:
+	$(MKDIR) $(BUILDDIR_SANCUS_COMPILER)
+	cd $(BUILDDIR_SANCUS_COMPILER) && \
+		$(CMAKE) $(CMAKE_FLAGS_SANCUS_COMPILER) $(SRCDIR_SANCUS_COMPILER)
+
+.PHONY: install-legacy-sancus-compiler
+install-legacy-sancus-compiler: build-legacy-sancus-compiler
+	$(CMAKE) --build $(BUILDDIR_SANCUS_COMPILER) --target install
+
+.PHONY: install-sancus-support
+install-sancus-support: build-sancus-support
 	$(CMAKE) --build $(BUILDDIR_SANCUS_SUPPORT) --target install
 
-.PHONY: build-llvm
-build-llvm:
-	$(CMAKE) --build $(BUILDDIR_LLVM) -- -j$(JOBS)
-
-.PHONY: build-mspgcc
-build-mspgcc:
-	$(MAKE) -C $(BUILDDIR_BINUTILS)
-	$(MAKE) -C $(BUILDDIR_GCC)
+.PHONY: install-sllvm
+install-sllvm: build-sllvm
+	$(CMAKE) --build $(BUILDDIR_SLLVM) --target install
 
 .PHONY: clean
 clean:
@@ -221,6 +237,6 @@ clean-fetch:
 	$(RM) $(TI_MSPGCC_TBZ)
 	$(RM) -r $(SRCDIR_MSPGCC)
 	$(RM) $(TI_MSPGCC_SUPPORT_ZIP)
-	#$(RM) -r $(SRCDIR_LLVM)
+	#$(RM) -r $(SRCDIR_SLLVM)
 	#$(RM) -r $(SRCDIR_LEGACY_SANCUS)
 	#$(RM) -r $(SRCDIR_CLANG)

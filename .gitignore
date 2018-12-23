@@ -1,6 +1,6 @@
 msp430-gcc-*
-llvm
 sancus-main
+sllvm
 
 build
 install
