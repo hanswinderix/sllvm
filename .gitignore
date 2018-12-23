@@ -1,0 +1,6 @@
+msp430-gcc-*
+llvm
+sancus-main
+
+build
+install
