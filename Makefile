@@ -184,7 +184,7 @@ configure-mspgcc:
 	$(MKDIR) $(BUILDDIR_GDB)
 	cd $(BUILDDIR_BINUTILS) && \
 		$(SRCDIR_BINUTILS)/configure $(CONFIGURE_FLAGS_BINUTILS)
-	cd $(BUILDDIR_GCC) && $(SRCDIR_GCC)/configure $(CONFIGURE_FLAGS_BINUTILS)
+	cd $(BUILDDIR_GCC) && $(SRCDIR_GCC)/configure $(CONFIGURE_FLAGS_GCC)
 
 .PHONY: configure-sllvm
 configure-sllvm:
