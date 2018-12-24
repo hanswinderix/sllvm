@@ -260,13 +260,13 @@ install-sllvm: build-sllvm
 .PHONY: status
 status:
 	$(GIT) status -s
-	$(GIT) status -s $(SRCDIR_LEGACY_SANCUS)
-	$(GIT) status -s $(SRCDIR_SANCUS_CORE)
-	$(GIT) status -s $(SRCDIR_SANCUS_COMPILER)
-	$(GIT) status -s $(SRCDIR_SANCUS_SUPPORT)
-	$(GIT) status -s $(SRCDIR_SANCUS_EXAMPLES)
-	$(GIT) status -s $(SRCDIR_SLLVM)
-	$(GIT) status -s $(SRCDIR_CLANG)
+	cd $(SRCDIR_LEGACY_SANCUS)   && $(GIT) status -s 
+	cd $(SRCDIR_SANCUS_CORE)     && $(GIT) status -s 
+	cd $(SRCDIR_SANCUS_COMPILER) && $(GIT) status -s 
+	cd $(SRCDIR_SANCUS_SUPPORT)  && $(GIT) status -s 
+	cd $(SRCDIR_SANCUS_EXAMPLES) && $(GIT) status -s 
+	cd $(SRCDIR_SLLVM)           && $(GIT) status -s 
+	cd $(SRCDIR_CLANG)           && $(GIT) status -s 
 
 .PHONY: pull
 pull: pull-sancus
