@@ -17,7 +17,9 @@ CMAKE = cmake
 BUILDDIR   = $(PWD)/build
 INSTALLDIR = $(PWD)/install
 
-SLLVM_REPO         = https://github.com/hanswinderix/llvm.git
+LLVM_REPO          = https://github.com/llvm-mirror/llvm.git
+LLVM_FORK          = https://github.com/hanswinderix/llvm.git
+CLANG_REPO         = https://github.com/llvm-mirror/clang.git
 CLANG_FORK         = https://github.com/hanswinderix/clang.git
 LEGACY_SANCUS_REPO = https://github.com/sancus-pma/sancus-main.git
 LEGACY_SANCUS_FORK = https://github.com/hanswinderix/sancus-main.git
@@ -32,8 +34,10 @@ TI_MSPGCC_SUPPORT     = msp430-gcc-support-files
 TI_MSPGCC_SUPPORT_ZIP = $(TI_MSPGCC_SUPPORT)-$(TI_MSPGCC_VER_SUP).zip
 
 SRCDIR_LEGACY_SANCUS   = $(PWD)/sancus-main
+SRCDIR_SANCUS_CORE     = $(SRCDIR_LEGACY_SANCUS)/sancus-core
 SRCDIR_SANCUS_COMPILER = $(SRCDIR_LEGACY_SANCUS)/sancus-compiler
 SRCDIR_SANCUS_SUPPORT  = $(SRCDIR_LEGACY_SANCUS)/sancus-support
+SRCDIR_SANCUS_EXAMPLES = $(SRCDIR_LEGACY_SANCUS)/sancus-examples
 SRCDIR_SLLVM           = $(PWD)/sllvm
 SRCDIR_CLANG           = $(SRCDIR_SLLVM)/tools/clang
 SRCDIR_MSPGCC          = $(PWD)/$(TI_MSPGCC_NAME)
@@ -164,8 +168,10 @@ fetch-legacy-sancus:
 
 .PHONY: fetch-sllvm
 fetch-sllvm:
-	$(GIT) clone $(SLLVM_REPO) $(SRCDIR_SLLVM)
+	$(GIT) clone $(LLVM_FORK) $(SRCDIR_SLLVM)
+	cd $(SRCDIR_SLLVM) && $(GIT) remote add upstream $(LLVM_REPO)
 	$(GIT) clone $(CLANG_FORK) $(SRCDIR_CLANG)
+	cd $(SRCDIR_CLANG) && $(GIT) remote add upstream $(CLANG_REPO)
 
 # Based on $(SRCDIR_MSPGCC)/README-build.sh
 .PHONY: configure-mspgcc
@@ -237,6 +243,48 @@ install-sancus-support: build-sancus-support
 .PHONY: install-sllvm
 install-sllvm: build-sllvm
 	$(CMAKE) --build $(BUILDDIR_SLLVM) --target install
+
+.PHONY: status
+status:
+	$(GIT) status -s
+	$(GIT) status -s $(SRCDIR_LEGACY_SANCUS)
+	$(GIT) status -s $(SRCDIR_SANCUS_CORE)
+	$(GIT) status -s $(SRCDIR_SANCUS_COMPILER)
+	$(GIT) status -s $(SRCDIR_SANCUS_SUPPORT)
+	$(GIT) status -s $(SRCDIR_SANCUS_EXAMPLES)
+	$(GIT) status -s $(SRCDIR_SLLVM)
+	$(GIT) status -s $(SRCDIR_CLANG)
+
+.PHONY: pull
+pull: pull-sancus
+pull: pull-sllvm
+
+.PHONY: pull-sancus
+pull-sancus:
+	cd $(SRCDIR_LEGACY_SANCUS)   && $(GIT) pull
+	cd $(SRCDIR_SANCUS_CORE)     && $(GIT) pull
+	cd $(SRCDIR_SANCUS_COMPILER) && $(GIT) pull
+	cd $(SRCDIR_SANCUS_SUPPORT)  && $(GIT) pull
+	cd $(SRCDIR_SANCUS_EXAMPLES) && $(GIT) pull
+
+.PHONY: pull-sllvm
+pull-sllvm:
+	cd $(SRCDIR_SLLVM) && $(GIT) pull 
+	cd $(SRCDIR_CLANG) && $(GIT) pull 
+
+.PHONY: push-sllvm
+push-sllvm:
+	cd $(SRCDIR_SLLVM) && $(GIT) push 
+	cd $(SRCDIR_CLANG) && $(GIT) push 
+
+.PHONY: sync-llvm
+sync-llvm:
+	cd $(SRCDIR_SLLVM) && $(GIT) fetch upstream
+	cd $(SRCDIR_SLLVM) && $(GIT) checkout master
+	cd $(SRCDIR_SLLVM) && $(GIT) merge upstream/master
+	cd $(SRCDIR_CLANG) && $(GIT) fetch upstream
+	cd $(SRCDIR_CLANG) && $(GIT) checkout master
+	cd $(SRCDIR_CLANG) && $(GIT) merge upstream/master
 
 .PHONY: clean
 clean:
