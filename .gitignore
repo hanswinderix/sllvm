@@ -1,3 +1,5 @@
+Makefile.local
+
 msp430-gcc-*
 sancus-main
 sllvm

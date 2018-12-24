@@ -1,10 +1,10 @@
 -include Makefile.local
 
-BUILD_TYPE = Release # One of (Debug, Release)
-JOBS       = 4
+BUILD_TYPE ?= Release # One of (Debug, Release)
+JOBS       ?= 1
 
-SANCUS_SECURITY = 64
-SANCUS_KEY      = deadbeefcafebabe
+SANCUS_SECURITY ?= 64
+SANCUS_KEY      ?= deadbeefcafebabe
 
 WGET  = wget
 GIT   = git
@@ -35,7 +35,7 @@ SRCDIR_LEGACY_SANCUS   = $(PWD)/sancus-main
 SRCDIR_SANCUS_COMPILER = $(SRCDIR_LEGACY_SANCUS)/sancus-compiler
 SRCDIR_SANCUS_SUPPORT  = $(SRCDIR_LEGACY_SANCUS)/sancus-support
 SRCDIR_SLLVM           = $(PWD)/sllvm
-SRCDIR_CLANG           = $(SRCDIR_SLLVM)/src/tools/clang
+SRCDIR_CLANG           = $(SRCDIR_SLLVM)/tools/clang
 SRCDIR_MSPGCC          = $(PWD)/$(TI_MSPGCC_NAME)
 SRCDIR_GCC             = $(SRCDIR_MSPGCC)/gcc
 SRCDIR_BINUTILS        = $(SRCDIR_MSPGCC)/binutils
@@ -55,9 +55,8 @@ CMAKE_FLAGS_SLLVM += -DCMAKE_INSTALL_PREFIX=$(INSTALLDIR)
 CMAKE_FLAGS_SLLVM += -DLLVM_USE_LINKER=gold
 CMAKE_FLAGS_SLLVM += -DLLVM_ENABLE_ASSERTIONS=ON
 CMAKE_FLAGS_SLLVM += -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-#CMAKE_FLAGS_SLLVM += -DLLVM_BUILD_TOOLS=OFF
 CMAKE_FLAGS_SLLVM += -DLLVM_TARGETS_TO_BUILD=MSP430
-#CMAKE_FLAGS_SLLVM +=-DLLVM_TARGETS_TO_BUILD="MSP430;X86"
+#CMAKE_FLAGS_SLLVM += -DLLVM_TARGETS_TO_BUILD="MSP430;X86"
 
 CMAKE_FLAGS_SANCUS =
 CMAKE_FLAGS_SANCUS += -DCMAKE_INSTALL_PREFIX=$(INSTALLDIR)
@@ -108,15 +107,12 @@ MAKE_FLAGS_LEGACY_SANCUS += MASTER_KEY=$(SANCUS_KEY)
 
 .PHONY: all
 all: 
+	@echo BUILD_TYPE=$(BUILD_TYPE)
+	@echo JOBS=$(JOBS)
 
-.PHONY: clean-install
-clean-install:
-	$(MAKE) clean
-	$(MAKE) configure
-	$(MAKE) install
-	
 .PHONY: install
 install:
+	$(MKDIR) $(INSTALLDIR)
 	$(MAKE) install-mspgcc-binutils
 	$(MAKE) install-mspgcc-gcc
 	$(MAKE) install-sancus-core
@@ -124,16 +120,31 @@ install:
 	$(MAKE) install-sancus-support
 	$(MAKE) install-sllvm
 
+.PHONY: install-clean
+install-clean:
+	$(MAKE) clean
+	$(MAKE) configure
+	$(MAKE) install
+
+.PHONY: install-clean-fetch
+install-clean-fetch:
+	#$(MAKE) install-deps
+	$(MAKE) clean-fetch
+	$(MAKE) fetch
+	$(MAKE) install-clean
+
+.PHONY: install-deps
+install-deps:
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) install_deps
+
 .PHONY: fetch
 fetch: fetch-mspgcc
-fetch: fetch-sllvm
 fetch: fetch-legacy-sancus
+fetch: fetch-sllvm
 
 .PHONY: configure
 configure: configure-mspgcc
 configure: configure-sllvm
-configure: configure-legacy-sancus
-	$(MKDIR) $(INSTALLDIR)
 
 .PHONY: fetch-mpsgcc
 fetch-mspgcc:
@@ -146,7 +157,6 @@ fetch-mspgcc:
 fetch-legacy-sancus:
 	$(GIT) clone $(LEGACY_SANCUS_FORK) $(SRCDIR_LEGACY_SANCUS)
 	cd $(SRCDIR_LEGACY_SANCUS) && $(GIT) remote add upstream $(LEGACY_SANCUS_REPO)
-	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) install_deps
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) sancus-core
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) sancus-compiler
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) sancus-support
@@ -154,7 +164,7 @@ fetch-legacy-sancus:
 
 .PHONY: fetch-sllvm
 fetch-sllvm:
-	$(GIT) clone $(SLLVM_FORK) $(SRCDIR_SLLVM)
+	$(GIT) clone $(SLLVM_REPO) $(SRCDIR_SLLVM)
 	$(GIT) clone $(CLANG_FORK) $(SRCDIR_CLANG)
 
 # Based on $(SRCDIR_MSPGCC)/README-build.sh
@@ -181,6 +191,7 @@ build-mspgcc-binutils:
 
 .PHONY: build-mspgcc-gcc
 build-mspgcc-gcc:
+	$(MKDIR) $(INSTALLDIR)
 	export PATH=$(INSTALLDIR)/bin:$$PATH; $(MAKE) -C $(BUILDDIR_GCC) -j$(JOBS)
 
 .PHONY: build-sancus-support
@@ -237,6 +248,7 @@ clean-fetch:
 	$(RM) $(TI_MSPGCC_TBZ)
 	$(RM) -r $(SRCDIR_MSPGCC)
 	$(RM) $(TI_MSPGCC_SUPPORT_ZIP)
-	#$(RM) -r $(SRCDIR_SLLVM)
-	#$(RM) -r $(SRCDIR_LEGACY_SANCUS)
-	#$(RM) -r $(SRCDIR_CLANG)
+	$(RM) -r $(TI_MSPGCC_SUPPORT)
+	$(RM) -r $(SRCDIR_SLLVM)
+	$(RM) -r $(SRCDIR_LEGACY_SANCUS)
+	$(RM) -r $(SRCDIR_CLANG)
