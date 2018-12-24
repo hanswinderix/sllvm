@@ -218,7 +218,7 @@ install-mspgcc-gcc: build-mspgcc-gcc
 
 .PHONY: install-sancus-core
 install-sancus-core:
-	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) $(MAKE_FLAGS_LEGACY_SANCUS) core-build
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) $(MAKE_FLAGS_LEGACY_SANCUS) core-install
 
 .PHONY: build-legacy-sancus-compiler
 build-legacy-sancus-compiler:
