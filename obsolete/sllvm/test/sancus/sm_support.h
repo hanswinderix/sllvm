@@ -213,9 +213,9 @@ extern char __unprotected_sp;
  * @endcode
  */
 #if __GNUC__ >= 5 || __clang_major__ >= 5
-#define SM_VECTOR 7
-#else
 #define SM_VECTOR 14
+#else
+#define SM_VECTOR 26
 #endif
 
 /**
