@@ -149,15 +149,16 @@ install-from-scratch:
 	$(MAKE) install-deps
 	$(MAKE) install-after-clean-fetch
 
-# TODO: Currently the 'build-legacy-sancus-compiler' target needs 
+# TODO: Currently, the 'build-legacy-sancus-compiler' target needs 
 #       clang-sancus. This dependency should be removed as SLLVM *probably* 
-#       only requires the sm_support.h header to be installed for compiling
-#       the Sancus examples.
+#       only needs the sm_support.h header from sancus-compiler header which
+#       is required to compile the Sancus examples.
 .PHONY: install-deps
 install-deps:
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) clang-sancus # TODO: Remove (see above)
 
-.PHONY: install-and-test-legacy-sancus
+.PHONY: install-and-test-sancus-legacy
+install-and-test-sancus-legacy:
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) install
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) test
 
