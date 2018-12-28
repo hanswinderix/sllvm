@@ -131,22 +131,30 @@ install:
 	$(MAKE) install-sancus-support
 	$(MAKE) install-sllvm
 
-.PHONY: install-clean
-install-clean:
+.PHONY: install-after-clean
+install-after-clean:
 	$(MAKE) clean
 	$(MAKE) configure
 	$(MAKE) install
 
-.PHONY: install-clean-fetch
-install-clean-fetch:
-	#$(MAKE) install-deps
+.PHONY: install-after-clean-fetch
+install-after-clean-fetch:
 	$(MAKE) clean-fetch
 	$(MAKE) fetch
 	$(MAKE) install-clean
 
+.PHONY: install-from-scratch
+install-from-scratch:
+	$(MAKE) install-deps
+	$(MAKE) install-after-clean-fetch
+
 .PHONY: install-deps
 install-deps:
-	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) install_deps
+	#TODO
+
+.PHONY: install-and-test-legacy-sancus
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) install
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) test
 
 .PHONY: fetch
 fetch: fetch-mspgcc
@@ -235,7 +243,7 @@ install-mspgcc-binutils: build-mspgcc-binutils
 
 .PHONY: install-mspgcc-gcc
 install-mspgcc-gcc: build-mspgcc-gcc
-	$(MAKE) -C $(BUILDDIR_GCC) install
+	export PATH=$(INSTALLDIR)/bin:$$PATH; $(MAKE) -C $(BUILDDIR_GCC) install
 	$(RM) -r $(TI_MSPGCC_SUPPORT)
 	$(UNZIP) $(TI_MSPGCC_SUPPORT_ZIP)
 	$(MKDIR) $(INSTALLDIR)/include
