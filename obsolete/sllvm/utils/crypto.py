@@ -24,7 +24,7 @@ def fill_hashes(loader, fname):
         f.seek(offset)
         f.write(hash)
 
-def wrap_text_sections(loader, fname, key):
+def wrap_text(loader, fname, key):
   elf = loader.get_ELF()
   shutil.copy(elf.get_name(), fname)
   with open(fname, 'rb+') as f:
@@ -55,22 +55,26 @@ def wrap_text_sections(loader, fname, key):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-k', '--key', type=lambda x: bytes.fromhex(x))
-parser.add_argument('-i', '--id', type=lambda x: int(x, 16))
-parser.add_argument('-w', '--wrap-text', action='store_true')
-parser.add_argument('-v', '--gen-vendor-key', action='store_true')
-parser.add_argument('-f', '--fill-hashes', action='store_true')
+#parser.add_argument('-i', '--id', type=lambda x: int(x, 16))
+#parser.add_argument('-v', '--gen-vendor-key', action='store_true')
+parser.add_argument('-g', '--gen-vendor-key', type=lambda x: int(x, 16))
+parser.add_argument('-w', '--wrap-sm-text-sections', action='store_true')
+#parser.add_argument('-w', '--wrap-text', action='store_true')
+#parser.add_argument('-f', '--fill-hashes', action='store_true')
+parser.add_argument('-f', '--fill-macs', action='store_true')
 parser.add_argument('-o', '--output-file')
+parser.add_argument('-v', '--verbose', action='store_true')
 parser.add_argument('infile')
 args = parser.parse_args()
 
 loader = loader.Loader(args.infile)
 
 if args.gen_vendor_key:
-  id = args.id.to_bytes(2, byteorder='little')
+  id = args.gen_vendor_key.to_bytes(2, byteorder='little')
   print(ccrypto.compute_sancus_mac(args.key, id).hex())
 
-if args.wrap_text:
-  wrap_text_sections(loader, args.output_file, args.key)
+if args.wrap_sm_text_sections:
+  wrap_text(loader, args.output_file, args.key)
 
-if args.fill_hashes:
+if args.fill_macs:
   fill_hashes(loader, args.output_file)
