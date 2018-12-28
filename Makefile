@@ -162,6 +162,11 @@ install-and-test-sancus-legacy:
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) install
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) test
 
+.PHONY: test
+test:	
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) examples-clean
+	$(MAKE) SLLVM_INSTALL_DIR=$(INSTALLDIR) -C $(SRCDIR_LEGACY_SANCUS) examples
+
 .PHONY: fetch
 fetch: fetch-mspgcc
 fetch: fetch-legacy-sancus
