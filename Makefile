@@ -13,6 +13,7 @@ UNZIP = unzip
 SH    = bash
 MKDIR = mkdir -p
 CMAKE = cmake
+APT   = apt
 
 BUILDDIR   = $(PWD)/build
 INSTALLDIR = $(PWD)/install
@@ -27,11 +28,11 @@ LEGACY_SANCUS_FORK = https://github.com/hanswinderix/sancus-main.git
 # See http://www.ti.com/tool/MSP430-GCC-OPENSOURCE
 TI_MSPGCC_URL         = http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/latest/exports
 TI_MSPGCC_VER         = 7.3.2.154
-TI_MSPGCC_VER_SUP     = 1.206
+TI_MSPGCC_SUPPORT_VER = 1.206
 TI_MSPGCC_NAME        = msp430-gcc-$(TI_MSPGCC_VER)-source-patches
 TI_MSPGCC_TBZ         = $(TI_MSPGCC_NAME).tar.bz2
 TI_MSPGCC_SUPPORT     = msp430-gcc-support-files
-TI_MSPGCC_SUPPORT_ZIP = $(TI_MSPGCC_SUPPORT)-$(TI_MSPGCC_VER_SUP).zip
+TI_MSPGCC_SUPPORT_ZIP = $(TI_MSPGCC_SUPPORT)-$(TI_MSPGCC_SUPPORT_VER).zip
 
 SRCDIR_LEGACY_SANCUS   = $(PWD)/sancus-main
 SRCDIR_SANCUS_CORE     = $(SRCDIR_LEGACY_SANCUS)/sancus-core
@@ -141,16 +142,20 @@ install-after-clean:
 install-after-clean-fetch:
 	$(MAKE) clean-fetch
 	$(MAKE) fetch
-	$(MAKE) install-clean
+	$(MAKE) install-after-clean
 
 .PHONY: install-from-scratch
 install-from-scratch:
 	$(MAKE) install-deps
 	$(MAKE) install-after-clean-fetch
 
+# TODO: Currently the 'build-legacy-sancus-compiler' target needs 
+#       clang-sancus. This dependency should be removed as SLLVM *probably* 
+#       only requires the sm_support.h header to be installed for compiling
+#       the Sancus examples.
 .PHONY: install-deps
 install-deps:
-	#TODO
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) clang-sancus # TODO: Remove (see above)
 
 .PHONY: install-and-test-legacy-sancus
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) install
@@ -210,6 +215,7 @@ configure-sllvm:
 build-mspgcc-binutils:
 	$(MAKE) -C $(BUILDDIR_BINUTILS) -j$(JOBS)
 
+# Requires mspgcc binutils, hence "export PATH"
 .PHONY: build-mspgcc-gcc
 build-mspgcc-gcc:
 	$(MKDIR) $(INSTALLDIR)
@@ -227,10 +233,11 @@ build-sancus-support:
 	cd $(BUILDDIR_SANCUS_SUPPORT) && \
 		$(CMAKE) $(CMAKE_FLAGS_SANCUS_SUPPORT) $(SRCDIR_SANCUS_SUPPORT)
 
-.PHONY: build-legacy-sancus-compiler
+# Requires mspgcc binutils, hence "export PATH"
+.PHONY: build-legacy-sancus-compiler 
 build-legacy-sancus-compiler:
 	$(MKDIR) $(BUILDDIR_SANCUS_COMPILER)
-	cd $(BUILDDIR_SANCUS_COMPILER) && \
+	export PATH=$(INSTALLDIR)/bin:$$PATH; cd $(BUILDDIR_SANCUS_COMPILER) && \
 		$(CMAKE) $(CMAKE_FLAGS_SANCUS_COMPILER) $(SRCDIR_SANCUS_COMPILER)
 
 .PHONY: build-sllvm
@@ -241,6 +248,7 @@ build-sllvm:
 install-mspgcc-binutils: build-mspgcc-binutils
 	$(MAKE) -C $(BUILDDIR_BINUTILS) install
 
+# Requires mspgcc binutils, hence "export PATH"
 .PHONY: install-mspgcc-gcc
 install-mspgcc-gcc: build-mspgcc-gcc
 	export PATH=$(INSTALLDIR)/bin:$$PATH; $(MAKE) -C $(BUILDDIR_GCC) install
@@ -268,13 +276,13 @@ install-sllvm: build-sllvm
 .PHONY: status
 status:
 	$(GIT) status -sb
-	cd $(SRCDIR_LEGACY_SANCUS)   && $(GIT) status -sb
-	cd $(SRCDIR_SANCUS_CORE)     && $(GIT) status -sb
-	cd $(SRCDIR_SANCUS_COMPILER) && $(GIT) status -sb
-	cd $(SRCDIR_SANCUS_SUPPORT)  && $(GIT) status -sb
-	cd $(SRCDIR_SANCUS_EXAMPLES) && $(GIT) status -sb
-	cd $(SRCDIR_SLLVM)           && $(GIT) status -sb
-	cd $(SRCDIR_CLANG)           && $(GIT) status -sb
+	-cd $(SRCDIR_LEGACY_SANCUS)   && $(GIT) status -sb
+	-cd $(SRCDIR_SANCUS_CORE)     && $(GIT) status -sb
+	-cd $(SRCDIR_SANCUS_COMPILER) && $(GIT) status -sb
+	-cd $(SRCDIR_SANCUS_SUPPORT)  && $(GIT) status -sb
+	-cd $(SRCDIR_SANCUS_EXAMPLES) && $(GIT) status -sb
+	-cd $(SRCDIR_SLLVM)           && $(GIT) status -sb
+	-cd $(SRCDIR_CLANG)           && $(GIT) status -sb
 
 .PHONY: pull
 pull: pull-sancus
