@@ -66,17 +66,20 @@ parser.add_argument('-w', '--wrap-sm-text-sections', action='store_true')
 parser.add_argument('-f', '--fill-macs', action='store_true')
 parser.add_argument('-o', '--output-file')
 parser.add_argument('-v', '--verbose', action='store_true')
-parser.add_argument('infile')
+parser.add_argument('infile', nargs='?')
 args = parser.parse_args()
 
-loader = loader.Loader(args.infile)
+if args.infile:
+  loader = loader.Loader(args.infile)
 
 if args.gen_vendor_key:
   id = args.gen_vendor_key.to_bytes(2, byteorder='little')
   print(ccrypto.compute_sancus_mac(args.key, id).hex())
 
 if args.wrap_sm_text_sections:
+  assert args.infile
   wrap_text(loader, args.output_file, args.key)
 
 if args.fill_macs:
+  assert args.infile
   fill_hashes(loader, args.output_file)
