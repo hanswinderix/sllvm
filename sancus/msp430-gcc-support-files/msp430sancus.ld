@@ -148,7 +148,7 @@ SECTIONS
     /* .gnu.warning sections are handled specially by elf32.em.  */
     *(.gnu.warning)
     *(.interp .hash .dynsym .dynstr .gnu.version*)
-    INCLUDE sllvm-sancus-text.ld
+    INCLUDE text.ld
     PROVIDE (__etext = .);
     PROVIDE (_etext = .);
     PROVIDE (etext = .);
@@ -178,8 +178,11 @@ SECTIONS
        we can shorten the on-disk segment size.  */
     . = ALIGN(2);
     *(.sdata .sdata.* .gnu.linkonce.s.* D_2 D_1)
-    INCLUDE sllvm-sancus-data.ld
-    . = ALIGN(2);
+    INCLUDE data.ld
+    sllvm_pc = .;
+    sllvm_r1 = .;
+    __unprotected_sp = .; /* TODO: Remove (only required by libsm-io.a) */
+   . = ALIGN(2);
     _edata = .;
     PROVIDE (edata = .);
     PROVIDE (__dataend = .);
