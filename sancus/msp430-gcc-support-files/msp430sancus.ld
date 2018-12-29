@@ -297,5 +297,5 @@ SECTIONS
 /* Include peripherals memory map                                           */
 /****************************************************************************/
 
-INCLUDE msp430sancus.ld
+INCLUDE msp430sancus_symbols.ld
 
