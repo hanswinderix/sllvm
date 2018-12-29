@@ -34,6 +34,7 @@ TI_MSPGCC_TBZ         = $(TI_MSPGCC_NAME).tar.bz2
 TI_MSPGCC_SUPPORT     = msp430-gcc-support-files
 TI_MSPGCC_SUPPORT_ZIP = $(TI_MSPGCC_SUPPORT)-$(TI_MSPGCC_SUPPORT_VER).zip
 
+SRCDIR_SANCUS          = $(PWD)/sancus
 SRCDIR_LEGACY_SANCUS   = $(PWD)/sancus-main
 SRCDIR_SANCUS_CORE     = $(SRCDIR_LEGACY_SANCUS)/sancus-core
 SRCDIR_SANCUS_COMPILER = $(SRCDIR_LEGACY_SANCUS)/sancus-compiler
@@ -127,6 +128,7 @@ install:
 	$(MKDIR) $(INSTALLDIR)
 	$(MAKE) install-mspgcc-binutils
 	$(MAKE) install-mspgcc-gcc
+	$(MAKE) install-mspgcc-support-files
 	$(MAKE) install-sancus-core
 	$(MAKE) install-legacy-sancus-compiler
 	$(MAKE) install-sancus-support
@@ -221,10 +223,10 @@ configure-sllvm:
 build-mspgcc-binutils:
 	$(MAKE) -C $(BUILDDIR_BINUTILS) -j$(JOBS)
 
-# Requires mspgcc binutils, hence "export PATH"
 .PHONY: build-mspgcc-gcc
 build-mspgcc-gcc:
 	$(MKDIR) $(INSTALLDIR)
+# Requires previously installed mspgcc binutils, hence "export PATH"
 	export PATH=$(INSTALLDIR)/bin:$$PATH; $(MAKE) -C $(BUILDDIR_GCC) -j$(JOBS)
 
 .PHONY: build-sancus-core
@@ -239,10 +241,10 @@ build-sancus-support:
 	cd $(BUILDDIR_SANCUS_SUPPORT) && \
 		$(CMAKE) $(CMAKE_FLAGS_SANCUS_SUPPORT) $(SRCDIR_SANCUS_SUPPORT)
 
-# Requires mspgcc binutils, hence "export PATH"
 .PHONY: build-legacy-sancus-compiler 
 build-legacy-sancus-compiler:
 	$(MKDIR) $(BUILDDIR_SANCUS_COMPILER)
+# Requires previously installed mspgcc binutils, hence "export PATH"
 	export PATH=$(INSTALLDIR)/bin:$$PATH; cd $(BUILDDIR_SANCUS_COMPILER) && \
 		$(CMAKE) $(CMAKE_FLAGS_SANCUS_COMPILER) $(SRCDIR_SANCUS_COMPILER)
 
@@ -254,14 +256,26 @@ build-sllvm:
 install-mspgcc-binutils: build-mspgcc-binutils
 	$(MAKE) -C $(BUILDDIR_BINUTILS) install
 
-# Requires mspgcc binutils, hence "export PATH"
 .PHONY: install-mspgcc-gcc
 install-mspgcc-gcc: build-mspgcc-gcc
+# Requires previously installed mspgcc binutils, hence "export PATH"
 	export PATH=$(INSTALLDIR)/bin:$$PATH; $(MAKE) -C $(BUILDDIR_GCC) install
+
+.PHONY: install-mspgcc-support-files
+install-mspgcc-support-files: 
 	$(RM) -r $(TI_MSPGCC_SUPPORT)
 	$(UNZIP) $(TI_MSPGCC_SUPPORT_ZIP)
 	$(MKDIR) $(INSTALLDIR)/include
 	cp -R $(TI_MSPGCC_SUPPORT)/include/* $(INSTALLDIR)/include
+# Overwrite the msp430.h and devices.csv support files of 
+#  $(TI_MSPGCC_SUPPORT_ZIP) with versions that include support for the Sancus 
+#  security architecture.
+	cp $(SRCDIR_SANCUS)/$(TI_MSPGCC_SUPPORT)/devices.csv             \
+		$(SRCDIR_SANCUS)/$(TI_MSPGCC_SUPPORT)/msp430.h                 \
+		$(SRCDIR_SANCUS)/$(TI_MSPGCC_SUPPORT)/msp430sancus.h           \
+		$(SRCDIR_SANCUS)/$(TI_MSPGCC_SUPPORT)/msp430sancus.ld          \
+		$(SRCDIR_SANCUS)/$(TI_MSPGCC_SUPPORT)/msp430sancus_symbols.ld  \
+		$(INSTALLDIR)/include
 
 .PHONY: install-sancus-core
 install-sancus-core: build-sancus-core

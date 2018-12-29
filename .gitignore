@@ -1,7 +1,7 @@
 Makefile.local
 .*.swp
 
-msp430-gcc-*
+/msp430-gcc-*
 sancus-main
 sllvm
 
