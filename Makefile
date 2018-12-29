@@ -276,6 +276,8 @@ install-mspgcc-support-files:
 		$(SRCDIR_SANCUS)/$(TI_MSPGCC_SUPPORT)/msp430sancus.ld          \
 		$(SRCDIR_SANCUS)/$(TI_MSPGCC_SUPPORT)/msp430sancus_symbols.ld  \
 		$(INSTALLDIR)/include
+	touch ${INSTALLDIR}/include sllvm-sancus-text.ld
+	touch ${INSTALLDIR}/include sllvm-sancus-data.ld
 
 .PHONY: install-sancus-core
 install-sancus-core: build-sancus-core
