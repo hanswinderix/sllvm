@@ -303,13 +303,13 @@ install-sllvm: build-sllvm
 .PHONY: status
 status:
 	$(GIT) status -sb
-	-cd $(SRCDIR_LEGACY_SANCUS)   && $(GIT) status -sb
-	-cd $(SRCDIR_SANCUS_CORE)     && $(GIT) status -sb
-	-cd $(SRCDIR_SANCUS_COMPILER) && $(GIT) status -sb
-	-cd $(SRCDIR_SANCUS_SUPPORT)  && $(GIT) status -sb
-	-cd $(SRCDIR_SANCUS_EXAMPLES) && $(GIT) status -sb
-	-cd $(SRCDIR_SLLVM)           && $(GIT) status -sb
-	-cd $(SRCDIR_CLANG)           && $(GIT) status -sb
+	-$(GIT) -C $(SRCDIR_LEGACY_SANCUS)   status -sb
+	-$(GIT) -C $(SRCDIR_SANCUS_CORE)     status -sb
+	-$(GIT) -C $(SRCDIR_SANCUS_COMPILER) status -sb
+	-$(GIT) -C $(SRCDIR_SANCUS_SUPPORT)  status -sb
+	-$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) status -sb
+	-$(GIT) -C $(SRCDIR_SLLVM)           status -sb
+	-$(GIT) -C $(SRCDIR_CLANG)           status -sb
 
 .PHONY: pull
 pull: pull-sancus
@@ -317,30 +317,30 @@ pull: pull-sllvm
 
 .PHONY: pull-sancus
 pull-sancus:
-	cd $(SRCDIR_LEGACY_SANCUS)   && $(GIT) pull
-	cd $(SRCDIR_SANCUS_CORE)     && $(GIT) pull
-	cd $(SRCDIR_SANCUS_COMPILER) && $(GIT) pull
-	cd $(SRCDIR_SANCUS_SUPPORT)  && $(GIT) pull
-	cd $(SRCDIR_SANCUS_EXAMPLES) && $(GIT) pull
+	$(GIT) -C $(SRCDIR_LEGACY_SANCUS)   pull
+	$(GIT) -C $(SRCDIR_SANCUS_CORE)     pull
+	$(GIT) -C $(SRCDIR_SANCUS_COMPILER) pull
+	$(GIT) -C $(SRCDIR_SANCUS_SUPPORT)  pull
+	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) pull
 
 .PHONY: pull-sllvm
 pull-sllvm:
-	cd $(SRCDIR_SLLVM) && $(GIT) pull 
-	cd $(SRCDIR_CLANG) && $(GIT) pull 
+	$(GIT) -C $(SRCDIR_SLLVM) pull 
+	$(GIT) -C $(SRCDIR_CLANG) pull 
 
 .PHONY: push-sllvm
 push-sllvm:
-	cd $(SRCDIR_SLLVM) && $(GIT) push 
-	cd $(SRCDIR_CLANG) && $(GIT) push 
+	$(GIT) -C $(SRCDIR_SLLVM) push 
+	$(GIT) -C $(SRCDIR_CLANG) push 
 
 .PHONY: sync-llvm
 sync-llvm:
-	cd $(SRCDIR_SLLVM) && $(GIT) fetch upstream
-	cd $(SRCDIR_SLLVM) && $(GIT) checkout master
-	cd $(SRCDIR_SLLVM) && $(GIT) merge upstream/master
-	cd $(SRCDIR_CLANG) && $(GIT) fetch upstream
-	cd $(SRCDIR_CLANG) && $(GIT) checkout master
-	cd $(SRCDIR_CLANG) && $(GIT) merge upstream/master
+	$(GIT) -C $(SRCDIR_SLLVM) fetch upstream
+	$(GIT) -C $(SRCDIR_SLLVM) checkout master
+	$(GIT) -C $(SRCDIR_SLLVM) merge upstream/master
+	$(GIT) -C $(SRCDIR_CLANG) fetch upstream
+	$(GIT) -C $(SRCDIR_CLANG) checkout master
+	$(GIT) -C $(SRCDIR_CLANG) merge upstream/master
 
 # TODO: clean target should not delete the install folder
 .PHONY: clean
