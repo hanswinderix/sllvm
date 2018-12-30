@@ -333,6 +333,10 @@ push-sllvm:
 	$(GIT) -C $(SRCDIR_SLLVM) push 
 	$(GIT) -C $(SRCDIR_CLANG) push 
 
+.PHONY: sync
+sync: sync-llvm
+sync: sync-legacy-sancus
+
 .PHONY: sync-llvm
 sync-llvm:
 	$(GIT) -C $(SRCDIR_SLLVM) fetch upstream
@@ -341,6 +345,18 @@ sync-llvm:
 	$(GIT) -C $(SRCDIR_CLANG) fetch upstream
 	$(GIT) -C $(SRCDIR_CLANG) checkout master
 	$(GIT) -C $(SRCDIR_CLANG) merge upstream/master
+
+.PHONY: sync-legacy-sancus
+sync-legacy-sancus:
+	$(GIT) -C $(SRCDIR_SANCUS_COMPILER) fetch upstream
+	$(GIT) -C $(SRCDIR_SANCUS_COMPILER) checkout master
+	$(GIT) -C $(SRCDIR_SANCUS_COMPILER) merge upstream/master
+	$(GIT) -C $(SRCDIR_SANCUS_SUPPORT) fetch upstream
+	$(GIT) -C $(SRCDIR_SANCUS_SUPPORT) checkout master
+	$(GIT) -C $(SRCDIR_SANCUS_SUPPORT) merge upstream/master
+	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) fetch upstream
+	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) checkout master
+	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) merge upstream/master
 
 # TODO: clean target should not delete the install folder
 .PHONY: clean
