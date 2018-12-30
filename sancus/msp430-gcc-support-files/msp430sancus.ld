@@ -180,8 +180,10 @@ SECTIONS
     *(.sdata .sdata.* .gnu.linkonce.s.* D_2 D_1)
     INCLUDE data.ld
     sllvm_pc = .;
+     . += 2;
     sllvm_r1 = .;
     __unprotected_sp = .; /* TODO: Remove (only required by libsm-io.a) */
+     . += 2;
    . = ALIGN(2);
     _edata = .;
     PROVIDE (edata = .);
