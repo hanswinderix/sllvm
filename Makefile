@@ -165,7 +165,10 @@ install-and-test-sancus-legacy:
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) test
 
 .PHONY: test
-test:	
+test:	test-sancus
+
+.PHONY: test-sancus
+test-sancus:
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) examples-clean
 	$(MAKE) SLLVM_INSTALL_DIR=$(INSTALLDIR) -C $(SRCDIR_LEGACY_SANCUS) examples
 
@@ -339,6 +342,7 @@ sync-llvm:
 	cd $(SRCDIR_CLANG) && $(GIT) checkout master
 	cd $(SRCDIR_CLANG) && $(GIT) merge upstream/master
 
+# TODO: clean target should not delete the install folder
 .PHONY: clean
 clean:
 	$(RM) -r build
