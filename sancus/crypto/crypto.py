@@ -65,12 +65,27 @@ parser.add_argument('-w', '--wrap-sm-text-sections', action='store_true')
 #parser.add_argument('-f', '--fill-hashes', action='store_true')
 parser.add_argument('-f', '--fill-macs', action='store_true')
 parser.add_argument('-o', '--output-file')
+parser.add_argument('-s', '--gen-sm-key')
+parser.add_argument('-u', '--unwrap', nargs=3)
 parser.add_argument('-v', '--verbose', action='store_true')
 parser.add_argument('infile', nargs='?')
 args = parser.parse_args()
 
 if args.infile:
   loader = loader.Loader(args.infile)
+
+if args.unwrap:
+  l = [bytes.fromhex(x) for x in args.unwrap]
+  ad, cipher, tag = tuple(l)
+  body = ccrypto.sancus_unwrap(args.key, ad, cipher, tag)
+  assert body
+  print(body.hex())
+
+if args.gen_sm_key:
+  assert args.infile
+  pm = loader.find_protected_module_by_name(args.gen_sm_key)
+  assert pm
+  print(ccrypto.compute_sancus_mac(args.key, pm.get_identity()).hex())
 
 if args.gen_vendor_key:
   id = args.gen_vendor_key.to_bytes(2, byteorder='little')

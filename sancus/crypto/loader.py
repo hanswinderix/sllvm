@@ -17,7 +17,11 @@ class Loader:
     return self.PMs
 
   def find_protected_module_by_name(self, name):
-    return [x for x in self.PMS if x.get_name() == name]
+    l = [x for x in self.PMs if x.get_name() == name]
+    if l:
+      assert len(l) == 1
+      return l[0]
+    return None
 
   def find_protected_module_by_symbol_name(self, name):
     l = [pm for pm in self.get_protected_modules() if pm.has_symbol(name)]

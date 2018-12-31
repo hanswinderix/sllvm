@@ -16,6 +16,14 @@ def sancus_wrap(key, ad, body):
     return cipher, tag
   return None
 
+def sancus_unwrap(key, ad, cipher, tag):
+  body = bytes(len(cipher))
+  ad_clen = ctypes.c_ulonglong(len(ad))
+  cipher_clen = ctypes.c_ulonglong(len(cipher))
+  if clib.sancus_unwrap(key, ad, ad_clen, cipher, cipher_clen, tag, body):
+    return body
+  return None
+
 def sancus_wrap_sm_nonce(name, text):
   return sancus_wrap(bytes(0), bytes(name, 'utf-8'), text)[1][:2][::-1]
   
