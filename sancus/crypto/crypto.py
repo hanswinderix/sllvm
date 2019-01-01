@@ -32,6 +32,7 @@ def fill_hashes(loader, fname):
         f.seek(offset)
         f.write(hash)
 
+# Required for confidential loading
 def wrap_text(loader, fname, key):
   elf = loader.get_ELF()
   shutil.copy(elf.get_name(), fname)
