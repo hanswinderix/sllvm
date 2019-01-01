@@ -7,6 +7,12 @@ import shutil
 import ccrypto
 import argparse
 
+def out(bytez, hexdump=False):
+  if hexdump:
+    print(bytez.hex())
+  else:
+    sys.stdout.buffer.write(bytez)
+
 # Required for secure linking
 def fill_hashes(loader, fname):
   elf = loader.get_ELF()
@@ -68,6 +74,7 @@ parser.add_argument('-o', '--output-file')
 parser.add_argument('-s', '--gen-sm-key')
 parser.add_argument('-u', '--unwrap', nargs=3)
 parser.add_argument('-v', '--verbose', action='store_true')
+parser.add_argument('-x', '--hexdump', action='store_true')
 parser.add_argument('infile', nargs='?')
 args = parser.parse_args()
 
@@ -79,22 +86,19 @@ if args.unwrap:
   ad, cipher, tag = tuple(l)
   body = ccrypto.sancus_unwrap(args.key, ad, cipher, tag)
   assert body
-  #TODO: print(body.hex())
-  sys.stdout.buffer.write(body)
+  out(body, args.hexdump)
 
 if args.gen_sm_key:
   assert args.infile
   pm = loader.find_protected_module_by_name(args.gen_sm_key)
   assert pm
   sm_key = ccrypto.compute_sancus_mac(args.key, pm.get_identity())
-  #TODO: print(sm_key.hex())
-  sys.stdout.buffer.write(sm_key)
+  out(sm_key, args.hexdump)
 
 if args.gen_vendor_key:
   id = args.gen_vendor_key.to_bytes(2, byteorder='little')
   vendor_key = ccrypto.compute_sancus_mac(args.key, id)
-  #TODO: print(vendor_key.hex())
-  sys.stdout.buffer.write(vendor_key)
+  out(vendor_key, args.hexdump)
 
 if args.wrap_sm_text_sections:
   assert args.infile
