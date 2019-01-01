@@ -169,8 +169,8 @@ test:	test-sancus
 
 .PHONY: test-sancus
 test-sancus:
-	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) examples-clean
-	$(MAKE) SLLVM_INSTALL_DIR=$(INSTALLDIR) -C $(SRCDIR_LEGACY_SANCUS) examples
+	$(MAKE) \
+		SLLVM_INSTALL_DIR=$(INSTALLDIR) -C $(SRCDIR_LEGACY_SANCUS) examples-sim
 
 .PHONY: fetch
 fetch: fetch-mspgcc
