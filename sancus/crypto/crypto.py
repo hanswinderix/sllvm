@@ -79,17 +79,22 @@ if args.unwrap:
   ad, cipher, tag = tuple(l)
   body = ccrypto.sancus_unwrap(args.key, ad, cipher, tag)
   assert body
-  print(body.hex())
+  #TODO: print(body.hex())
+  sys.stdout.buffer.write(body)
 
 if args.gen_sm_key:
   assert args.infile
   pm = loader.find_protected_module_by_name(args.gen_sm_key)
   assert pm
-  print(ccrypto.compute_sancus_mac(args.key, pm.get_identity()).hex())
+  sm_key = ccrypto.compute_sancus_mac(args.key, pm.get_identity())
+  #TODO: print(sm_key.hex())
+  sys.stdout.buffer.write(sm_key)
 
 if args.gen_vendor_key:
   id = args.gen_vendor_key.to_bytes(2, byteorder='little')
-  print(ccrypto.compute_sancus_mac(args.key, id).hex())
+  vendor_key = ccrypto.compute_sancus_mac(args.key, id)
+  #TODO: print(vendor_key.hex())
+  sys.stdout.buffer.write(vendor_key)
 
 if args.wrap_sm_text_sections:
   assert args.infile
