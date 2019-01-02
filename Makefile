@@ -301,7 +301,7 @@ install-crypto:
 	chmod +x $(INSTALLDIR)/bin/crypto.py
 	echo "KEY_BITSIZE  = 64"                        > $(INSTALLDIR)/bin/config.py
 	echo "KEY_BYTESIZE = ((KEY_BITSIZE + 7) // 8)" >> $(INSTALLDIR)/bin/config.py
-	echo "$(INSTALLDIR)/install/share/sancus-compiler/libsancus-crypto.so" \
+	echo "libname = '$(INSTALLDIR)/share/sancus-compiler/libsancus-crypto.so'" \
 	                                               >> $(INSTALLDIR)/bin/config.py
 
 .PHONY: install-sllvm

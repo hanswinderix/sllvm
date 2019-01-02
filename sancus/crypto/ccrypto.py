@@ -31,5 +31,3 @@ def compute_sancus_mac(key, msg):
 
 def compute_sancus_hash(msg):
   return compute_sancus_mac(bytes(config.KEY_BYTESIZE), msg)
-
-print(config.KEY_BITSIZE, config.KEY_BYTESIZE, config.libname)
