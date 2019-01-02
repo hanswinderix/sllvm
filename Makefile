@@ -128,6 +128,7 @@ install:
 	$(MKDIR) $(INSTALLDIR)
 	$(MAKE) install-mspgcc
 	$(MAKE) install-legacy-sancus
+	$(MAKE) install-crypto
 	$(MAKE) install-sllvm
 
 .PHONY: install-mspgcc
@@ -278,8 +279,8 @@ install-mspgcc-support-files:
 		$(INSTALLDIR)/include
 # Provide empty data and text ld files for compilation units without
 # protected modules
-	touch ${INSTALLDIR}/include/text.ld
-	touch ${INSTALLDIR}/include/data.ld
+	touch $(INSTALLDIR)/include/text.ld
+	touch $(INSTALLDIR)/include/data.ld
 
 .PHONY: install-sancus-core
 install-sancus-core: build-sancus-core
@@ -292,6 +293,16 @@ install-legacy-sancus-compiler: build-legacy-sancus-compiler
 .PHONY: install-sancus-support
 install-sancus-support: build-sancus-support
 	$(CMAKE) --build $(BUILDDIR_SANCUS_SUPPORT) --target install
+
+# TODO: Install crypto script in other directory ?
+.PHONY: install-crypto
+install-crypto:
+	cp $(SRCDIR_SANCUS)/crypto/*.py $(INSTALLDIR)/bin/
+	chmod +x $(INSTALLDIR)/bin/crypto.py
+	echo "KEY_BITSIZE  = 64"                        > $(INSTALLDIR)/bin/config.py
+	echo "KEY_BYTESIZE = ((KEY_BITSIZE + 7) // 8)" >> $(INSTALLDIR)/bin/config.py
+	echo "$(INSTALLDIR)/install/share/sancus-compiler/libsancus-crypto.so" \
+	                                               >> $(INSTALLDIR)/bin/config.py
 
 .PHONY: install-sllvm
 install-sllvm: build-sllvm
