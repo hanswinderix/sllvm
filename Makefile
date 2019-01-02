@@ -126,31 +126,23 @@ all:
 .PHONY: install
 install:
 	$(MKDIR) $(INSTALLDIR)
+	$(MAKE) install-mspgcc
+	$(MAKE) install-legacy-sancus
+	$(MAKE) install-sllvm
+
+.PHONY: install-mspgcc
+install-mspgcc:
+	$(MKDIR) $(INSTALLDIR)
 	$(MAKE) install-mspgcc-binutils
 	$(MAKE) install-mspgcc-gcc
 	$(MAKE) install-mspgcc-support-files
+
+.PHONY: install-legacy-sancus
+install-legacy-sancus:
+	$(MKDIR) $(INSTALLDIR)
 	$(MAKE) install-sancus-core
 	$(MAKE) install-legacy-sancus-compiler
 	$(MAKE) install-sancus-support
-	$(MAKE) install-sllvm
-
-.PHONY: install-after-clean
-install-after-clean:
-	$(MAKE) clean
-	$(MAKE) configure
-	$(MAKE) install
-
-.PHONY: install-after-clean-fetch
-install-after-clean-fetch:
-	$(MAKE) clean-fetch
-	$(MAKE) fetch
-	$(MAKE) install-after-clean
-
-.PHONY: install-from-scratch
-install-from-scratch:
-	$(MAKE) clean-fetch
-	$(MAKE) fetch
-	$(MAKE) install-after-clean
 
 .PHONY: install-deps
 install-deps:
@@ -378,3 +370,16 @@ clean-fetch:
 	$(RM) -r $(SRCDIR_SLLVM)
 	$(RM) -r $(SRCDIR_LEGACY_SANCUS)
 	$(RM) -r $(SRCDIR_CLANG)
+
+.PHONY: clean-then-install
+clean-then-install:
+	$(MAKE) clean
+	$(MAKE) configure
+	$(MAKE) install
+
+.PHONY: clean-fetch-install
+clean-fetch-install:
+	$(MAKE) clean-fetch
+	$(MAKE) fetch
+	$(MAKE) clean-then-install
+
