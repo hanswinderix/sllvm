@@ -6,6 +6,7 @@ import loader
 import shutil
 import ccrypto
 import argparse
+import config
 
 def out(bytez, hexdump=False):
   if hexdump:
@@ -26,7 +27,7 @@ def fill_hashes(loader, fname):
         assert pm1 != pm2
         hash = pm2.get_hash()
         size = sym['st_size']
-        assert size == ccrypto.KEY_BYTESIZE
+        assert size == config.KEY_BYTESIZE
         assert size == len(hash)
         offset = elf.get_offset_of_text_addr_in_file(sym['st_value'])
         f.seek(offset)
