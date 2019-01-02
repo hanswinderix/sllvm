@@ -148,8 +148,10 @@ install-after-clean-fetch:
 
 .PHONY: install-from-scratch
 install-from-scratch:
+	$(MAKE) clean-fetch
+	$(MAKE) fetch
 	$(MAKE) install-deps
-	$(MAKE) install-after-clean-fetch
+	$(MAKE) install-after-clean
 
 # TODO: Currently, the 'build-legacy-sancus-compiler' target needs 
 #       clang-sancus. This dependency should be removed as SLLVM *probably* 
