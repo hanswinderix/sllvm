@@ -1,53 +1,73 @@
 # Security Enhanced LLVM
 
-This is the main source code respository for SLLVM.
-
-The directory 
-[sllvm/lib/Transforms/SancusModuleCreator](sllvm/lib/Transforms/SancusModuleCreator)
-contains source code from the offically supported Sancus toolchain 
-(https://github.com/sancus-pma) and is added here for convenience.
+This is the main source code repository for Security Enhanced LLVM (SLLVM).
 
 ## Building from Source
 
-1. Make sure you have installed the dependencies:
+This section documents the current best way to build and install the SLLVM
+toolchain from source. The GNU make based build system has been developed to 
+work on a fresh Ubuntu 18.04.1 LTS installation, but it should be fairly 
+straightforward to port to other GNU/Linux distributions.
 
-   * `g++` 4.7 or later
-   * GNU `make` 3.81 or later
-   * `cmake` 3.4.3 or later
-   * `curl`
-   * `git`
-   * `svn`
-   * `msp430-elf-gcc`
+1. Make sure you have installed the following dependencies:
+
+* `git`
+* GNU `make` 3.81 or later
+* `curl`
+* `cmake` 3.4.3 or later
+* `g++` 4.7 or later
+* `texinfo`
+* `Python 3`
+* `pip` for `Python 3`
+* `pyelftools` (`Python 3`)
+* `msp430-gcc` 4.6 or later
+
+```sh
+sudo apt install git make curl cmake g++ texinfo python3 python3-pip gcc-msp430
+pip3 install pyelftools
+```
+
+Note: The msp430-gcc dependency is only required to build the legacy sancus
+compiler and will disappear in the future.
 
 2. Clone the source with git:
 
-   ```sh
-   $ git clone https://github.com/hanswinderix/sllvm.git
-   $ cd sllvm
-   ```
+```sh
+$ git clone https://github.com/hanswinderix/sllvm.git
+$ cd sllvm
+```
 
-3. Create a Makefile.local for local build configuration
+3. (Optional) Create a Makefile.local for local build configuration
 
-   * Edit Makefile.local
-   * Set BASEDIR to current working directory (absolute path)
+The following GNU make variables can be set.
 
-4. Fetch other repositories and configure the build
+| Variable name    | Purpose                                            |
+|------------------|----------------------------------------------------|
+| JOBS             | Specifies the number of jobs to run simultaneously |
+| BUILD\_TYPE      | `Debug` or `Release` build                         |
+| SANCUS\_SECURITY | Sancus security level can be `64` or `128` bits    |
+| SANCUS\_KEY      | Sancus Master key in hexadecimal notation          |
 
-   ```sh
-   $ make sllvm-checkout
-   $ make sllvm-configure
-   $ make sllvm-apply-full-patch
-   ```
-7. Build and install:
+4. Fetch other repositories and configure the build. 
 
-   ```sh
-   $ make sllvm-install
-   ```
+```sh
+$ make fetch
+$ make configure
+```
+
+Note: This step might ask for the sudo password because the legacy sancus 
+compiler needs clang-sancus to be installed. In the future, this dependency 
+will disappear.
+
+5. Build and install:
+
+```sh
+$ make install
+```
 
 ## Compiling Sancus PMs and SGX enclaves
 
-See [Makefile](sllvm/test/Makefile) in [test directory](sllvm/test) for build
-instructions.
+TODO
 
 ## License
 
