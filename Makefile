@@ -150,16 +150,10 @@ install-after-clean-fetch:
 install-from-scratch:
 	$(MAKE) clean-fetch
 	$(MAKE) fetch
-	$(MAKE) install-deps
 	$(MAKE) install-after-clean
 
-# TODO: Currently, the 'build-legacy-sancus-compiler' target needs 
-#       clang-sancus. This dependency should be removed as SLLVM *probably* 
-#       only needs the sm_support.h header from sancus-compiler header which
-#       is required to compile the Sancus examples.
 .PHONY: install-deps
 install-deps:
-	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) clang-sancus # TODO: Remove (see above)
 
 .PHONY: install-and-test-sancus-legacy
 install-and-test-sancus-legacy:
@@ -181,6 +175,7 @@ fetch: fetch-sllvm
 
 .PHONY: configure
 configure: configure-mspgcc
+configure: configure-legacy-sancus
 configure: configure-sllvm
 
 .PHONY: fetch-mpsgcc
@@ -223,6 +218,13 @@ configure-mspgcc:
 configure-sllvm:
 	$(MKDIR) $(BUILDDIR_SLLVM)
 	cd $(BUILDDIR_SLLVM) && $(CMAKE) $(CMAKE_FLAGS_SLLVM) $(SRCDIR_SLLVM)
+
+# TODO: Currently, the 'build-legacy-sancus-compiler' target needs 
+#       clang-sancus. This dependency should be removed as SLLVM *probably* 
+#       only needs the sm_support.h header from sancus-compiler header which
+#       is required to compile the Sancus examples.
+.PHONY: configure-legacy-sancus
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) clang-sancus # TODO: Remove (see above)
 
 .PHONY: build-mspgcc-binutils
 build-mspgcc-binutils:
