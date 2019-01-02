@@ -336,6 +336,9 @@ pull-sllvm:
 	$(GIT) -C $(SRCDIR_SLLVM) pull 
 	$(GIT) -C $(SRCDIR_CLANG) pull 
 
+.PHONY: push
+push: push-sllvm
+
 .PHONY: push-sllvm
 push-sllvm:
 	$(GIT) -C $(SRCDIR_SLLVM) push 
