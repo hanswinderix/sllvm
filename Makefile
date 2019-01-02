@@ -224,6 +224,7 @@ configure-sllvm:
 #       only needs the sm_support.h header from sancus-compiler header which
 #       is required to compile the Sancus examples.
 .PHONY: configure-legacy-sancus
+configure-legacy-sancus:
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) clang-sancus # TODO: Remove (see above)
 
 .PHONY: build-mspgcc-binutils
