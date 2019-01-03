@@ -358,11 +358,20 @@ pull-sllvm:
 
 .PHONY: push
 push: push-sllvm
+push: push-legacy-sancus
 
 .PHONY: push-sllvm
 push-sllvm:
 	$(GIT) -C $(SRCDIR_SLLVM) push 
 	$(GIT) -C $(SRCDIR_CLANG) push 
+
+.PHONY: push-legacy-sancus
+push-legacy-sancus:
+	$(GIT) -C $(SRCDIR_LEGACY_SANCUS)   push
+#$(GIT) -C $(SRCDIR_SANCUS_CORE)     push
+	$(GIT) -C $(SRCDIR_SANCUS_COMPILER) push
+	$(GIT) -C $(SRCDIR_SANCUS_SUPPORT)  push
+	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) push
 
 .PHONY: sync
 sync: sync-llvm
