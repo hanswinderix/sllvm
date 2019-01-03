@@ -14,6 +14,7 @@ SH    = bash
 MKDIR = mkdir -p
 CMAKE = cmake
 APT   = apt
+PIP   = pip3
 
 BUILDDIR   = $(PWD)/build
 INSTALLDIR = $(PWD)/install
@@ -118,6 +119,23 @@ MAKE_FLAGS_LEGACY_SANCUS += SANCUS_INSTALL_PREFIX=$(INSTALLDIR)
 MAKE_FLAGS_LEGACY_SANCUS += SECURITY=$(SANCUS_SECURITY)
 MAKE_FLAGS_LEGACY_SANCUS += MASTER_KEY=$(SANCUS_KEY)
 
+DEPS =
+DEPS += git
+DEPS += make
+DEPS += curl
+DEPS += cmake
+DEPS += g++
+DEPS += texinfo
+DEPS += python3
+DEPS += python3-pip
+DEPS += gcc-msp430
+DEPS += expect
+DEPS += tcl
+DEPS += iverilog
+
+PIPS =
+PIPS += pyelftools
+
 .PHONY: all
 all: 
 	@echo BUILD_TYPE=$(BUILD_TYPE)
@@ -147,6 +165,8 @@ install-legacy-sancus:
 
 .PHONY: install-deps
 install-deps:
+	$(APT) install $(DEPS)
+	$(PIP) install $(PIPS)
 
 .PHONY: install-and-test-sancus-legacy
 install-and-test-sancus-legacy:
