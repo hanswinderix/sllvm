@@ -11,8 +11,8 @@ straightforward to port to other GNU/Linux distributions.
 
 1. Make sure you have installed the following dependencies:
 
-   * **git**
    * GNU **make** 3.81 or later
+   * **git**
    * **curl**
    * **cmake** 3.4.3 or later
    * **g++** 4.7 or later
@@ -26,11 +26,12 @@ straightforward to port to other GNU/Linux distributions.
    * **iverilog**
 
    ```sh
-   sudo apt install git make curl cmake g++ texinfo python3 python3-pip gcc-msp430 expect tcl iverilog
+   sudo apt install make git curl cmake g++ texinfo python3 python3-pip gcc-msp430 expect tcl iverilog
    pip3 install pyelftools
    ```
 
-   or alternatively
+   or alternatively, if you already downloaded the source code and have GNU 
+   **make** installed
 
    ```sh
    sudo -H make install-deps
