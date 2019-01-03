@@ -11,20 +11,29 @@ straightforward to port to other GNU/Linux distributions.
 
 1. Make sure you have installed the following dependencies:
 
-   * `git`
-   * GNU `make` 3.81 or later
-   * `curl`
-   * `cmake` 3.4.3 or later
-   * `g++` 4.7 or later
-   * `texinfo`
-   * `Python 3`
-   * `pip` for `Python 3`
-   * `pyelftools` (`Python 3`)
-   * `msp430-gcc` 4.6 or later
+   * **git**
+   * GNU **make** 3.81 or later
+   * **curl**
+   * **cmake** 3.4.3 or later
+   * **g++** 4.7 or later
+   * **texinfo**
+   * **Python 3**
+   * **pip3** (for Python 3+)
+   * **pyelftools** (Python 3+)
+   * **msp430-gcc** 4.6 or later
+   * **expect**
+   * **tcl**
+   * **iverilog**
 
    ```sh
-   sudo apt install git make curl cmake g++ texinfo python3 python3-pip gcc-msp430
+   sudo apt install git make curl cmake g++ texinfo python3 python3-pip gcc-msp430 expect tcl iverilog
    pip3 install pyelftools
+   ```
+
+   or alternatively
+
+   ```sh
+   sudo -H make install-deps
    ```
 
    Note: The msp430-gcc dependency is only required to build the legacy sancus
@@ -44,8 +53,8 @@ straightforward to port to other GNU/Linux distributions.
    | Variable name    | Purpose                                            |
    |------------------|----------------------------------------------------|
    | JOBS             | Specifies the number of jobs to run simultaneously |
-   | BUILD\_TYPE      | `Debug` or `Release` build                         |
-   | SANCUS\_SECURITY | Sancus security level can be `64` or `128` bits    |
+   | BUILD\_TYPE      | *Debug* or *Release* build                         |
+   | SANCUS\_SECURITY | Sancus security level can be *64* or *128* bits    |
    | SANCUS\_KEY      | Sancus master key in hexadecimal notation          |
 
 4. Fetch other repositories and configure the build. 
@@ -65,7 +74,11 @@ straightforward to port to other GNU/Linux distributions.
    $ make install
    ```
 
-## Compiling Sancus PMs and SGX enclaves
+## Compiling Sancus PMs
+
+TODO
+
+## Compiling Intel SGX enclaves
 
 TODO
 
