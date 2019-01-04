@@ -301,6 +301,7 @@ install-mspgcc-support-files:
 # protected modules
 	touch $(INSTALLDIR)/include/text.ld
 	touch $(INSTALLDIR)/include/data.ld
+	touch $(INSTALLDIR)/include/symbols.ld
 
 .PHONY: install-sancus-core
 install-sancus-core: build-sancus-core
