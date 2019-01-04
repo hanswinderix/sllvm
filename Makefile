@@ -374,6 +374,17 @@ push-legacy-sancus:
 	$(GIT) -C $(SRCDIR_SANCUS_SUPPORT)  push
 	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) push
 
+.PHONY: diff
+diff:
+	$(GIT) difftool
+	$(GIT) -C $(SRCDIR_SLLVM) difftool
+	$(GIT) -C $(SRCDIR_CLANG) difftool
+	$(GIT) -C $(SRCDIR_LEGACY_SANCUS)   difftool
+#$(GIT) -C $(SRCDIR_SANCUS_CORE)     difftool
+	$(GIT) -C $(SRCDIR_SANCUS_COMPILER) difftool
+	$(GIT) -C $(SRCDIR_SANCUS_SUPPORT)  difftool
+	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) difftool
+
 .PHONY: sync
 sync: sync-llvm
 sync: sync-legacy-sancus
