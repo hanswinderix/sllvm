@@ -397,6 +397,7 @@ pull-sllvm:
 .PHONY: push
 push: push-sllvm
 push: push-legacy-sancus
+	$(GIT) push
 
 .PHONY: push-sllvm
 push-sllvm:
