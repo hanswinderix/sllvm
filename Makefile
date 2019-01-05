@@ -6,6 +6,28 @@ JOBS       ?= 1
 SANCUS_SECURITY ?= 64
 SANCUS_KEY      ?= deadbeefcafebabe
 
+BUILDDIR   ?= $(PWD)/build
+INSTALLDIR ?= $(PWD)/install
+
+#############################################################################
+
+DEPS =
+DEPS += git
+DEPS += make
+DEPS += curl
+DEPS += cmake
+DEPS += g++
+DEPS += texinfo
+DEPS += python3
+DEPS += python3-pip
+DEPS += gcc-msp430
+DEPS += expect
+DEPS += tcl
+DEPS += iverilog
+
+PIPS =
+PIPS += pyelftools
+
 WGET  = wget
 GIT   = git
 TAR   = tar
@@ -16,8 +38,7 @@ CMAKE = cmake
 APT   = apt
 PIP   = pip3
 
-BUILDDIR   = $(PWD)/build
-INSTALLDIR = $(PWD)/install
+#############################################################################
 
 LLVM_REPO          = https://github.com/llvm-mirror/llvm.git
 LLVM_FORK          = https://github.com/hanswinderix/llvm.git
@@ -119,67 +140,12 @@ MAKE_FLAGS_LEGACY_SANCUS += SANCUS_INSTALL_PREFIX=$(INSTALLDIR)
 MAKE_FLAGS_LEGACY_SANCUS += SECURITY=$(SANCUS_SECURITY)
 MAKE_FLAGS_LEGACY_SANCUS += MASTER_KEY=$(SANCUS_KEY)
 
-DEPS =
-DEPS += git
-DEPS += make
-DEPS += curl
-DEPS += cmake
-DEPS += g++
-DEPS += texinfo
-DEPS += python3
-DEPS += python3-pip
-DEPS += gcc-msp430
-DEPS += expect
-DEPS += tcl
-DEPS += iverilog
-
-PIPS =
-PIPS += pyelftools
+#############################################################################
 
 .PHONY: all
 all: 
 	@echo BUILD_TYPE=$(BUILD_TYPE)
 	@echo JOBS=$(JOBS)
-
-.PHONY: install
-install:
-	$(MKDIR) $(INSTALLDIR)
-	$(MAKE) install-mspgcc
-	$(MAKE) install-legacy-sancus
-	$(MAKE) install-crypto
-	$(MAKE) install-sllvm
-
-.PHONY: install-mspgcc
-install-mspgcc:
-	$(MKDIR) $(INSTALLDIR)
-	$(MAKE) install-mspgcc-binutils
-	$(MAKE) install-mspgcc-gcc
-	$(MAKE) install-mspgcc-support-files
-
-.PHONY: install-legacy-sancus
-install-legacy-sancus:
-	$(MKDIR) $(INSTALLDIR)
-	$(MAKE) install-sancus-core
-	$(MAKE) install-legacy-sancus-compiler
-	$(MAKE) install-sancus-support
-
-.PHONY: install-deps
-install-deps:
-	$(APT) install $(DEPS)
-	$(PIP) install $(PIPS)
-
-.PHONY: install-and-test-sancus-legacy
-install-and-test-sancus-legacy:
-	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) install
-	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) test
-
-.PHONY: test
-test:	test-sancus
-
-.PHONY: test-sancus
-test-sancus:
-	$(MAKE) \
-		SLLVM_INSTALL_DIR=$(INSTALLDIR) -C $(SRCDIR_LEGACY_SANCUS) examples-sim
 
 .PHONY: fetch
 fetch: fetch-mspgcc
@@ -190,6 +156,19 @@ fetch: fetch-sllvm
 configure: configure-mspgcc
 configure: configure-legacy-sancus
 configure: configure-sllvm
+
+.PHONY: install
+install:
+	$(MKDIR) $(INSTALLDIR)
+	$(MAKE) install-mspgcc
+	$(MAKE) install-legacy-sancus
+	$(MAKE) install-crypto
+	$(MAKE) install-sllvm
+
+.PHONY: test
+test:	test-sancus
+
+#############################################################################
 
 .PHONY: fetch-mpsgcc
 fetch-mspgcc:
@@ -273,6 +252,30 @@ build-legacy-sancus-compiler:
 build-sllvm:
 	$(CMAKE) --build $(BUILDDIR_SLLVM) -- -j$(JOBS)
 
+.PHONY: install-mspgcc
+install-mspgcc:
+	$(MKDIR) $(INSTALLDIR)
+	$(MAKE) install-mspgcc-binutils
+	$(MAKE) install-mspgcc-gcc
+	$(MAKE) install-mspgcc-support-files
+
+.PHONY: install-legacy-sancus
+install-legacy-sancus:
+	$(MKDIR) $(INSTALLDIR)
+	$(MAKE) install-sancus-core
+	$(MAKE) install-legacy-sancus-compiler
+	$(MAKE) install-sancus-support
+
+.PHONY: install-deps
+install-deps:
+	$(APT) install $(DEPS)
+	$(PIP) install $(PIPS)
+
+.PHONY: install-and-test-sancus-legacy
+install-and-test-sancus-legacy:
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) install
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) test
+
 .PHONY: install-mspgcc-binutils
 install-mspgcc-binutils: build-mspgcc-binutils
 	$(MAKE) -C $(BUILDDIR_BINUTILS) install
@@ -323,11 +326,45 @@ install-crypto:
 	echo "KEY_BITSIZE  = 64"                        > $(INSTALLDIR)/bin/config.py
 	echo "KEY_BYTESIZE = ((KEY_BITSIZE + 7) // 8)" >> $(INSTALLDIR)/bin/config.py
 	echo "libname = '$(INSTALLDIR)/share/sancus-compiler/libsancus-crypto.so'" \
-	                                               >> $(INSTALLDIR)/bin/config.py
 
 .PHONY: install-sllvm
 install-sllvm: build-sllvm
 	$(CMAKE) --build $(BUILDDIR_SLLVM) --target install
+
+.PHONY: test-sancus
+test-sancus:
+	$(MAKE) \
+		SLLVM_INSTALL_DIR=$(INSTALLDIR) -C $(SRCDIR_LEGACY_SANCUS) examples-sim
+
+# TODO: clean target should not delete the install folder
+.PHONY: clean
+clean:
+	$(RM) -r build
+	$(RM) -r install
+
+.PHONY: clean-fetch
+clean-fetch:
+	$(RM) $(TI_MSPGCC_TBZ)
+	$(RM) -r $(SRCDIR_MSPGCC)
+	$(RM) $(TI_MSPGCC_SUPPORT_ZIP)
+	$(RM) -r $(TI_MSPGCC_SUPPORT)
+	$(RM) -r $(SRCDIR_SLLVM)
+	$(RM) -r $(SRCDIR_LEGACY_SANCUS)
+	$(RM) -r $(SRCDIR_CLANG)
+
+.PHONY: clean-then-install
+clean-then-install:
+	$(MAKE) clean
+	$(MAKE) configure
+	$(MAKE) install
+
+.PHONY: clean-fetch-install
+clean-fetch-install:
+	$(MAKE) clean-fetch
+	$(MAKE) fetch
+	$(MAKE) clean-then-install
+
+#############################################################################
 
 .PHONY: status
 status:
@@ -409,32 +446,3 @@ sync-legacy-sancus:
 	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) fetch upstream
 	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) checkout master
 	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) merge upstream/master
-
-# TODO: clean target should not delete the install folder
-.PHONY: clean
-clean:
-	$(RM) -r build
-	$(RM) -r install
-
-.PHONY: clean-fetch
-clean-fetch:
-	$(RM) $(TI_MSPGCC_TBZ)
-	$(RM) -r $(SRCDIR_MSPGCC)
-	$(RM) $(TI_MSPGCC_SUPPORT_ZIP)
-	$(RM) -r $(TI_MSPGCC_SUPPORT)
-	$(RM) -r $(SRCDIR_SLLVM)
-	$(RM) -r $(SRCDIR_LEGACY_SANCUS)
-	$(RM) -r $(SRCDIR_CLANG)
-
-.PHONY: clean-then-install
-clean-then-install:
-	$(MAKE) clean
-	$(MAKE) configure
-	$(MAKE) install
-
-.PHONY: clean-fetch-install
-clean-fetch-install:
-	$(MAKE) clean-fetch
-	$(MAKE) fetch
-	$(MAKE) clean-then-install
-
