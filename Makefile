@@ -147,6 +147,11 @@ all:
 	@echo BUILD_TYPE=$(BUILD_TYPE)
 	@echo JOBS=$(JOBS)
 
+.PHONY: install-deps
+install-deps:
+	$(APT) install $(DEPS)
+	$(PIP) install $(PIPS)
+
 .PHONY: fetch
 fetch: fetch-mspgcc
 fetch: fetch-legacy-sancus
@@ -206,11 +211,6 @@ configure-mspgcc:
 		$(SRCDIR_BINUTILS)/configure $(CONFIGURE_FLAGS_BINUTILS)
 	cd $(BUILDDIR_GCC) && $(SRCDIR_GCC)/configure $(CONFIGURE_FLAGS_GCC)
 
-.PHONY: configure-sllvm
-configure-sllvm:
-	$(MKDIR) $(BUILDDIR_SLLVM)
-	cd $(BUILDDIR_SLLVM) && $(CMAKE) $(CMAKE_FLAGS_SLLVM) $(SRCDIR_SLLVM)
-
 # TODO: Currently, the 'build-legacy-sancus-compiler' target needs 
 #       clang-sancus. This dependency should be removed as SLLVM *probably* 
 #       only needs the sm_support.h header from sancus-compiler header which
@@ -218,6 +218,11 @@ configure-sllvm:
 .PHONY: configure-legacy-sancus
 configure-legacy-sancus:
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) clang-sancus # TODO: Remove (see above)
+
+.PHONY: configure-sllvm
+configure-sllvm:
+	$(MKDIR) $(BUILDDIR_SLLVM)
+	cd $(BUILDDIR_SLLVM) && $(CMAKE) $(CMAKE_FLAGS_SLLVM) $(SRCDIR_SLLVM)
 
 .PHONY: build-mspgcc-binutils
 build-mspgcc-binutils:
@@ -251,30 +256,13 @@ build-legacy-sancus-compiler:
 .PHONY: build-sllvm
 build-sllvm:
 	$(CMAKE) --build $(BUILDDIR_SLLVM) -- -j$(JOBS)
-
+	
 .PHONY: install-mspgcc
 install-mspgcc:
 	$(MKDIR) $(INSTALLDIR)
 	$(MAKE) install-mspgcc-binutils
 	$(MAKE) install-mspgcc-gcc
 	$(MAKE) install-mspgcc-support-files
-
-.PHONY: install-legacy-sancus
-install-legacy-sancus:
-	$(MKDIR) $(INSTALLDIR)
-	$(MAKE) install-sancus-core
-	$(MAKE) install-legacy-sancus-compiler
-	$(MAKE) install-sancus-support
-
-.PHONY: install-deps
-install-deps:
-	$(APT) install $(DEPS)
-	$(PIP) install $(PIPS)
-
-.PHONY: install-and-test-sancus-legacy
-install-and-test-sancus-legacy:
-	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) install
-	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) test
 
 .PHONY: install-mspgcc-binutils
 install-mspgcc-binutils: build-mspgcc-binutils
@@ -306,6 +294,13 @@ install-mspgcc-support-files:
 	touch $(INSTALLDIR)/include/data.ld
 	touch $(INSTALLDIR)/include/symbols.ld
 
+.PHONY: install-legacy-sancus
+install-legacy-sancus:
+	$(MKDIR) $(INSTALLDIR)
+	$(MAKE) install-sancus-core
+	$(MAKE) install-legacy-sancus-compiler
+	$(MAKE) install-sancus-support
+
 .PHONY: install-sancus-core
 install-sancus-core: build-sancus-core
 	$(CMAKE) --build $(BUILDDIR_SANCUS_CORE) --target install
@@ -326,8 +321,12 @@ install-crypto:
 	echo "KEY_BITSIZE  = 64"                        > $(INSTALLDIR)/bin/config.py
 	echo "KEY_BYTESIZE = ((KEY_BITSIZE + 7) // 8)" >> $(INSTALLDIR)/bin/config.py
 	echo "libname = '$(INSTALLDIR)/share/sancus-compiler/libsancus-crypto.so'" \
-	                                               >> $(INSTALLDIR)/bin/config.py
 
+.PHONY: install-and-test-sancus-legacy
+install-and-test-sancus-legacy:
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) install
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) test
+	                                               >> $(INSTALLDIR)/bin/config.py
 .PHONY: install-sllvm
 install-sllvm: build-sllvm
 	$(CMAKE) --build $(BUILDDIR_SLLVM) --target install
