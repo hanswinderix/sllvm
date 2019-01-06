@@ -75,13 +75,15 @@ straightforward to port to other GNU/Linux distributions.
    $ make install
    ```
 
-## Compiling Sancus PMs
+## Compiling Sancus Protected Modules
 
-TODO
+See [Sancus Examples](https://github.com/sancus-pma/sancus-examples) for 
+details on how to compile Sancus PMs with the SLLVM-based toolchain.
 
 ## Compiling Intel SGX enclaves
 
-TODO
+The [Security Enhanced LLVM](https://distrinet.cs.kuleuven.be/software/sancus/publications/winderix18thesis.pdf) master's thesis contains information on how
+to compiler Intel SGX enclaves.
 
 ## License
 
