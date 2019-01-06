@@ -327,6 +327,7 @@ install-crypto:
 install-and-test-sancus-legacy:
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) install
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) test
+
 .PHONY: install-sllvm
 install-sllvm: build-sllvm
 	$(CMAKE) --build $(BUILDDIR_SLLVM) --target install
