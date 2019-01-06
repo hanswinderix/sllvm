@@ -321,12 +321,12 @@ install-crypto:
 	echo "KEY_BITSIZE  = 64"                        > $(INSTALLDIR)/bin/config.py
 	echo "KEY_BYTESIZE = ((KEY_BITSIZE + 7) // 8)" >> $(INSTALLDIR)/bin/config.py
 	echo "libname = '$(INSTALLDIR)/share/sancus-compiler/libsancus-crypto.so'" \
+	                                               >> $(INSTALLDIR)/bin/config.py
 
 .PHONY: install-and-test-sancus-legacy
 install-and-test-sancus-legacy:
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) install
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) test
-	                                               >> $(INSTALLDIR)/bin/config.py
 .PHONY: install-sllvm
 install-sllvm: build-sllvm
 	$(CMAKE) --build $(BUILDDIR_SLLVM) --target install
