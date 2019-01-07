@@ -12,8 +12,6 @@ INSTALLDIR ?= $(PWD)/install
 #############################################################################
 
 DEPS =
-DEPS += git
-DEPS += make
 DEPS += curl
 DEPS += cmake
 DEPS += g++
@@ -37,8 +35,12 @@ MKDIR = mkdir -p
 CMAKE = cmake
 APT   = apt
 PIP   = pip3
+DPKG  = dpkg
 
 #############################################################################
+
+DISTRINET_DEB_URL = https://distrinet.cs.kuleuven.be/software/sancus/downloads
+CLANG_SANCUS_DEB  = clang-sancus_4.0.1-2_amd64.deb
 
 LLVM_REPO          = https://github.com/llvm-mirror/llvm.git
 LLVM_FORK          = https://github.com/hanswinderix/llvm.git
@@ -149,8 +151,18 @@ all:
 
 .PHONY: install-deps
 install-deps:
+install-deps: install-clang-sancus
 	$(APT) install $(DEPS)
 	$(PIP) install $(PIPS)
+
+# TODO: Currently, the 'build-legacy-sancus-compiler' target needs 
+#       clang-sancus. This dependency should be removed as SLLVM *probably* 
+#       only needs the sm_support.h header from sancus-compiler header which
+#       is required to compile the Sancus examples.
+.PHONY: install-clang-sancus
+install-clang-sancus:
+	$(WGET) $(DISTRINET_DEB_URL)/$(CLANG_SANCUS_DEB)
+	$(DPKG) -i $(CLANG_SANCUS_DEB)
 
 .PHONY: fetch
 fetch: fetch-mspgcc
@@ -211,13 +223,8 @@ configure-mspgcc:
 		$(SRCDIR_BINUTILS)/configure $(CONFIGURE_FLAGS_BINUTILS)
 	cd $(BUILDDIR_GCC) && $(SRCDIR_GCC)/configure $(CONFIGURE_FLAGS_GCC)
 
-# TODO: Currently, the 'build-legacy-sancus-compiler' target needs 
-#       clang-sancus. This dependency should be removed as SLLVM *probably* 
-#       only needs the sm_support.h header from sancus-compiler header which
-#       is required to compile the Sancus examples.
 .PHONY: configure-legacy-sancus
 configure-legacy-sancus:
-	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) clang-sancus # TODO: Remove (see above)
 
 .PHONY: configure-sllvm
 configure-sllvm:

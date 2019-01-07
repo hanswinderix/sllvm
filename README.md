@@ -9,10 +9,24 @@ toolchain from source. The GNU make based build system has been developed to
 work on a fresh Ubuntu 18.04.1 LTS installation, but it should be fairly 
 straightforward to port to other GNU/Linux distributions.
 
-1. Make sure you have installed the following dependencies:
+1. Make sure you have installed the following dependencies.
 
    * GNU **make** 3.81 or later
    * **git**
+
+   ```sh
+   sudo apt install make git
+   ```
+
+2. Clone the Git repository.
+
+   ```sh
+   git clone https://github.com/hanswinderix/sllvm.git
+   cd sllvm
+   ```
+
+3. Install the following additional dependencies.
+
    * **curl**
    * **cmake** 3.4.3 or later
    * **g++** 4.7 or later
@@ -24,30 +38,17 @@ straightforward to port to other GNU/Linux distributions.
    * **expect**
    * **tcl**
    * **iverilog**
-
-   ```sh
-   sudo apt install make git curl cmake g++ texinfo python3 python3-pip gcc-msp430 expect tcl iverilog
-   pip3 install pyelftools
-   ```
-
-   or alternatively, if you already downloaded the source code and have GNU 
-   **make** installed
+   * **clang-sancus**
 
    ```sh
    sudo -H make install-deps
    ```
 
-   Note: The msp430-gcc dependency is only required to build the legacy sancus
-   compiler. This dependency will disappear in the future.
+   Note: The msp430-gcc and clang-sancus dependencies are only required to 
+   build the legacy sancus compiler. These dependencies will disappear in the 
+   future.
 
-2. Clone the source with git:
-
-   ```sh
-   $ git clone https://github.com/hanswinderix/sllvm.git
-   $ cd sllvm
-   ```
-
-3. (Optional) Create a Makefile.local for local build configuration
+4. (Optional) Create and edit Makefile.local for local build configuration.
 
    The following GNU make variables can be set.
    
@@ -58,18 +59,14 @@ straightforward to port to other GNU/Linux distributions.
    | SANCUS\_SECURITY | Sancus security level can be *64* or *128* bits    |
    | SANCUS\_KEY      | Sancus master key in hexadecimal notation          |
 
-4. Fetch other repositories and configure the build. 
+5. Fetch other repositories and configure the build. 
 
    ```sh
    $ make fetch
    $ make configure
    ```
    
-   Note: This step might ask for the sudo password because the legacy sancus 
-   compiler needs clang-sancus to be installed. In the future, this dependency 
-   will disappear.
-
-5. Build and install:
+6. Build and install.
 
    ```sh
    $ make install
