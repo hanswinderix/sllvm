@@ -161,6 +161,7 @@ install-deps: install-clang-sancus
 #       is required to compile the Sancus examples.
 .PHONY: install-clang-sancus
 install-clang-sancus:
+	$(RM) $(CLANG_SANCUS_DEB)
 	$(WGET) $(DISTRINET_DEB_URL)/$(CLANG_SANCUS_DEB)
 	$(DPKG) -i $(CLANG_SANCUS_DEB)
 
@@ -359,6 +360,7 @@ clean-fetch:
 	$(RM) -r $(SRCDIR_SLLVM)
 	$(RM) -r $(SRCDIR_LEGACY_SANCUS)
 	$(RM) -r $(SRCDIR_CLANG)
+	$(RM) $(CLANG_SANCUS_DEB)
 
 .PHONY: clean-then-install
 clean-then-install:
