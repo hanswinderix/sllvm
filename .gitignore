@@ -8,3 +8,5 @@ sllvm
 build
 install
 compile_commands.json
+
+clang-sancus_*.deb
