@@ -75,6 +75,12 @@ straightforward to port to other GNU/Linux distributions.
    $ make install
    ```
 
+## Running the Sancus examples
+
+   ```sh
+   $ make test-sancus
+   ```
+
 ## Compiling Sancus Protected Modules
 
 See [Sancus Examples](https://github.com/sancus-pma/sancus-examples) for 
