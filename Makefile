@@ -381,6 +381,7 @@ status:
 .PHONY: pull
 pull: pull-sancus
 pull: pull-sllvm
+	$(GIT) pull
 
 .PHONY: pull-sancus
 pull-sancus:
