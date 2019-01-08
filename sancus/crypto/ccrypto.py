@@ -23,8 +23,8 @@ def sancus_unwrap(key, ad, cipher, tag):
     return body
   return None
 
-def sancus_wrap_sm_nonce(name, text):
-  return sancus_wrap(bytes(0), bytes(name, 'utf-8'), text)[1][:2][::-1]
+def sancus_wrap_sm_nonce(key, name, text):
+  return sancus_wrap(key, bytes(name, 'utf-8'), text)[1][:2][::-1]
   
 def compute_sancus_mac(key, msg):
   mac = bytes(len(key))

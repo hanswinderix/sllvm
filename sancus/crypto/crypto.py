@@ -43,7 +43,7 @@ def wrap_text(loader, fname, key):
       #TODO: assert sym_tag != None
       if sym_nonce != None and sym_tag != None:
         # 1) Compute nonce, tag and wrap
-        nonce = ccrypto.sancus_wrap_sm_nonce(pm.get_name(), pm.get_text())
+        nonce = ccrypto.sancus_wrap_sm_nonce(key, pm.get_name(), pm.get_text())
         wrap, tag = ccrypto.sancus_wrap(key, nonce, pm.get_text())
 
         # 1) Write wrapped text
