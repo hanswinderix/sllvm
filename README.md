@@ -87,7 +87,11 @@ details on how to compile Sancus PMs with the SLLVM-based toolchain.
 ## Compiling Intel SGX enclaves
 
 The [Security Enhanced LLVM](https://distrinet.cs.kuleuven.be/software/sancus/publications/winderix18thesis.pdf) master's thesis contains information on how
-to compiler Intel SGX enclaves.
+to compile Intel SGX enclaves.
+
+## Protected modules and enclaves in Rust
+
+See the [Security Enhanced LLVM](https://distrinet.cs.kuleuven.be/software/sancus/publications/winderix18thesis.pdf) master's thesis for more information.
 
 ## License
 
