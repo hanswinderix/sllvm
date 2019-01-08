@@ -1,6 +1,7 @@
 # Security Enhanced LLVM
 
-This is the main source code repository for Security Enhanced LLVM (SLLVM).
+This is the main source code repository for [Security Enhanced LLVM (SLLVM)]
+(https://distrinet.cs.kuleuven.be/software/sancus/publications/winderix18thesis.pdf).
 
 ## Building from Source
 
