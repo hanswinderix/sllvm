@@ -6,7 +6,6 @@ import loader
 import shutil
 import ccrypto
 import argparse
-import config
 
 def out(bytez, hexdump=False):
   if hexdump:
@@ -15,7 +14,7 @@ def out(bytez, hexdump=False):
     sys.stdout.buffer.write(bytez)
 
 # Required for secure linking
-def fill_hashes(loader, fname):
+def fill_hashes(loader, key, fname):
   elf = loader.get_ELF()
   shutil.copy(elf.get_name(), fname)
   with open(fname, 'rb+') as f:
@@ -25,9 +24,8 @@ def fill_hashes(loader, fname):
         pm2 = loader.find_protected_module_by_symbol_name(match.group(1))
         assert pm2
         assert pm1 != pm2
-        hash = pm2.get_hash()
+        hash = pm2.get_hash(len(key))
         size = sym['st_size']
-        assert size == config.KEY_BYTESIZE
         assert size == len(hash)
         offset = elf.get_offset_of_text_addr_in_file(sym['st_value'])
         f.seek(offset)
@@ -84,6 +82,7 @@ if args.infile:
   loader = loader.Loader(args.infile)
 
 if args.unwrap:
+  assert args.key
   l = [bytes.fromhex(x) for x in args.unwrap]
   ad, cipher, tag = tuple(l)
   body = ccrypto.sancus_unwrap(args.key, ad, cipher, tag)
@@ -91,6 +90,7 @@ if args.unwrap:
   out(body, args.hexdump)
 
 if args.gen_sm_key:
+  assert args.key
   assert args.infile
   pm = loader.find_protected_module_by_name(args.gen_sm_key)
   assert pm
@@ -98,14 +98,17 @@ if args.gen_sm_key:
   out(sm_key, args.hexdump)
 
 if args.gen_vendor_key:
+  assert args.key
   id = args.gen_vendor_key.to_bytes(2, byteorder='little')
   vendor_key = ccrypto.compute_sancus_mac(args.key, id)
   out(vendor_key, args.hexdump)
 
 if args.wrap_sm_text_sections:
+  assert args.key
   assert args.infile
   wrap_text(loader, args.output_file, args.key)
 
 if args.fill_macs:
+  assert args.key
   assert args.infile
-  fill_hashes(loader, args.output_file)
+  fill_hashes(loader, args.key, args.output_file)

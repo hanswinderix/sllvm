@@ -66,8 +66,8 @@ class PM:
       self.identity = self.compute_identity()
     return self.identity
 
-  def get_hash(self):
-    return ccrypto.compute_sancus_hash(self.get_identity())
+  def get_hash(self, size):
+    return ccrypto.compute_sancus_hash(size, self.get_identity())
 
   def get_mac(self, key):
     return ccrypto.compute_sancus_mac(key, self.get_identity())
