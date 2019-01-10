@@ -117,8 +117,8 @@ $(EXE):
 	$(OBJDUMP) -D $< > $@
 
 .PHONY: sim
-sim: $(EXE)
-	unbuffer $(SANCUS_SIM) $(SIMFLAGS) $< | tee sim.out
+sim: $(EXE).objdump
+	unbuffer $(SANCUS_SIM) $(SIMFLAGS) $(EXE) | tee sim.out
 
 .PHONY: clean
 clean:
