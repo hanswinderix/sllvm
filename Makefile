@@ -8,8 +8,8 @@ JOBS       ?= 1
 SANCUS_SECURITY ?= 64
 SANCUS_KEY      ?= deadbeefcafebabe
 
-BUILDDIR   ?= $(MAKEFILE_DIR)/build
-INSTALLDIR ?= $(MAKEFILE_DIR)/install
+BUILDDIR   ?= $(MAKEFILE_DIR)build
+INSTALLDIR ?= $(MAKEFILE_DIR)install
 
 #############################################################################
 
@@ -60,15 +60,15 @@ TI_MSPGCC_TBZ         = $(TI_MSPGCC_NAME).tar.bz2
 TI_MSPGCC_SUPPORT     = msp430-gcc-support-files
 TI_MSPGCC_SUPPORT_ZIP = $(TI_MSPGCC_SUPPORT)-$(TI_MSPGCC_SUPPORT_VER).zip
 
-SRCDIR_SANCUS          = $(MAKEFILE_DIR)/sancus
-SRCDIR_LEGACY_SANCUS   = $(MAKEFILE_DIR)/sancus-main
+SRCDIR_SANCUS          = $(MAKEFILE_DIR)sancus
+SRCDIR_LEGACY_SANCUS   = $(MAKEFILE_DIR)sancus-main
 SRCDIR_SANCUS_CORE     = $(SRCDIR_LEGACY_SANCUS)/sancus-core
 SRCDIR_SANCUS_COMPILER = $(SRCDIR_LEGACY_SANCUS)/sancus-compiler
 SRCDIR_SANCUS_SUPPORT  = $(SRCDIR_LEGACY_SANCUS)/sancus-support
 SRCDIR_SANCUS_EXAMPLES = $(SRCDIR_LEGACY_SANCUS)/sancus-examples
-SRCDIR_SLLVM           = $(MAKEFILE_DIR)/sllvm
+SRCDIR_SLLVM           = $(MAKEFILE_DIR)sllvm
 SRCDIR_CLANG           = $(SRCDIR_SLLVM)/tools/clang
-SRCDIR_MSPGCC          = $(MAKEFILE_DIR)/$(TI_MSPGCC_NAME)
+SRCDIR_MSPGCC          = $(MAKEFILE_DIR)$(TI_MSPGCC_NAME)
 SRCDIR_GCC             = $(SRCDIR_MSPGCC)/gcc
 SRCDIR_BINUTILS        = $(SRCDIR_MSPGCC)/binutils
 SRCDIR_NEWLIB          = $(SRCDIR_MSPGCC)/newlib
