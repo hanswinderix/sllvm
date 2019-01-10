@@ -79,19 +79,29 @@ straightforward to port to other GNU/Linux distributions.
    $ make test-sancus
    ```
 
-## Compiling Sancus Protected Modules
+## Sancus Protected Modules in C
 
 See [Sancus Examples](https://github.com/sancus-pma/sancus-examples) for 
-details on how to compile Sancus PMs with the SLLVM-based toolchain.
+examples on how to develop Sancus protected modules with the SLLVM-based 
+toolchain.
 
-## Compiling Intel SGX enclaves
+## Intel SGX enclaves in C
 
-The [Security Enhanced LLVM](https://distrinet.cs.kuleuven.be/software/sancus/publications/winderix18thesis.pdf) master's thesis contains information on how
-to compile Intel SGX enclaves.
+See the [Security Enhanced LLVM](https://distrinet.cs.kuleuven.be/software/sancus/publications/winderix18thesis.pdf)
+master's thesis for more information on how to develop Intel SGX enclaves in C
+with the SLLVM-based toolchain.
 
-## Protected modules and enclaves in Rust
+## Sancus Protected modules in Rust
 
-See the [Security Enhanced LLVM](https://distrinet.cs.kuleuven.be/software/sancus/publications/winderix18thesis.pdf) master's thesis for more information.
+See the [Security Enhanced LLVM](https://distrinet.cs.kuleuven.be/software/sancus/publications/winderix18thesis.pdf)
+master's thesis for more information on how to develop Sancus protected modules
+in Rust with the SLLVM-based toolchain.
+
+## Intel SGX enclaves in Rust
+
+See the [Security Enhanced LLVM](https://distrinet.cs.kuleuven.be/software/sancus/publications/winderix18thesis.pdf)
+master's thesis for more information on how to develop Intel SGX enclaves
+in Rust with the SLLVM-based toolchain.
 
 ## License
 
