@@ -186,6 +186,7 @@ install:
 	$(MAKE) install-sllvm
 
 .PHONY: test
+test:	test-sancus-examples
 test:	test-sancus
 
 #############################################################################
@@ -340,10 +341,14 @@ install-and-test-sancus-legacy:
 install-sllvm: build-sllvm
 	$(CMAKE) --build $(BUILDDIR_SLLVM) --target install
 
-.PHONY: test-sancus
-test-sancus:
+.PHONY: test-sancus-examples
+test-sancus-examples:
 	$(MAKE) \
 		SLLVM_INSTALL_DIR=$(INSTALLDIR) -C $(SRCDIR_LEGACY_SANCUS) examples-sim
+
+.PHONY: test-sancus
+test-sancus:
+	$(MAKE) -C $(SRCDIR_SANCUS)/test sim
 
 .PHONY: clean
 clean:
