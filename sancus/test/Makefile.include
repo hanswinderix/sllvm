@@ -1,5 +1,5 @@
 MAKEFILE_DIR      = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
-SLLVM_INSTALL_DIR = $(MAKEFILE_DIR)/../../../install
+SLLVM_INSTALL_DIR = $(MAKEFILE_DIR)../../install
 
 SANCUS_KEY         = deadbeefcafebabe
 SANCUS_SECURITY    = $(shell echo $$(($$(echo -n $(SANCUS_KEY) | wc -m) * 4)))
@@ -113,7 +113,7 @@ all: $(EXE).objdump
 $(EXE):
 	$(LD) $^ $(LDFLAGS) -o $@
 
-$(EXE).objdump: $(EXE)
+%.objdump: %
 	$(OBJDUMP) -D $< > $@
 
 .PHONY: sim
