@@ -1,0 +1,133 @@
+MAKEFILE_DIR      = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+SLLVM_INSTALL_DIR = $(MAKEFILE_DIR)/../../../install
+
+SANCUS_KEY         = deadbeefcafebabe
+SANCUS_SECURITY    = $(shell echo $$(($$(echo -n $(SANCUS_KEY) | wc -m) * 4)))
+SANCUS_SUPPORT_DIR = $(SLLVM_INSTALL_DIR)/share/sancus-support
+SANCUS_CRYPTO      = $(SLLVM_INSTALL_DIR)/bin/crypto.py
+SANCUS_SIM         = $(SLLVM_INSTALL_DIR)/bin/sancus-sim
+SANCUS_LOAD        = sancus-loader
+
+VENDOR_ID  = 1234
+RAM_SIZE   = 16K
+ROM_SIZE   = 41K
+FPGA_DEV   = /dev/ttyUSB0
+FPGA_RATE  = 115200
+VENDOR_KEY = \
+  $(shell $(SANCUS_CRYPTO) --key $(SANCUS_KEY) --gen-vendor-key $(VENDOR_ID) -x)
+
+MCU = msp430sancus
+
+CC      = $(SLLVM_INSTALL_DIR)/bin/clang
+OPT     = $(SLLVM_INSTALL_DIR)/bin/opt
+LLC     = $(SLLVM_INSTALL_DIR)/bin/llc
+LD      = $(SLLVM_INSTALL_DIR)/bin/msp430-elf-gcc
+AS      = $(SLLVM_INSTALL_DIR)/bin/msp430-elf-gcc
+OBJDUMP = $(SLLVM_INSTALL_DIR)/bin/msp430-elf-objdump
+
+INCFLAGS =
+INCFLAGS += -I $(SLLVM_INSTALL_DIR)/include
+INCFLAGS += -I $(SLLVM_INSTALL_DIR)/msp430-elf/include
+INCFLAGS += -I $(SLLVM_INSTALL_DIR)/share/sancus-support/include
+INCFLAGS += -I $(SLLVM_INSTALL_DIR)/share/sancus-compiler/include
+
+CFLAGS =
+CFLAGS += -Wfatal-errors 
+CFLAGS += -fcolor-diagnostics 
+CFLAGS += $(INCFLAGS)
+CFLAGS += -D__$(shell echo $(MCU) | tr a-z A-Z)__
+CFLAGS += -DCONFIG_SECURITY=$(SANCUS_SECURITY)
+CFLAGS += -Werror
+CFLAGS += -O0
+CFLAGS += -target msp430-elf
+CFLAGS += -emit-llvm
+
+SLLVM_TRANSFORM_FLAGS =  
+SLLVM_TRANSFORM_FLAGS += --load $(SLLVM_INSTALL_DIR)/lib/SLLVM.so
+SLLVM_TRANSFORM_FLAGS += --sllvm-transform
+
+SANCUS_TRANSFORM_FLAGS = 
+SANCUS_TRANSFORM_FLAGS += --load $(SLLVM_INSTALL_DIR)/lib/SLLVM.so
+SANCUS_TRANSFORM_FLAGS += --sancus-transform
+SANCUS_TRANSFORM_FLAGS += --key-size $(SANCUS_SECURITY)
+
+LLCFLAGS =
+LLCFLAGS += -O3
+
+ASFLAGS =
+ASFLAGS += $(INCFLAGS)
+ASFLAGS += -mmcu=$(MCU)
+
+LDFLAGS =
+LDFLAGS += -L $(SANCUS_SUPPORT_DIR)/lib/
+LDFLAGS += -lsm-io
+LDFLAGS += -ldev
+LDFLAGS += -L $(SLLVM_INSTALL_DIR)/share/sancus-compiler/lib
+LDFLAGS += -l sancus-sm-support
+LDFLAGS += -L $(SLLVM_INSTALL_DIR)/include # For devices.csv and $(MCU).ld
+LDFLAGS += -Wl,-gc-sections # To garbage collect unused trusted rt functions
+LDFLAGS += -mmcu=$(MCU)
+
+MEMFLAGS =
+MEMFLAGS += --ram $(RAM_SIZE)
+MEMFLAGS += --rom $(ROM_SIZE) 
+
+CRYPTOFLAGS =
+CRYPTOFLAGS += --key $(VENDOR_KEY)
+CRYPTOFLAGS += --verbose
+
+SIMFLAGS = 
+SIMFLAGS += $(MEMFLAGS)
+
+LOADFLAGS =
+LOADFLAGS += -device $(FPGA_DEV)
+LOADFLAGS += -baudrate $(FPGA_RATE)
+
+#----------------------------------------------------------------------------
+
+.SUFFIXES:
+
+.PRECIOUS: %.ll
+.PRECIOUS: %.sllvm.ll
+.PRECIOUS: %.sancus.ll
+.PRECIOUS: %.s
+
+.PHONY: all
+all: $(EXE).objdump
+
+%.ll: %.c
+	$(CC) $(CFLAGS) -S $< -o $@
+
+%.sllvm.ll: %.ll
+	$(OPT) $(SLLVM_TRANSFORM_FLAGS) -S $< -o $@ > /dev/null
+
+%.sancus.ll: %.sllvm.ll
+	$(OPT) $(SANCUS_TRANSFORM_FLAGS) -S $< -o $@ > /dev/null
+
+%.s: %.sancus.ll
+	$(LLC) $(LLCFLAGS) $< -o $@
+
+%.o: %.s
+	$(AS) $(ASFLAGS) -c $< -o $@
+
+$(EXE):
+	$(LD) $^ $(LDFLAGS) -o $@
+
+$(EXE).objdump: $(EXE)
+	$(OBJDUMP) -D $< > $@
+
+.PHONY: sim
+sim: $(EXE)
+	unbuffer $(SANCUS_SIM) $(SIMFLAGS) $< | tee sim.out
+
+.PHONY: clean
+clean:
+	$(RM) *.ll
+	$(RM) *.s
+	$(RM) *.o
+	$(RM) $(EXE)
+	$(RM) *.objdump
+	$(RM) sim.out
+	$(RM) sim-input.bin
+	$(RM) sim-output.bin
+	$(RM) sancus_sim.fst
