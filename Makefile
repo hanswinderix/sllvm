@@ -345,11 +345,9 @@ test-sancus:
 	$(MAKE) \
 		SLLVM_INSTALL_DIR=$(INSTALLDIR) -C $(SRCDIR_LEGACY_SANCUS) examples-sim
 
-# TODO: clean target should not delete the install folder
 .PHONY: clean
 clean:
-	$(RM) -r build
-	$(RM) -r install
+	$(RM) -r $(BUILDDIR)
 
 .PHONY: clean-fetch
 clean-fetch:
