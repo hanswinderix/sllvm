@@ -1,0 +1,7 @@
+*.ll
+*.s
+*.o
+sancus_sim.fst
+sim-input.bin
+sim-output.bin
+sim.out
