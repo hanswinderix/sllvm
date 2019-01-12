@@ -343,8 +343,10 @@ install-sllvm: build-sllvm
 
 .PHONY: test-sancus-examples
 test-sancus-examples:
-	$(MAKE) \
-		SLLVM_INSTALL_DIR=$(INSTALLDIR) -C $(SRCDIR_LEGACY_SANCUS) examples-sim
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS)   \
+		SLLVM_INSTALL_DIR=$(INSTALLDIR)    \
+		SANCUS_SECURITY=$(SANCUS_SECURITY) \
+		examples-sim
 
 .PHONY: test-sancus
 test-sancus:
