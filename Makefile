@@ -38,7 +38,6 @@ CMAKE = cmake
 APT   = apt
 PIP   = pip3
 DPKG  = dpkg
-PATCH = patch
 
 #############################################################################
 
@@ -197,7 +196,6 @@ fetch-mspgcc:
 	$(WGET) $(TI_MSPGCC_URL)/$(TI_MSPGCC_TBZ)
 	$(TAR) -jxf $(TI_MSPGCC_TBZ)
 	cd $(SRCDIR_MSPGCC) && $(SH) README-apply-patches.sh
-	cd $(SRCDIR_MSPGCC) && $(PATCH) -p0 < $(SRCDIR_SANCUS)/tc-msp430.c.patch
 	$(WGET) $(TI_MSPGCC_URL)/$(TI_MSPGCC_SUPPORT_ZIP)
 
 .PHONY: fetch-legacy-sancus
