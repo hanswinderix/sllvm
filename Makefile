@@ -352,7 +352,7 @@ test-sancus-examples:
 
 .PHONY: test-sllvm
 test-sllvm:
-	$(MAKE) -C $(SRCDIR_TEST_SANCUS) sim
+	$(MAKE) -C $(SRCDIR_TEST_SANCUS) SANCUS_KEY=$(SANCUS_KEY) sim
 
 .PHONY: clean
 clean:
