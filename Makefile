@@ -72,6 +72,8 @@ SRCDIR_MSPGCC          = $(MAKEFILE_DIR)$(TI_MSPGCC_NAME)
 SRCDIR_GCC             = $(SRCDIR_MSPGCC)/gcc
 SRCDIR_BINUTILS        = $(SRCDIR_MSPGCC)/binutils
 SRCDIR_NEWLIB          = $(SRCDIR_MSPGCC)/newlib
+SRCDIR_TEST            = $(MAKEFILE_DIR)test
+SRCDIR_TEST_SANCUS     = $(SRCDIR_TEST)/sancus
 
 BUILDDIR_SLLVM    = $(BUILDDIR)/sllvm
 BUILDDIR_GCC      = $(BUILDDIR)/gcc
@@ -187,7 +189,7 @@ install:
 
 .PHONY: test
 test:	test-sancus-examples
-test:	test-sancus
+test:	test-sllvm
 
 #############################################################################
 
@@ -348,9 +350,9 @@ test-sancus-examples:
 		SANCUS_SECURITY=$(SANCUS_SECURITY) \
 		examples-sim
 
-.PHONY: test-sancus
-test-sancus:
-	$(MAKE) -C $(SRCDIR_SANCUS)/test sim
+.PHONY: test-sllvm
+test-sllvm:
+	$(MAKE) -C $(SRCDIR_TEST_SANCUS) sim
 
 .PHONY: clean
 clean:

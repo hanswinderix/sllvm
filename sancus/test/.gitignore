@@ -1,9 +1,0 @@
-*.ll
-*.s
-*.o
-*.objdump
-sancus_sim.fst
-sancus_sim.fst.hier
-sim-input.bin
-sim-output.bin
-sim.out
