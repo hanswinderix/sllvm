@@ -361,6 +361,7 @@ clean:
 #        installation when configuring the legacy Sancus compiler. This conflict
 #        should be fixed.
 	$(RM) $(INSTALLDIR)/lib/cmake/llvm/LLVMConfig.cmake 
+	$(MAKE) -C $(SRCDIR_TEST_SANCUS) clean
 
 .PHONY: uninstall
 uninstall:
