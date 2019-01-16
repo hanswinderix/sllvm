@@ -355,6 +355,13 @@ test-sancus:
 .PHONY: clean
 clean:
 	$(RM) -r $(BUILDDIR)
+# TODO: LLVMConfig has to be removed to avoid a conflict with the legacy Sancus
+#        installation when configuring the legacy Sancus compiler. This conflict
+#        should be fixed.
+	$(RM) $(INSTALLDIR)/lib/cmake/llvm/LLVMConfig.cmake 
+
+.PHONY: clean
+uninstall:
 
 .PHONY: clean-fetch
 clean-fetch:
