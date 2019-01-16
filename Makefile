@@ -360,8 +360,9 @@ clean:
 #        should be fixed.
 	$(RM) $(INSTALLDIR)/lib/cmake/llvm/LLVMConfig.cmake 
 
-.PHONY: clean
+.PHONY: uninstall
 uninstall:
+	$(RM) -r $(INSTALLDIR)
 
 .PHONY: clean-fetch
 clean-fetch:
