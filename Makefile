@@ -50,6 +50,8 @@ CLANG_REPO         = https://github.com/llvm-mirror/clang.git
 CLANG_FORK         = https://github.com/hanswinderix/clang.git
 LEGACY_SANCUS_REPO = https://github.com/sancus-pma/sancus-main.git
 LEGACY_SANCUS_FORK = https://github.com/hanswinderix/sancus-main.git
+VULCAN_REPO        = https://github.com/sancus-pma/vulcan.git
+VULCAN_FORK        = https://github.com/hanswinderix/vulcan.git
 
 # See http://www.ti.com/tool/MSP430-GCC-OPENSOURCE
 TI_MSPGCC_URL         = http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/latest/exports
@@ -61,6 +63,7 @@ TI_MSPGCC_SUPPORT     = msp430-gcc-support-files
 TI_MSPGCC_SUPPORT_ZIP = $(TI_MSPGCC_SUPPORT)-$(TI_MSPGCC_SUPPORT_VER).zip
 
 SRCDIR_SANCUS          = $(MAKEFILE_DIR)sancus
+SRCDIR_VULCAN          = $(MAKEFILE_DIR)vulcan
 SRCDIR_LEGACY_SANCUS   = $(MAKEFILE_DIR)sancus-main
 SRCDIR_SANCUS_CORE     = $(SRCDIR_LEGACY_SANCUS)/sancus-core
 SRCDIR_SANCUS_COMPILER = $(SRCDIR_LEGACY_SANCUS)/sancus-compiler
@@ -172,11 +175,13 @@ install-clang-sancus:
 .PHONY: fetch
 fetch: fetch-mspgcc
 fetch: fetch-legacy-sancus
+fetch: fetch-vulcan
 fetch: fetch-sllvm
 
 .PHONY: configure
 configure: configure-mspgcc
 configure: configure-legacy-sancus
+configure: configure-vulcan
 configure: configure-sllvm
 
 .PHONY: install
@@ -209,6 +214,11 @@ fetch-legacy-sancus:
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) sancus-support
 	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) sancus-examples
 
+.PHONY: fetch-vulcan
+fetch-vulcan:
+	$(GIT) clone $(VULCAN_FORK) $(SRCDIR_VULCAN)
+	cd $(SRCDIR_VULCAN) && $(GIT) remote add upstream $(VULCAN_REPO)
+
 .PHONY: fetch-sllvm
 fetch-sllvm:
 	$(GIT) clone $(LLVM_FORK) $(SRCDIR_SLLVM)
@@ -231,6 +241,9 @@ configure-mspgcc:
 
 .PHONY: configure-legacy-sancus
 configure-legacy-sancus:
+
+.PHONY: configure-vulcan
+configure-vulcan:
 
 .PHONY: configure-sllvm
 configure-sllvm:
@@ -334,14 +347,18 @@ install-crypto:
 	echo "libname = '$(INSTALLDIR)/share/sancus-compiler/libsancus-crypto.so'" \
 	                                               >> $(INSTALLDIR)/bin/config.py
 
-.PHONY: install-and-test-sancus-legacy
-install-and-test-sancus-legacy:
-	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) install
-	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) test
+.PHONY: build-vulcan
+build-vulcan:
+	$(MAKE) SLLVM_INSTALL_DIR=$(INSTALLDIR) -C $(SRCDIR_VULCAN)
 
 .PHONY: install-sllvm
 install-sllvm: build-sllvm
 	$(CMAKE) --build $(BUILDDIR_SLLVM) --target install
+
+.PHONY: install-and-test-sancus-legacy
+install-and-test-sancus-legacy:
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) install
+	$(MAKE) -C $(SRCDIR_LEGACY_SANCUS) test
 
 .PHONY: test-sancus-examples
 test-sancus-examples:
@@ -363,10 +380,6 @@ clean:
 	$(RM) $(INSTALLDIR)/lib/cmake/llvm/LLVMConfig.cmake 
 	$(MAKE) -C $(SRCDIR_TEST_SANCUS) clean
 
-.PHONY: uninstall
-uninstall:
-	$(RM) -r $(INSTALLDIR)
-
 .PHONY: clean-fetch
 clean-fetch:
 	$(RM) $(TI_MSPGCC_TBZ)
@@ -375,6 +388,7 @@ clean-fetch:
 	$(RM) -r $(TI_MSPGCC_SUPPORT)
 	$(RM) -r $(SRCDIR_SLLVM)
 	$(RM) -r $(SRCDIR_LEGACY_SANCUS)
+	$(RM) -r $(SRCDIR_VULCAN)
 	$(RM) -r $(SRCDIR_CLANG)
 	$(RM) $(CLANG_SANCUS_DEB)
 
@@ -390,6 +404,10 @@ clean-fetch-install:
 	$(MAKE) fetch
 	$(MAKE) clean-then-install
 
+.PHONY: uninstall
+uninstall:
+	$(RM) -r $(INSTALLDIR)
+
 #############################################################################
 
 .PHONY: status
@@ -400,12 +418,14 @@ status:
 	-$(GIT) -C $(SRCDIR_SANCUS_COMPILER) status -sb
 	-$(GIT) -C $(SRCDIR_SANCUS_SUPPORT)  status -sb
 	-$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) status -sb
+	-$(GIT) -C $(SRCDIR_VULCAN)          status -sb
 	-$(GIT) -C $(SRCDIR_SLLVM)           status -sb
 	-$(GIT) -C $(SRCDIR_CLANG)           status -sb
 
 .PHONY: pull
 pull: pull-sancus
 pull: pull-sllvm
+pull: pull-vulcan
 	$(GIT) pull
 
 .PHONY: pull-sancus
@@ -416,6 +436,10 @@ pull-sancus:
 	$(GIT) -C $(SRCDIR_SANCUS_SUPPORT)  pull
 	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) pull
 
+.PHONY: pull-vulcan
+pull-vulcan:
+	$(GIT) -C $(SRCDIR_VULCAN) pull 
+
 .PHONY: pull-sllvm
 pull-sllvm:
 	$(GIT) -C $(SRCDIR_SLLVM) pull 
@@ -424,6 +448,7 @@ pull-sllvm:
 .PHONY: push
 push: push-sllvm
 push: push-legacy-sancus
+push: push-vulcan
 	$(GIT) push
 
 .PHONY: push-sllvm
@@ -439,6 +464,10 @@ push-legacy-sancus:
 	$(GIT) -C $(SRCDIR_SANCUS_SUPPORT)  push
 	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) push
 
+.PHONY: push-vulcan
+push-sllvm:
+	$(GIT) -C $(SRCDIR_VULCAN) push 
+
 .PHONY: diff
 diff:
 	$(GIT) difftool
@@ -449,10 +478,12 @@ diff:
 	$(GIT) -C $(SRCDIR_SANCUS_COMPILER) difftool
 	$(GIT) -C $(SRCDIR_SANCUS_SUPPORT)  difftool
 	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) difftool
+	$(GIT) -C $(SRCDIR_VULCAN) difftool
 
 .PHONY: sync
 sync: sync-llvm
 sync: sync-legacy-sancus
+sync: sync-vulcan
 
 .PHONY: sync-llvm
 sync-llvm:
@@ -474,3 +505,9 @@ sync-legacy-sancus:
 	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) fetch upstream
 	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) checkout master
 	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) merge upstream/master
+
+.PHONY: sync-vulcan
+sync-vulcan:
+	$(GIT) -C $(SRCDIR_VULCAN) fetch upstream
+	$(GIT) -C $(SRCDIR_VULCAN) checkout master
+	$(GIT) -C $(SRCDIR_VULCAN) merge upstream/master
