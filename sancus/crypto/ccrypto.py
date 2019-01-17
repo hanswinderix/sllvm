@@ -1,9 +1,6 @@
 import ctypes
 import config
 
-# TODO: KEY_BITSIZE should be the default value. It should be possible to 
-#       override it via the commandline
-
 clib = ctypes.cdll.LoadLibrary(config.libname)
 
 def sancus_wrap(key, ad, body):
