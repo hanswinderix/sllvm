@@ -465,7 +465,7 @@ push-legacy-sancus:
 	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) push
 
 .PHONY: push-vulcan
-push-sllvm:
+push-vulcan:
 	$(GIT) -C $(SRCDIR_VULCAN) push 
 
 .PHONY: diff
