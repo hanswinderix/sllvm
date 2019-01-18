@@ -190,11 +190,13 @@ install:
 	$(MAKE) install-mspgcc
 	$(MAKE) install-legacy-sancus
 	$(MAKE) install-crypto
+	$(MAKE) install-vulcan
 	$(MAKE) install-sllvm
 
 .PHONY: test
 test:	test-sancus-examples
 test:	test-sllvm
+test:	test-vulcan
 
 #############################################################################
 
@@ -279,10 +281,14 @@ build-legacy-sancus-compiler:
 	export PATH=$(INSTALLDIR)/bin:$$PATH; cd $(BUILDDIR_SANCUS_COMPILER) && \
 		$(CMAKE) $(CMAKE_FLAGS_SANCUS_COMPILER) $(SRCDIR_SANCUS_COMPILER)
 
+.PHONY: build-vulcan
+build-vulcan:
+	$(MAKE) SLLVM_INSTALL_DIR=$(INSTALLDIR) -C $(SRCDIR_VULCAN)
+
 .PHONY: build-sllvm
 build-sllvm:
 	$(CMAKE) --build $(BUILDDIR_SLLVM) -- -j$(JOBS)
-	
+
 .PHONY: install-mspgcc
 install-mspgcc:
 	$(MKDIR) $(INSTALLDIR)
@@ -347,9 +353,8 @@ install-crypto:
 	echo "libname = '$(INSTALLDIR)/share/sancus-compiler/libsancus-crypto.so'" \
 	                                               >> $(INSTALLDIR)/bin/config.py
 
-.PHONY: build-vulcan
-build-vulcan:
-	$(MAKE) SLLVM_INSTALL_DIR=$(INSTALLDIR) -C $(SRCDIR_VULCAN)
+.PHONY: install-vulcan
+install-vulcan: build-vulcan
 
 .PHONY: install-sllvm
 install-sllvm: build-sllvm
@@ -370,6 +375,10 @@ test-sancus-examples:
 .PHONY: test-sllvm
 test-sllvm:
 	$(MAKE) -C $(SRCDIR_TEST_SANCUS) SANCUS_KEY=$(SANCUS_KEY) sim
+
+.PHONY: test-vulcan
+test-vulcan:
+	$(MAKE) SLLVM_INSTALL_DIR=$(INSTALLDIR) -C $(SRCDIR_VULCAN) sim
 
 .PHONY: clean
 clean:
