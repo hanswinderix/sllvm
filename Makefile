@@ -379,6 +379,7 @@ clean:
 #        should be fixed.
 	$(RM) $(INSTALLDIR)/lib/cmake/llvm/LLVMConfig.cmake 
 	$(MAKE) -C $(SRCDIR_TEST_SANCUS) clean
+	$(MAKE) -C $(SRCDIR_VULCAN) clean
 
 .PHONY: clean-fetch
 clean-fetch:
