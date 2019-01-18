@@ -57,7 +57,6 @@ straightforward to port to other GNU/Linux distributions.
    |------------------|----------------------------------------------------|
    | JOBS             | Specifies the number of jobs to run simultaneously |
    | BUILD\_TYPE      | *Debug* or *Release* build                         |
-   | SANCUS\_SECURITY | Sancus security level can be *64* or *128* bits    |
    | SANCUS\_KEY      | Sancus master key in hexadecimal notation          |
 
 5. Fetch other repositories and configure the build. 

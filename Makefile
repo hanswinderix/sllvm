@@ -4,14 +4,14 @@ MAKEFILE_DIR = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 BUILD_TYPE ?= Release # One of (Debug, Release)
 JOBS       ?= 1
-
-SANCUS_SECURITY ?= 64
-SANCUS_KEY      ?= deadbeefcafebabe
+SANCUS_KEY ?= deadbeefcafebabec0defeeddefec8ed
 
 BUILDDIR   ?= $(MAKEFILE_DIR)build
 INSTALLDIR ?= $(MAKEFILE_DIR)install
 
 #############################################################################
+
+SANCUS_SECURITY = $(shell echo $$(($$(echo -n $(SANCUS_KEY) | wc -m) * 4)))
 
 DEPS =
 DEPS += curl
