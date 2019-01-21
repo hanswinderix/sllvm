@@ -413,9 +413,10 @@ clean-fetch-install:
 	$(MAKE) fetch
 	$(MAKE) clean-then-install
 
+# TODO: Make uninstall safer 
 .PHONY: uninstall
 uninstall:
-	$(RM) -r $(INSTALLDIR)
+#	$(RM) -r $(INSTALLDIR)
 
 #############################################################################
 
