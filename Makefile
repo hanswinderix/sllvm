@@ -195,7 +195,7 @@ install:
 .PHONY: test
 test:	test-sancus-examples
 test:	test-sllvm
-test:	test-vulcan
+#test:	test-vulcan
 
 #############################################################################
 
