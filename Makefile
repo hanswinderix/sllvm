@@ -1,3 +1,5 @@
+CMAKE_FLAGS_SLLVM =
+
 -include Makefile.local
 
 MAKEFILE_DIR = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
@@ -44,6 +46,8 @@ DPKG  = dpkg
 DISTRINET_DEB_URL = https://distrinet.cs.kuleuven.be/software/sancus/downloads
 CLANG_SANCUS_DEB  = clang-sancus_4.0.1-2_amd64.deb
 
+# TODO: Use the canonical git mirror of the LLVM/Clang subversion repository
+#        => https://github.com/llvm/llvm-project.git
 LLVM_REPO          = https://github.com/llvm-mirror/llvm.git
 LLVM_FORK          = https://github.com/hanswinderix/llvm.git
 CLANG_REPO         = https://github.com/llvm-mirror/clang.git
@@ -87,14 +91,16 @@ BUILDDIR_SANCUS_CORE     = $(BUILDDIR)/sancus-core
 BUILDDIR_SANCUS_COMPILER = $(BUILDDIR)/sancus-compiler
 BUILDDIR_SANCUS_SUPPORT  = $(BUILDDIR)/sancus-support
 
-CMAKE_FLAGS_SLLVM =
 CMAKE_FLAGS_SLLVM += -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
 CMAKE_FLAGS_SLLVM += -DCMAKE_INSTALL_PREFIX=$(INSTALLDIR)
-CMAKE_FLAGS_SLLVM += -DLLVM_USE_LINKER=gold
-CMAKE_FLAGS_SLLVM += -DLLVM_ENABLE_ASSERTIONS=ON
-CMAKE_FLAGS_SLLVM += -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 CMAKE_FLAGS_SLLVM += -DLLVM_TARGETS_TO_BUILD=MSP430
+CMAKE_FLAGS_SLLVM += -DLLVM_USE_LINKER=gold
 #CMAKE_FLAGS_SLLVM += -DLLVM_TARGETS_TO_BUILD="MSP430;X86"
+#CMAKE_FLAGS_SLLVM += -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+#CMAKE_FLAGS_SLLVM += -DLLVM_ENABLE_ASSERTIONS=ON
+#For DEBUG builds, use shared libs, unless you have a lot of memory
+#CMAKE_FLAGS_SLLVM += -DBUILD_SHARED_LIBS=ON
+#CMAKE_FLAGS_SLLVM += -DLLVM_CCACHE_BUILD=ON
 
 CMAKE_FLAGS_SANCUS_COMMON =
 CMAKE_FLAGS_SANCUS_COMMON += -DCMAKE_INSTALL_PREFIX=$(INSTALLDIR)
