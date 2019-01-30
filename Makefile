@@ -375,7 +375,7 @@ test-sancus-examples:
 		examples-sim
 
 .PHONY: test-sllvm
-test-sllvm:
+test-sllvm: clean-test-sllvm
 	$(MAKE) -C $(SRCDIR_TEST_SANCUS) SANCUS_KEY=$(SANCUS_KEY) sim
 
 .PHONY: test-vulcan
@@ -384,11 +384,15 @@ test-vulcan: build-vulcan
 
 .PHONY: clean
 clean: clean-vulcan
+clean: clean-test-sllvm
 	$(RM) -r $(BUILDDIR)
 # TODO: LLVMConfig has to be removed to avoid a conflict with the legacy Sancus
 #        installation when configuring the legacy Sancus compiler. This conflict
 #        should be fixed.
 	$(RM) $(INSTALLDIR)/lib/cmake/llvm/LLVMConfig.cmake 
+
+.PHONY: clean-test-sllvm
+clean-test-sllvm:
 	$(MAKE) -C $(SRCDIR_TEST_SANCUS) clean
 
 .PHONY: clean-vulcan
