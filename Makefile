@@ -11,6 +11,8 @@ SANCUS_KEY ?= deadbeefcafebabec0defeeddefec8ed
 BUILDDIR   ?= $(MAKEFILE_DIR)build
 INSTALLDIR ?= $(MAKEFILE_DIR)install
 
+CMAKE_GENERATOR ?= Unix Makefiles
+
 #############################################################################
 
 SANCUS_SECURITY = $(shell echo $$(($$(echo -n $(SANCUS_KEY) | wc -m) * 4)))
@@ -91,9 +93,11 @@ BUILDDIR_SANCUS_CORE     = $(BUILDDIR)/sancus-core
 BUILDDIR_SANCUS_COMPILER = $(BUILDDIR)/sancus-compiler
 BUILDDIR_SANCUS_SUPPORT  = $(BUILDDIR)/sancus-support
 
-#CMAKE_FLAGS_SLLVM += -GNinja
-#CMAKE_FLAGS_SLLVM += -DLLVM_PARALLEL_COMPILE_JOBS=$(JOBS)
-#CMAKE_FLAGS_SLLVM += -DLLVM_PARALLEL_LINK_JOBS=1
+CMAKE_FLAGS_SLLVM += -G "$(CMAKE_GENERATOR)"
+ifeq ($(CMAKE_GENERATOR), Ninja)
+CMAKE_FLAGS_SLLVM += -DLLVM_PARALLEL_COMPILE_JOBS=$(JOBS)
+CMAKE_FLAGS_SLLVM += -DLLVM_PARALLEL_LINK_JOBS=1
+endif
 CMAKE_FLAGS_SLLVM += -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
 CMAKE_FLAGS_SLLVM += -DCMAKE_INSTALL_PREFIX=$(INSTALLDIR)
 CMAKE_FLAGS_SLLVM += -DLLVM_TARGETS_TO_BUILD=MSP430
@@ -164,6 +168,7 @@ MAKE_FLAGS_LEGACY_SANCUS += MASTER_KEY=$(SANCUS_KEY)
 all: 
 	@echo BUILD_TYPE=$(BUILD_TYPE)
 	@echo JOBS=$(JOBS)
+	@echo CMAKE_GENERATOR=$(CMAKE_GENERATOR)
 
 .PHONY: install-deps
 install-deps:
@@ -295,7 +300,11 @@ build-vulcan:
 
 .PHONY: build-sllvm
 build-sllvm:
+ifneq ($(CMAKE_GENERATOR), Ninja)
 	$(CMAKE) --build $(BUILDDIR_SLLVM) -- -j$(JOBS)
+else
+	$(CMAKE) --build $(BUILDDIR_SLLVM)
+endif
 
 .PHONY: install-mspgcc
 install-mspgcc:
