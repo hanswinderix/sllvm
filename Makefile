@@ -265,6 +265,13 @@ configure-sllvm:
 	$(MKDIR) $(BUILDDIR_SLLVM)
 	cd $(BUILDDIR_SLLVM) && $(CMAKE) $(CMAKE_FLAGS_SLLVM) $(SRCDIR_SLLVM)
 
+.PHONY: configure-sllvm-for-eclipse
+configure-sllvm-for-eclipse: CMAKE_GENERATOR=Eclipse CDT4 - Unix Makefiles
+configure-sllvm-for-eclipse:
+	$(MKDIR) $(BUILDDIR_SLLVM)-eclipse
+	cd $(BUILDDIR_SLLVM)-eclipse && \
+	  $(CMAKE) $(CMAKE_FLAGS_SLLVM) $(SRCDIR_SLLVM)
+
 .PHONY: build-mspgcc-binutils
 build-mspgcc-binutils:
 	$(MAKE) -C $(BUILDDIR_BINUTILS) -j$(JOBS)
