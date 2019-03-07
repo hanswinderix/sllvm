@@ -39,11 +39,12 @@ ENTRY(_start)
 
 MEMORY {
   SFR              : ORIGIN = 0x0000, LENGTH = 0x0010
-  RAM              : ORIGIN = 0x0200, LENGTH = 0x0600
   INFOMEM          : ORIGIN = 0x0000, LENGTH = 0x0000
   INFOA            : ORIGIN = 0x0000, LENGTH = 0x0000
   INFOB            : ORIGIN = 0x0000, LENGTH = 0x0000
-  ROM (rx)         : ORIGIN = 0x8000, LENGTH = 0x7fe0
+
+  INCLUDE memory.ld
+
   VECT1            : ORIGIN = 0xFFE0, LENGTH = 0x0002
   VECT2            : ORIGIN = 0xFFE2, LENGTH = 0x0002
   VECT3            : ORIGIN = 0xFFE4, LENGTH = 0x0002
