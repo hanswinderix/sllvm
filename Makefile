@@ -338,7 +338,7 @@ install-mspgcc-support-files:
 # Overwrite the msp430.h and devices.csv support files of 
 #  $(TI_MSPGCC_SUPPORT_ZIP) with versions that include support for the Sancus 
 #  security architecture.
-	cp $(SRCDIR_SANCUS)/$(TI_MSPGCC_SUPPORT)/devices.csv                   \
+	cp $(SRCDIR_SANCUS)/$(TI_MSPGCC_SUPPORT)/devices.csv             \
 		$(SRCDIR_SANCUS)/$(TI_MSPGCC_SUPPORT)/msp430.h                 \
 		$(SRCDIR_SANCUS)/$(TI_MSPGCC_SUPPORT)/msp430sancus.h           \
 		$(SRCDIR_SANCUS)/$(TI_MSPGCC_SUPPORT)/msp430sancus.ld          \
