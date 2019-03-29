@@ -203,9 +203,9 @@ configure: configure-sllvm
 install:
 	$(MKDIR) $(INSTALLDIR)
 	$(MAKE) install-mspgcc
+	$(MAKE) install-sllvm
 	$(MAKE) install-legacy-sancus
 	$(MAKE) install-crypto
-	$(MAKE) install-sllvm
 
 .PHONY: test
 test:	test-sancus-examples
