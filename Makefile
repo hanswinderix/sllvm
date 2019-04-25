@@ -43,6 +43,8 @@ APT   = apt
 PIP   = pip3
 DPKG  = dpkg
 
+LIT = $(BUILDDIR_SLLVM)/bin/llvm-lit
+
 #############################################################################
 
 DISTRINET_DEB_URL = https://distrinet.cs.kuleuven.be/software/sancus/downloads
@@ -211,6 +213,7 @@ install:
 .PHONY: test
 test:	test-sancus-examples
 test:	test-sllvm
+test:	test-nemdef
 #test:	test-vulcan
 
 #############################################################################
@@ -399,6 +402,10 @@ test-sancus-examples:
 .PHONY: test-sllvm
 test-sllvm: clean-test-sllvm
 	$(MAKE) -C $(SRCDIR_TEST_SANCUS) SANCUS_KEY=$(SANCUS_KEY) sim
+
+.PHONY: test-nemdef
+test-nemdef:
+	$(LIT) $(SRCDIR_SLLVM)/test/CodeGen/MIR/MSP430/nemdef-triangle.mir
 
 .PHONY: test-vulcan
 test-vulcan: build-vulcan
