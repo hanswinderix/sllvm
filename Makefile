@@ -405,7 +405,7 @@ test-sllvm: clean-test-sllvm
 
 .PHONY: test-nemdef
 test-nemdef:
-	$(LIT) $(SRCDIR_SLLVM)/test/CodeGen/MIR/MSP430/nemdef-triangle.mir
+	$(LIT) -vv $(SRCDIR_SLLVM)/test/CodeGen/MIR/MSP430/nemdef-triangle.mir
 
 .PHONY: test-vulcan
 test-vulcan: build-vulcan
