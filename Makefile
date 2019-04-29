@@ -213,7 +213,7 @@ install:
 .PHONY: test
 test:	test-sancus-examples
 test:	test-sllvm
-#test:	test-nemdef
+test:	test-nemdef
 #test:	test-vulcan
 
 #############################################################################
