@@ -409,8 +409,7 @@ LIT_ARGS =
 #LIT_ARGS += -a
 TEST_DIR = $(SRCDIR_SLLVM)/test/CodeGen/MIR/MSP430
 test-nemdef:
-	$(LIT) $(LIT_ARGS) $(TEST_DIR)/nemdef-triangle.mir
-	$(LIT) $(LIT_ARGS) $(TEST_DIR)/nemdef-intertwined.mir
+	$(LIT) $(LIT_ARGS) $(TEST_DIR)
 
 .PHONY: test-vulcan
 test-vulcan: build-vulcan
