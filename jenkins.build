@@ -1,6 +1,5 @@
-echo "JOBS               = 4"                           > Makefile.local
-echo "CMAKE_GENERATOR    = Ninja"                      >> Makefile.local
-echo "CMAKE_FLAGS_SLLVM += -DLLVM_BUILD_LLVM_DYLIB=ON" >> Makefile.local
+echo "JOBS            = 4"      > Makefile.local
+echo "CMAKE_GENERATOR = Ninja" >> Makefile.local
 make fetch
 make configure
 make install
