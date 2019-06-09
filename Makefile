@@ -406,12 +406,17 @@ test-sllvm: clean-test-sllvm
 	$(MAKE) -C $(SRCDIR_TEST_SANCUS) SANCUS_KEY=$(SANCUS_KEY) sim
 
 .PHONY: test-nemdef
-LIT_ARGS =
-#LIT_ARGS += -vv
-#LIT_ARGS += -a
 TEST_DIR = $(SRCDIR_SLLVM)/test/CodeGen/MIR/MSP430
 test-nemdef:
-	$(LIT) $(LIT_ARGS) $(TEST_DIR)
+	$(LIT) $(TEST_DIR)
+
+.PHONY: test-nemdefa
+test-nemdefa:
+	$(LIT) -a $(TEST_DIR)
+
+.PHONY: test-nemdefvv
+test-nemdefvv:
+	$(LIT) -vv $(TEST_DIR)
 
 .PHONY: test-vulcan
 test-vulcan: build-vulcan
