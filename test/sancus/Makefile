@@ -1,4 +1,5 @@
 TESTS =
+TESTS += multiply
 TESTS += hello
 
 TEST_ALL   = $(TESTS:=.all)
