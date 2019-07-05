@@ -50,12 +50,8 @@ LIT = $(BUILDDIR_SLLVM)/bin/llvm-lit
 DISTRINET_DEB_URL = https://distrinet.cs.kuleuven.be/software/sancus/downloads
 CLANG_SANCUS_DEB  = clang-sancus_4.0.1-2_amd64.deb
 
-# TODO: Use the canonical git mirror of the LLVM/Clang subversion repository
-#        => https://github.com/llvm/llvm-project.git
-LLVM_REPO          = https://github.com/llvm-mirror/llvm.git
-LLVM_FORK          = https://github.com/hanswinderix/llvm.git
-CLANG_REPO         = https://github.com/llvm-mirror/clang.git
-CLANG_FORK         = https://github.com/hanswinderix/clang.git
+LLVM_REPO          = https://github.com/llvm/llvm-project.git
+LLVM_FORK          = https://github.com/hanswinderix/llvm-project.git
 LEGACY_SANCUS_REPO = https://github.com/sancus-pma/sancus-main.git
 LEGACY_SANCUS_FORK = https://github.com/hanswinderix/sancus-main.git
 VULCAN_REPO        = https://github.com/sancus-pma/vulcan.git
@@ -78,7 +74,6 @@ SRCDIR_SANCUS_COMPILER = $(SRCDIR_LEGACY_SANCUS)/sancus-compiler
 SRCDIR_SANCUS_SUPPORT  = $(SRCDIR_LEGACY_SANCUS)/sancus-support
 SRCDIR_SANCUS_EXAMPLES = $(SRCDIR_LEGACY_SANCUS)/sancus-examples
 SRCDIR_SLLVM           = $(MAKEFILE_DIR)sllvm
-SRCDIR_CLANG           = $(SRCDIR_SLLVM)/tools/clang
 SRCDIR_MSPGCC          = $(MAKEFILE_DIR)$(TI_MSPGCC_NAME)
 SRCDIR_GCC             = $(SRCDIR_MSPGCC)/gcc
 SRCDIR_BINUTILS        = $(SRCDIR_MSPGCC)/binutils
@@ -103,6 +98,7 @@ endif
 CMAKE_FLAGS_SLLVM += -DCMAKE_BUILD_TYPE=$(BUILD_TYPE)
 CMAKE_FLAGS_SLLVM += -DCMAKE_INSTALL_PREFIX=$(INSTALLDIR)
 CMAKE_FLAGS_SLLVM += -DLLVM_TARGETS_TO_BUILD=MSP430
+CMAKE_FLAGS_SLLVM += -DLLVM_ENABLE_PROJECTS="clang"
 CMAKE_FLAGS_SLLVM += -DLLVM_USE_LINKER=gold
 CMAKE_FLAGS_SLLVM += -DLLVM_ENABLE_PLUGINS=ON
 #CMAKE_FLAGS_SLLVM += -DLLVM_TARGETS_TO_BUILD="MSP430;X86"
@@ -171,7 +167,7 @@ MAKE_FLAGS_LEGACY_SANCUS += MASTER_KEY=$(SANCUS_KEY)
 #############################################################################
 
 .PHONY: all
-all: 
+all:
 	@echo BUILD_TYPE=$(BUILD_TYPE)
 	@echo JOBS=$(JOBS)
 	@echo CMAKE_GENERATOR=$(CMAKE_GENERATOR)
@@ -245,8 +241,6 @@ fetch-vulcan:
 fetch-sllvm:
 	$(GIT) clone $(LLVM_FORK) $(SRCDIR_SLLVM)
 	cd $(SRCDIR_SLLVM) && $(GIT) remote add upstream $(LLVM_REPO)
-	$(GIT) clone $(CLANG_FORK) $(SRCDIR_CLANG)
-	cd $(SRCDIR_CLANG) && $(GIT) remote add upstream $(CLANG_REPO)
 
 # Based on $(SRCDIR_MSPGCC)/README-build.sh
 .PHONY: configure-mspgcc
@@ -270,14 +264,14 @@ configure-vulcan:
 .PHONY: configure-sllvm
 configure-sllvm:
 	$(MKDIR) $(BUILDDIR_SLLVM)
-	cd $(BUILDDIR_SLLVM) && $(CMAKE) $(CMAKE_FLAGS_SLLVM) $(SRCDIR_SLLVM)
+	cd $(BUILDDIR_SLLVM) && $(CMAKE) $(CMAKE_FLAGS_SLLVM) $(SRCDIR_SLLVM)/llvm
 
 .PHONY: configure-sllvm-for-eclipse
 configure-sllvm-for-eclipse: CMAKE_GENERATOR=Eclipse CDT4 - Unix Makefiles
 configure-sllvm-for-eclipse:
 	$(MKDIR) $(BUILDDIR_SLLVM)-eclipse
 	cd $(BUILDDIR_SLLVM)-eclipse && \
-	  $(CMAKE) $(CMAKE_FLAGS_SLLVM) $(SRCDIR_SLLVM)
+	  $(CMAKE) $(CMAKE_FLAGS_SLLVM) $(SRCDIR_SLLVM)/llvm
 
 .PHONY: build-mspgcc-binutils
 build-mspgcc-binutils:
@@ -406,7 +400,7 @@ test-sllvm: clean-test-sllvm
 	$(MAKE) -C $(SRCDIR_TEST_SANCUS) SANCUS_KEY=$(SANCUS_KEY) sim
 
 .PHONY: test-nemdef
-TEST_DIR = $(SRCDIR_SLLVM)/test/CodeGen/MIR/MSP430
+TEST_DIR = $(SRCDIR_SLLVM)/llvm/test/CodeGen/MIR/MSP430
 test-nemdef:
 	$(LIT) $(TEST_DIR)
 
@@ -448,7 +442,6 @@ clean-fetch:
 	$(RM) -r $(SRCDIR_SLLVM)
 	$(RM) -r $(SRCDIR_LEGACY_SANCUS)
 	$(RM) -r $(SRCDIR_VULCAN)
-	$(RM) -r $(SRCDIR_CLANG)
 	$(RM) $(CLANG_SANCUS_DEB)
 
 .PHONY: clean-then-install
@@ -480,7 +473,6 @@ status:
 	-$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) status -sb
 	-$(GIT) -C $(SRCDIR_VULCAN)          status -sb
 	-$(GIT) -C $(SRCDIR_SLLVM)           status -sb
-	-$(GIT) -C $(SRCDIR_CLANG)           status -sb
 
 .PHONY: pull
 pull: pull-sancus
@@ -503,7 +495,6 @@ pull-vulcan:
 .PHONY: pull-sllvm
 pull-sllvm:
 	$(GIT) -C $(SRCDIR_SLLVM) pull 
-	$(GIT) -C $(SRCDIR_CLANG) pull 
 
 .PHONY: push
 push: push-sllvm
@@ -514,7 +505,6 @@ push: push-vulcan
 .PHONY: push-sllvm
 push-sllvm:
 	$(GIT) -C $(SRCDIR_SLLVM) push 
-	$(GIT) -C $(SRCDIR_CLANG) push 
 
 .PHONY: push-legacy-sancus
 push-legacy-sancus:
@@ -532,7 +522,6 @@ push-vulcan:
 diff:
 	$(GIT) difftool
 	$(GIT) -C $(SRCDIR_SLLVM) difftool
-	$(GIT) -C $(SRCDIR_CLANG) difftool
 	$(GIT) -C $(SRCDIR_LEGACY_SANCUS)   difftool
 #$(GIT) -C $(SRCDIR_SANCUS_CORE)     difftool
 	$(GIT) -C $(SRCDIR_SANCUS_COMPILER) difftool
@@ -550,9 +539,6 @@ sync-llvm:
 	$(GIT) -C $(SRCDIR_SLLVM) fetch upstream
 	$(GIT) -C $(SRCDIR_SLLVM) checkout master
 	$(GIT) -C $(SRCDIR_SLLVM) merge upstream/master
-	$(GIT) -C $(SRCDIR_CLANG) fetch upstream
-	$(GIT) -C $(SRCDIR_CLANG) checkout master
-	$(GIT) -C $(SRCDIR_CLANG) merge upstream/master
 
 .PHONY: sync-legacy-sancus
 sync-legacy-sancus:
