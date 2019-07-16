@@ -59,7 +59,7 @@ VULCAN_FORK        = https://github.com/hanswinderix/vulcan.git
 
 # See http://www.ti.com/tool/MSP430-GCC-OPENSOURCE
 TI_MSPGCC_URL         = http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/latest/exports
-TI_MSPGCC_VER         = 7.3.2.154
+TI_MSPGCC_VER         = 8.2.0.52
 TI_MSPGCC_SUPPORT_VER = 1.207
 TI_MSPGCC_NAME        = msp430-gcc-$(TI_MSPGCC_VER)-source-patches
 TI_MSPGCC_TBZ         = $(TI_MSPGCC_NAME).tar.bz2
