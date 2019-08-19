@@ -1,3 +1,7 @@
+##############################################################"
+# Unit tests
+##############################################################"
+
 TESTS =
 TESTS += multiply
 TESTS += hello
@@ -18,3 +22,30 @@ $(TEST_SIM): %.sim:
 
 $(TEST_CLEAN): %.clean:
 	$(MAKE) -C $* clean
+
+##############################################################"
+# Nemesis defender benchmarks
+##############################################################"
+
+NEMDEF =
+NEMDEF += triangle
+
+NEMDEF_ALL   = $(NEMDEF:=.nemdef-all)
+NEMDEF_SIM   = $(NEMDEF:=.nemdef-sim)
+NEMDEF_CLEAN = $(NEMDEF:=.nemdef-clean)
+
+nemdef-all  : $(NEMDEF_ALL)
+nemdef-sim  : $(NEMDEF_SIM)
+nemdef-clean: $(NEMDEF_CLEAN)
+
+$(NEMDEF_ALL): %.nemdef-all:
+	$(MAKE) -C $* -f Makefile.vulnerable all
+	$(MAKE) -C $* -f Makefile.nemdef     all
+
+$(NEMDEF_SIM): %.nemdef-sim:
+	$(MAKE) -C $* -f Makefile.vulnerable sim
+	$(MAKE) -C $* -f Makefile.nemdef     sim
+
+$(NEMDEF_CLEAN): %.nemdef-clean:
+	$(MAKE) -C $* -f Makefile.vulnerable clean
+	$(MAKE) -C $* -f Makefile.nemdef     clean

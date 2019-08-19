@@ -1,0 +1,8 @@
+EXE = triangle.nemdef
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): triangle.nemdef.o
+$(EXE): main.o

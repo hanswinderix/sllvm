@@ -1,0 +1,8 @@
+EXE = triangle
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): triangle.o
+$(EXE): main.o
