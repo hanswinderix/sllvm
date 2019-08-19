@@ -57,6 +57,12 @@ SANCUS_TRANSFORM_FLAGS += --vendor-id 0x$(VENDOR_ID)
 LLCFLAGS =
 LLCFLAGS += -O3
 
+LLCFLAGSNEMDEF =
+LLCFLAGSNEMDEF += -msp430-nemesis-defender-enable=true
+LLCFLAGSNEMDEF += -verify-machineinstrs
+#LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
+#LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
+
 ASFLAGS =
 ASFLAGS += $(INCFLAGS)
 ASFLAGS += -mmcu=$(MCU)
@@ -94,6 +100,7 @@ LOADFLAGS += -baudrate $(FPGA_RATE)
 .PRECIOUS: %.sllvm.ll
 .PRECIOUS: %.sancus.ll
 .PRECIOUS: %.s
+.PRECIOUS: %.nemdef.s
 
 .PHONY: all
 all: $(EXE).objdump
@@ -109,6 +116,9 @@ all: $(EXE).objdump
 
 %.s: %.sancus.ll
 	$(LLC) $(LLCFLAGS) $< -o $@
+
+%.nemdef.s: %.sancus.ll
+	$(LLC) $(LLCFLAGSNEMDEF) $< -o $@
 
 %.o: %.s
 	$(AS) $(ASFLAGS) -c $< -o $@
