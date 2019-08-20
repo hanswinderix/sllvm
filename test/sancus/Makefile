@@ -24,7 +24,7 @@ $(TEST_CLEAN): %.clean:
 	$(MAKE) -C $* clean
 
 ##############################################################"
-# Nemesis defender benchmarks
+# Nemesis Defender benchmarks
 ##############################################################"
 
 NEMDEF =
