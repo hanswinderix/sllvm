@@ -14,13 +14,14 @@ void attack(void)
 int main(void)
 {
   msp430_io_init();
+  __ss_init();
 
   sancus_enable(&triangle);
 
-  __ss_start();
+  __ss_mount();
   triangle_enter(1, 2);
 
-  __ss_start();
+  __ss_mount();
   triangle_enter(2, 1);
 
   EXIT();

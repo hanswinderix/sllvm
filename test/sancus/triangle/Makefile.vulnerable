@@ -1,4 +1,6 @@
-EXE = triangle
+EXE = triangle.vulnerable
+
+triangle.ll: CFLAGS += -Os
 
 include ../Makefile.include
 
