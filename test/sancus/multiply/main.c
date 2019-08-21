@@ -9,7 +9,6 @@ int main(void)
 
   msp430_io_init();
 
-
   printf("%d x %d = %d\n", a, b, multiply(a, b));
 
   EXIT();
