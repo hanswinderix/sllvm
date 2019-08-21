@@ -1,0 +1,10 @@
+EXE = bsl.nemdef
+
+bsl.ll: CFLAGS += -Os
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): bsl.nemdef.o
+$(EXE): main.o

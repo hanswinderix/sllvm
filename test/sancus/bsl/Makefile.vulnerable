@@ -1,0 +1,10 @@
+EXE = bsl.vulnerable
+
+bsl.ll: CFLAGS += -Os
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): bsl.o
+$(EXE): main.o
