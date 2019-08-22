@@ -1,10 +1,2 @@
-*.o
-*.fst
-*.fst.hier
-*.bin
-*.elf
-*.elf-no-macs
-*.out
-*.swp
-
-stimulus.v
+keypad.vulnerable
+keypad.nemdef

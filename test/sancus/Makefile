@@ -30,6 +30,7 @@ $(TEST_CLEAN): %.clean:
 NEMDEF =
 NEMDEF += triangle
 NEMDEF += bsl
+NEMDEF += keypad
 
 NEMDEF_ALL   = $(NEMDEF:=.nemdef-all)
 NEMDEF_SIM   = $(NEMDEF:=.nemdef-sim)
