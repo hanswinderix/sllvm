@@ -1,0 +1,11 @@
+EXE = keypad.nemdef
+
+keypad.ll: CFLAGS += -Os
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): keypad.nemdef.o
+$(EXE): keypad_mmio.o
+$(EXE): main.o
