@@ -1,0 +1,10 @@
+EXE = diamond.vulnerable
+
+diamond.ll: CFLAGS += -Os
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): diamond.o
+$(EXE): main.o

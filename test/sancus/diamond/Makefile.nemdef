@@ -1,0 +1,11 @@
+EXE = diamond.nemdef
+
+diamond.ll: CFLAGS += -Os
+diamond.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): diamond.nemdef.o
+$(EXE): main.o
