@@ -18,6 +18,7 @@ int main(void)
 
   sancus_enable(&keypad_mmio);
   sancus_enable(&keypad);
+  keypad_init();
 
   __ss_mount();
   keypad_poll();

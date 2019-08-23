@@ -4,25 +4,22 @@
 #include "keypad.h"
 #include "keypad_mmio.h"
 
-#define SECURE_SM_EXPECTED_ID   1
-#define SPY_SM_EXPECTED_ID      2
+#define EXPECTED_ID   1
 
 static key_state_t key_state;
 static char        pin[PIN_LEN];
 static int         pin_idx;
-static int         init_done;
 static int         keymap[NB_KEYS];
 
-static int keypad_init(void)
+int keypad_init(void)
 {
   int result = 0;
 
   /* keypad_mmio SM has the ID of this SM hardcoded */
-  if (sancus_get_self_id() == SECURE_SM_EXPECTED_ID)
+  if (sancus_get_self_id() == EXPECTED_ID)
   {
     /* call and verify keypad_mmio SM */
     keypad_mmio_init();
-    init_done = 1;
     pin_idx = 0;
     key_state = 0x0;
     /* avoid an unprotected global constant */
@@ -59,11 +56,6 @@ static int keypad_init(void)
 int keypad_poll(void)
 {
   int key_mask = 0x1;
-
-  if (!init_done)
-  {
-    return keypad_init();
-  }
 
   /* Fetch key state from MMIO driver SM. */
   key_state_t new_key_state = keypad_mmio_read_key_state();

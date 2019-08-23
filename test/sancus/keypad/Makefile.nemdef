@@ -1,6 +1,8 @@
 EXE = keypad.nemdef
 
 keypad.ll: CFLAGS += -Os
+#keypad.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
+#keypad.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
 
 include ../Makefile.include
 

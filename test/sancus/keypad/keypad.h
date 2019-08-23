@@ -7,6 +7,7 @@
 extern struct SancusModule keypad_mmio;
 extern struct SancusModule keypad;
 
+__attribute__((eentry)) int keypad_init(void);
 __attribute__((eentry)) int keypad_poll(void);
 
 #endif
