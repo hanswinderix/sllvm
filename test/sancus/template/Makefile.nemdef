@@ -1,0 +1,10 @@
+EXE = xxx.nemdef
+
+xxx.ll: CFLAGS += -Os
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): xxx.nemdef.o
+$(EXE): main.o

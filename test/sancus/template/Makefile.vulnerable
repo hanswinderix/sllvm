@@ -1,0 +1,10 @@
+EXE = xxx.vulnerable
+
+xxx.ll: CFLAGS += -Os
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): xxx.o
+$(EXE): main.o
