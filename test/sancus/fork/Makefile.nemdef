@@ -1,0 +1,10 @@
+EXE = fork.nemdef
+
+fork.ll: CFLAGS += -Os
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): fork.nemdef.o
+$(EXE): main.o

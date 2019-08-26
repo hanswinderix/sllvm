@@ -1,0 +1,10 @@
+EXE = fork.vulnerable
+
+fork.ll: CFLAGS += -Os
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): fork.o
+$(EXE): main.o
