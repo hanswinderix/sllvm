@@ -33,6 +33,7 @@ NEMDEF += triangle
 #NEMDEF += multifork
 NEMDEF += diamond
 NEMDEF += indirect
+NEMDEF += loop
 
 NEMDEF += bsl
 #NEMDEF += keypad Suport "secret return types"
