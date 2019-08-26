@@ -31,6 +31,7 @@ NEMDEF =
 NEMDEF += triangle
 #NEMDEF += fork
 NEMDEF += diamond
+NEMDEF += indirect
 
 NEMDEF += bsl
 #NEMDEF += keypad

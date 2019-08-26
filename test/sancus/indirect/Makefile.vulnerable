@@ -1,0 +1,10 @@
+EXE = indirect.vulnerable
+
+indirect.ll: CFLAGS += -Os
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): indirect.o
+$(EXE): main.o

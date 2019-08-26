@@ -1,0 +1,13 @@
+EXE = indirect.nemdef
+
+indirect.ll: CFLAGS += -Os
+
+#indirect.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
+#indirect.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): indirect.nemdef.o
+$(EXE): main.o
