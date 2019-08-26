@@ -1,0 +1,10 @@
+EXE = multifork.nemdef
+
+multifork.ll: CFLAGS += -Os
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): multifork.nemdef.o
+$(EXE): main.o

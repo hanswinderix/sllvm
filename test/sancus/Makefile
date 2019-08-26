@@ -30,11 +30,12 @@ $(TEST_CLEAN): %.clean:
 NEMDEF =
 NEMDEF += triangle
 #NEMDEF += fork
+#NEMDEF += multifork
 NEMDEF += diamond
 NEMDEF += indirect
 
 NEMDEF += bsl
-#NEMDEF += keypad
+#NEMDEF += keypad Suport "secret return types"
 
 NEMDEF_ALL   = $(NEMDEF:=.nemdef-all)
 NEMDEF_SIM   = $(NEMDEF:=.nemdef-sim)
