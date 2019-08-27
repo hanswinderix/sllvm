@@ -34,6 +34,7 @@ NEMDEF += triangle
 NEMDEF += diamond
 NEMDEF += indirect
 NEMDEF += loop
+NEMDEF += ifthenloop
 
 NEMDEF += bsl
 #NEMDEF += keypad Suport "secret return types"

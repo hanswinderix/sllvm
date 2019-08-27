@@ -1,0 +1,10 @@
+EXE = ifthenloop.vulnerable
+
+ifthenloop.ll: CFLAGS += -Os
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): ifthenloop.o
+$(EXE): main.o
