@@ -4,9 +4,9 @@ static int v = 0;
 
 __attribute__((noinline)) static int foo(int i)
 {
-	v += i;
+  v += i;
 
-	return v;
+  return v;
 }
 
 int ifthenloopif_enter(__attribute((secret)) int a, int b)
