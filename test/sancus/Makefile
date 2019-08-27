@@ -27,11 +27,13 @@ $(TEST_CLEAN): %.clean:
 # Nemesis Defender benchmarks
 ##############################################################"
 
+# Nemdef unit tests (have high code coverage)
 NEMDEF =
 NEMDEF += triangle
+NEMDEF += diamond
 #NEMDEF += fork
 #NEMDEF += multifork
-NEMDEF += diamond
+NEMDEF += call
 NEMDEF += indirect
 NEMDEF += loop
 NEMDEF += ifthenloop
@@ -39,8 +41,18 @@ NEMDEF += ifthenloopif
 NEMDEF += ifthenlooploop
 NEMDEF += ifthenlooplooptail
 
+# Compiler runtime functions (e.g. Routines for integer arithmetic)
+#   libgcc (GCC), compiler-rt (LLVM), ...
+#NEMDEF += mulhi3
+
+# Crytpo primitives
+#NEMDEF +=
+
+# Sancus applications
 NEMDEF += bsl
 #NEMDEF += keypad   => Support "secret return types" (or use dummy param)
+
+#--------------------------------------------------------------------------
 
 NEMDEF_ALL   = $(NEMDEF:=.nemdef-all)
 NEMDEF_SIM   = $(NEMDEF:=.nemdef-sim)
