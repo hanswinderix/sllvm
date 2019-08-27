@@ -35,9 +35,11 @@ NEMDEF += diamond
 NEMDEF += indirect
 NEMDEF += loop
 NEMDEF += ifthenloop
+NEMDEF += ifthenloopif
+NEMDEF += ifthenlooploop
 
 NEMDEF += bsl
-#NEMDEF += keypad Suport "secret return types"
+#NEMDEF += keypad   => Support "secret return types" (or use dummy param)
 
 NEMDEF_ALL   = $(NEMDEF:=.nemdef-all)
 NEMDEF_SIM   = $(NEMDEF:=.nemdef-sim)
