@@ -1,0 +1,10 @@
+EXE = ifthenlooplooptail.vulnerable
+
+ifthenlooplooptail.ll: CFLAGS += -Os
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): ifthenlooplooptail.o
+$(EXE): main.o

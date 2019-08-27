@@ -37,6 +37,7 @@ NEMDEF += loop
 NEMDEF += ifthenloop
 NEMDEF += ifthenloopif
 NEMDEF += ifthenlooploop
+NEMDEF += ifthenlooplooptail
 
 NEMDEF += bsl
 #NEMDEF += keypad   => Support "secret return types" (or use dummy param)

@@ -1,0 +1,12 @@
+EXE = ifthenlooplooptail.nemdef
+
+ifthenlooplooptail.ll: CFLAGS += -Os
+#ifthenlooplooptail.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
+#ifthenlooplooptail.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): ifthenlooplooptail.nemdef.o
+$(EXE): main.o
