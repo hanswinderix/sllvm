@@ -27,7 +27,7 @@ $(TEST_CLEAN): %.clean:
 # Nemesis Defender benchmarks
 ##############################################################"
 
-# Nemdef unit tests (have high code coverage)
+# 1) Nemdef unit tests (have high code coverage)
 NEMDEF =
 NEMDEF += triangle
 NEMDEF += diamond
@@ -41,14 +41,17 @@ NEMDEF += ifthenloopif
 NEMDEF += ifthenlooploop
 NEMDEF += ifthenlooplooptail
 
-# Compiler runtime functions (e.g. Routines for integer arithmetic)
-#   libgcc (GCC), compiler-rt (LLVM), ...
-#NEMDEF += mulhi3
+# 2) Compiler runtime functions (e.g. Routines for integer arithmetic)
+#   o libgcc      (GCC) : gcc-8.2.0/libgcc/config/msp430/mpy.c
+#                        used by MSP430 GCC
+#                        (MSPGCC has a similar timing channel [Cuyt])
+#   o compiler-rt (LLVM): has no support for MSP430
+NEMDEF += mulhi3
 
-# Crytpo primitives
+# 3) Crytpo primitives
 #NEMDEF +=
 
-# Sancus applications
+# 4) Sancus applications (inspired on applications from Nemesis paper)
 NEMDEF += bsl
 #NEMDEF += keypad   => Support "secret return types" (or use dummy param)
 

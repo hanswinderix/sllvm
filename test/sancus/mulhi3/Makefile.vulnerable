@@ -1,0 +1,10 @@
+EXE = mulhi3.vulnerable
+
+mulhi3.ll: CFLAGS += -Os
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): mulhi3.o
+$(EXE): main.o
