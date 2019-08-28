@@ -1,0 +1,10 @@
+EXE = ifcompound.vulnerable
+
+ifcompound.ll: CFLAGS += -Os
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): ifcompound.o
+$(EXE): main.o
