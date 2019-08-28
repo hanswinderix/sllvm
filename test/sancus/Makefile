@@ -50,6 +50,21 @@ NEMDEF += ifthenlooplooptail
 NEMDEF += mulhi3
 
 # 3) Primitives from cryptographic libraries
+# [Agat, 2000]
+#NEMDEF +=
+# [Molnar, 2005] (section 5.1)
+#NEMDEF +=
+# [Coppens, 2009] (section 4)
+#NEMDEF +=
+# [Mantel, 2015] (sections 2 and 4)
+#NEMDEF +=
+# [Almeida, 2016]
+#NEMDEF +=
+# [Dewald, 2017] (section 6.2) => source code is in paper
+#NEMDEF +=
+# [Wu, 2018] (section 7)
+#NEMDEF +=
+# [Cauligi, 2019]
 #NEMDEF +=
 
 # 4) Sancus applications (inspired on applications from Nemesis paper)
