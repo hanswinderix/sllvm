@@ -27,6 +27,7 @@ AS      = $(SLLVM_INSTALL_DIR)/bin/msp430-elf-gcc
 OBJDUMP = $(SLLVM_INSTALL_DIR)/bin/msp430-elf-objdump
 
 INCFLAGS =
+INCFLAGS += -I $(MAKEFILE_DIR)
 INCFLAGS += -I $(SLLVM_INSTALL_DIR)/include
 INCFLAGS += -I $(SLLVM_INSTALL_DIR)/msp430-elf/include
 INCFLAGS += -I $(SLLVM_INSTALL_DIR)/share/sancus-support/include

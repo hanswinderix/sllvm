@@ -19,8 +19,7 @@ int main(void)
 
   sancus_enable(&xxx);
 
-  __ss_mount();
-  xxx_enter();
+  SS_MOUNT(xxx_enter, 0);
 
   EXIT();
 

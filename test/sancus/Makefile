@@ -64,7 +64,7 @@ NEMDEF += mulhi3
 #NEMDEF +=
 # [Wu, 2018] (section 7)
 #NEMDEF +=
-# [Cauligi, 2019]
+# [Cauligi, 2019] (section 5.1)
 #NEMDEF +=
 
 # 4) Sancus applications (inspired on applications from Nemesis paper)
