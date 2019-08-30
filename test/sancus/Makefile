@@ -75,11 +75,13 @@ NEMDEF += bsl
 
 NEMDEF_ALL   = $(NEMDEF:=.nemdef-all)
 NEMDEF_SIM   = $(NEMDEF:=.nemdef-sim)
+NEMDEF_PP    = $(NEMDEF:=.nemdef-pp)
 NEMDEF_CLEAN = $(NEMDEF:=.nemdef-clean)
 NEMDEF_FORCE = $(NEMDEF:=.nemdef-force)
 
 nemdef-all  : $(NEMDEF_ALL)
 nemdef-sim  : $(NEMDEF_SIM)
+nemdef-pp   : $(NEMDEF_PP)
 nemdef-clean: $(NEMDEF_CLEAN)
 nemdef-force: $(NEMDEF_FORCE)
 
@@ -90,6 +92,10 @@ $(NEMDEF_ALL): %.nemdef-all:
 $(NEMDEF_SIM): %.nemdef-sim:
 	$(MAKE) -C $* -f Makefile.vulnerable sim
 	$(MAKE) -C $* -f Makefile.nemdef     sim
+
+$(NEMDEF_PP): %.nemdef-pp:
+	$(MAKE) -C $* -f Makefile.vulnerable pp
+	$(MAKE) -C $* -f Makefile.nemdef     pp
 
 $(NEMDEF_CLEAN): %.nemdef-clean:
 	$(MAKE) -C $* -f Makefile.vulnerable clean

@@ -7,6 +7,14 @@ SANCUS_SUPPORT_DIR = $(SLLVM_INSTALL_DIR)/share/sancus-support
 SANCUS_CRYPTO      = $(SLLVM_INSTALL_DIR)/bin/crypto.py
 SANCUS_SIM         = $(SLLVM_INSTALL_DIR)/bin/sancus-sim
 SANCUS_LOAD        = sancus-loader
+FST2VCD            = fst2vcd
+VCDCAT             = vcdcat
+PYTHON             = python3
+
+SIGNALS =
+SIGNALS += tb_openMSP430.cur_tsc
+SIGNALS += tb_openMSP430.msp_debug_0.inst_pc
+SIGNALS += tb_openMSP430.msp_debug_0.inst_full
 
 VENDOR_ID  = 1234
 STACK_SIZE = 128
@@ -89,6 +97,7 @@ CRYPTOFLAGS += --verbose
 
 SIMFLAGS = 
 SIMFLAGS += $(MEMFLAGS)
+SIMFLAGS += --dumpfile $(EXE).fst
 
 LOADFLAGS =
 LOADFLAGS += -device $(FPGA_DEV)
@@ -131,9 +140,21 @@ $(EXE):
 %.objdump: %
 	$(OBJDUMP) -D $< > $@
 
+%.fst: %.objdump
+	unbuffer $(SANCUS_SIM) $(SIMFLAGS) $(EXE) | tee $(EXE).sim
+
+%.vcd: %.fst
+	$(FST2VCD) -f $< -o $@
+
+%.vcdcat: $(EXE).vcd
+	$(VCDCAT) $< $(SIGNALS) > $@
+
 .PHONY: sim
-sim: $(EXE).objdump
-	unbuffer $(SANCUS_SIM) $(SIMFLAGS) $(EXE) | tee sim.out
+sim: $(EXE).fst
+
+.PHONY: pp
+pp: $(EXE).vcdcat
+	$(PYTHON) $(MAKEFILE_DIR)/pp.py $(EXE)
 
 .PHONY: clean
 clean:
@@ -141,8 +162,11 @@ clean:
 	$(RM) *.s
 	$(RM) *.o
 	$(RM) $(EXE)
+	$(RM) $(EXE).sim
+	$(RM) $(EXE).fst
+	$(RM) $(EXE).vcd
+	$(RM) $(EXE).vcdcat
 	$(RM) *.objdump
 	$(RM) sim.out
 	$(RM) sim-input.bin
 	$(RM) sim-output.bin
-	$(RM) sancus_sim.fst

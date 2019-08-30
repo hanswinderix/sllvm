@@ -22,6 +22,10 @@ DEPS += curl
 DEPS += cmake
 DEPS += g++
 DEPS += texinfo
+# Python 2 (required by vcdcat)
+DEPS += python
+DEPS += python-pip
+# Python 3
 DEPS += python3
 DEPS += python3-pip
 DEPS += gcc-msp430
@@ -29,8 +33,11 @@ DEPS += expect
 DEPS += tcl
 DEPS += iverilog
 
-PIPS =
-PIPS += pyelftools
+PIP2S =
+PIP2S += vcdvcd # for vcdcat
+
+PIP3S =
+PIP3S += pyelftools
 
 WGET  = wget
 GIT   = git
@@ -40,7 +47,8 @@ SH    = bash
 MKDIR = mkdir -p
 CMAKE = cmake
 APT   = apt
-PIP   = pip3
+PIP2  = pip2
+PIP3  = pip3
 DPKG  = dpkg
 
 LIT = $(BUILDDIR_SLLVM)/bin/llvm-lit
@@ -176,7 +184,8 @@ all:
 install-deps:
 install-deps: install-clang-sancus
 	$(APT) install $(DEPS)
-	$(PIP) install $(PIPS)
+	$(PIP2) install $(PIP2S)
+	$(PIP3) install $(PIP3S)
 
 # TODO: Currently, the 'build-legacy-sancus-compiler' target needs 
 #       clang-sancus. This dependency should be removed as SLLVM *probably* 
