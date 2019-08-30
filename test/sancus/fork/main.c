@@ -2,6 +2,7 @@
 #include "sancus_support/sm_io.h"
 #include "sancus_support/sancus_step.h"
 
+#include "nemdef.h"
 #include "fork.h"
 
 asm(".section __interrupt_vector_10,\"ax\",@progbits \n\t"
@@ -19,11 +20,8 @@ int main(void)
 
   sancus_enable(&fork);
 
-  __ss_mount();
-  fork_enter(1, 2);
-
-  __ss_mount();
-  fork_enter(2, 1);
+  SS_MOUNT(fork_enter, 1, 2);
+  SS_MOUNT(fork_enter, 2, 1);
 
   EXIT();
 

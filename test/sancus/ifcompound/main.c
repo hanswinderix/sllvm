@@ -2,6 +2,7 @@
 #include "sancus_support/sm_io.h"
 #include "sancus_support/sancus_step.h"
 
+#include "nemdef.h"
 #include "ifcompound.h"
 
 asm(".section __interrupt_vector_10,\"ax\",@progbits \n\t"
@@ -19,14 +20,9 @@ int main(void)
 
   sancus_enable(&ifcompound);
 
-  __ss_mount();
-  ifcompound_enter(1, 1, 2);
-
-  __ss_mount();
-  ifcompound_enter(1, 1, 1);
-
-  __ss_mount();
-  ifcompound_enter(2, 1, 2);
+  SS_MOUNT(ifcompound_enter, 1, 1, 2);
+  SS_MOUNT(ifcompound_enter, 1, 1, 1);
+  SS_MOUNT(ifcompound_enter, 2, 1, 2);
 
   EXIT();
 

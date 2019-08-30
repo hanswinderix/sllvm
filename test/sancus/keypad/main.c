@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "sancus_support/sm_io.h"
 #include "sancus_support/sancus_step.h"
+
+#include "nemdef.h"
 #include "keypad.h"
 
 asm(".section __interrupt_vector_10,\"ax\",@progbits \n\t"
@@ -20,8 +22,7 @@ int main(void)
   sancus_enable(&keypad);
   keypad_init();
 
-  __ss_mount();
-  keypad_poll();
+  SS_MOUNT(keypad_poll);
 
   EXIT();
 

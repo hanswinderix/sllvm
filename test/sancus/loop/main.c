@@ -2,6 +2,7 @@
 #include "sancus_support/sm_io.h"
 #include "sancus_support/sancus_step.h"
 
+#include "nemdef.h"
 #include "loop.h"
 
 asm(".section __interrupt_vector_10,\"ax\",@progbits \n\t"
@@ -19,8 +20,7 @@ int main(void)
 
   sancus_enable(&loop);
 
-  __ss_mount();
-  loop_enter(1, 10);
+  SS_MOUNT(loop_enter, 1, 10);
 
   EXIT();
 

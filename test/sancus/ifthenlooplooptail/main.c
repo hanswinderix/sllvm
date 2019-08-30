@@ -2,6 +2,7 @@
 #include "sancus_support/sm_io.h"
 #include "sancus_support/sancus_step.h"
 
+#include "nemdef.h"
 #include "ifthenlooplooptail.h"
 
 asm(".section __interrupt_vector_10,\"ax\",@progbits \n\t"
@@ -19,14 +20,9 @@ int main(void)
 
   sancus_enable(&ifthenlooplooptail);
 
-  __ss_mount();
-  ifthenlooplooptail_enter(12, 14);
-
-  __ss_mount();
-  ifthenlooplooptail_enter(10, 12);
-
-  __ss_mount();
-  ifthenlooplooptail_enter(14, 12);
+  SS_MOUNT(ifthenlooplooptail_enter, 12, 14);
+  SS_MOUNT(ifthenlooplooptail_enter, 10, 12);
+  SS_MOUNT(ifthenlooplooptail_enter, 14, 12);
 
   EXIT();
 

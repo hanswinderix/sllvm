@@ -2,6 +2,7 @@
 #include "sancus_support/sm_io.h"
 #include "sancus_support/sancus_step.h"
 
+#include "nemdef.h"
 #include "multifork.h"
 
 asm(".section __interrupt_vector_10,\"ax\",@progbits \n\t"
@@ -19,17 +20,10 @@ int main(void)
 
   sancus_enable(&multifork);
 
-  __ss_mount();
-  multifork_enter(12);
-
-  __ss_mount();
-  multifork_enter(13);
-
-  __ss_mount();
-  multifork_enter(69);
-
-  __ss_mount();
-  multifork_enter(10);
+  SS_MOUNT(multifork_enter, 12);
+  SS_MOUNT(multifork_enter, 13);
+  SS_MOUNT(multifork_enter, 69);
+  SS_MOUNT(multifork_enter, 10);
 
   EXIT();
 

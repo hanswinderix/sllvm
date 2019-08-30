@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "sancus_support/sm_io.h"
 #include "sancus_support/sancus_step.h"
+
 #include "nemdef.h"
 #include "triangle.h"
 

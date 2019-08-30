@@ -2,6 +2,7 @@
 #include "sancus_support/sm_io.h"
 #include "sancus_support/sancus_step.h"
 
+#include "nemdef.h"
 #include "xxx.h"
 
 asm(".section __interrupt_vector_10,\"ax\",@progbits \n\t"

@@ -2,6 +2,7 @@
 #include "sancus_support/sm_io.h"
 #include "sancus_support/sancus_step.h"
 
+#include "nemdef.h"
 #include "mulhi3.h"
 
 asm(".section __interrupt_vector_10,\"ax\",@progbits \n\t"
@@ -19,8 +20,7 @@ int main(void)
 
   sancus_enable(&mulhi3);
 
-  __ss_mount();
-  (void) mulhi3_enter(1, 2);
+  SS_MOUNT(mulhi3_enter, 1, 2);
 
   EXIT();
 
