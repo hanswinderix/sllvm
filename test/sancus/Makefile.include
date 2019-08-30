@@ -154,7 +154,7 @@ sim: $(EXE).fst
 
 .PHONY: pp
 pp: $(EXE).vcdcat
-	$(PYTHON) $(MAKEFILE_DIR)/pp.py $(EXE)
+	$(PYTHON) $(MAKEFILE_DIR)pp.py $(EXE)
 
 .PHONY: clean
 clean:
