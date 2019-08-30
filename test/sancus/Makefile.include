@@ -14,6 +14,7 @@ PYTHON             = python3
 SIGNALS =
 SIGNALS += tb_openMSP430.cur_tsc
 SIGNALS += tb_openMSP430.msp_debug_0.inst_pc
+SIGNALS += tb_openMSP430.dut.execution_unit_0.exec_sm
 SIGNALS += tb_openMSP430.msp_debug_0.inst_full
 
 VENDOR_ID  = 1234
