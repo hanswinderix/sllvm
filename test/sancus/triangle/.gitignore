@@ -1,2 +1,10 @@
 triangle.vulnerable
+triangle.vulnerable.fst
+triangle.vulnerable.fst.hier
+triangle.vulnerable.sim
+triangle.vulnerable.vcdcat
 triangle.nemdef
+triangle.nemdef.fst
+triangle.nemdef.fst.hier
+triangle.nemdef.sim
+triangle.nemdef.vcdcat
