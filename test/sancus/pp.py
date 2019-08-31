@@ -53,15 +53,31 @@ for idx in range(len(signals)-1):
   signals[idx][0] = l[0] - r[0]
 
 # Parse simulation standard output
-attacks = []
+attack_names = []
 with open(sim_output) as f:
-  attacks = re.findall(r'attack: (.*)?', f.read())
+  attack_names = re.findall(r'attack: (.*)?', f.read())
+
+# Create attack data structures
+attacks = []
+idx = 0
+in_sm = False
+for latency, inst_pc, exec_sm, inst_full in signals:
+  if exec_sm == 1:
+    if not in_sm:
+      attacks.append([])
+      in_sm = True
+    attacks[-1].append([latency, inst_pc, inst_full])
+  else:
+    in_sm = False
+
+assert len(attacks) == len(attack_names), (len(attacks), len(attack_names))
 
 #############################################################################
 
-for epoch in signals:
-  print(epoch)
-print(attacks)
+for idx in range(len(attacks)):
+  print(attack_names[idx])
+  for epoch in attacks[idx]:
+    print(epoch)
 
 """
 with open(fname) as f:
