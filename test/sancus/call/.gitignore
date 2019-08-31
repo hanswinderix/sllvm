@@ -1,2 +1,12 @@
 call.vulnerable
+call.vulnerable.fst
+call.vulnerable.fst.hier
+call.vulnerable.sim
+call.vulnerable.vcdcat
 call.nemdef
+call.nemdef.fst
+call.nemdef.fst.hier
+call.nemdef.sim
+call.nemdef.vcdcat
+*-before.dot
+*-after.dot

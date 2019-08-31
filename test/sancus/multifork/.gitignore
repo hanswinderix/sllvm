@@ -1,2 +1,12 @@
 multifork.vulnerable
+multifork.vulnerable.fst
+multifork.vulnerable.fst.hier
+multifork.vulnerable.sim
+multifork.vulnerable.vcdcat
 multifork.nemdef
+multifork.nemdef.fst
+multifork.nemdef.fst.hier
+multifork.nemdef.sim
+multifork.nemdef.vcdcat
+*-before.dot
+*-after.dot

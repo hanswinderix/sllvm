@@ -1,2 +1,12 @@
 mulhi3.vulnerable
+mulhi3.vulnerable.fst
+mulhi3.vulnerable.fst.hier
+mulhi3.vulnerable.sim
+mulhi3.vulnerable.vcdcat
 mulhi3.nemdef
+mulhi3.nemdef.fst
+mulhi3.nemdef.fst.hier
+mulhi3.nemdef.sim
+mulhi3.nemdef.vcdcat
+*-before.dot
+*-after.dot

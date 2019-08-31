@@ -1,2 +1,12 @@
 indirect.vulnerable
+indirect.vulnerable.fst
+indirect.vulnerable.fst.hier
+indirect.vulnerable.sim
+indirect.vulnerable.vcdcat
 indirect.nemdef
+indirect.nemdef.fst
+indirect.nemdef.fst.hier
+indirect.nemdef.sim
+indirect.nemdef.vcdcat
+*-before.dot
+*-after.dot

@@ -20,10 +20,10 @@ int main(void)
 
   sancus_enable(&multifork);
 
-  SS_MOUNT(multifork_enter, 12);
-  SS_MOUNT(multifork_enter, 13);
-  SS_MOUNT(multifork_enter, 69);
-  SS_MOUNT(multifork_enter, 10);
+  ATTACK(multifork_enter, 12);
+  ATTACK(multifork_enter, 13);
+  ATTACK(multifork_enter, 69);
+  ATTACK(multifork_enter, 10);
 
   EXIT();
 

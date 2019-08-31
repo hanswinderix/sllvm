@@ -22,7 +22,7 @@ int main(void)
   sancus_enable(&keypad);
   keypad_init();
 
-  SS_MOUNT(keypad_poll);
+  ATTACK(keypad_poll);
 
   EXIT();
 

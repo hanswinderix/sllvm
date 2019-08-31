@@ -20,9 +20,9 @@ int main(void)
 
   sancus_enable(&diamond);
 
-  SS_MOUNT(diamond_enter, 1, 1);
-  SS_MOUNT(diamond_enter, 1, 2);
-  SS_MOUNT(diamond_enter, 2, 1);
+  ATTACK(diamond_enter, 1, 1);
+  ATTACK(diamond_enter, 1, 2);
+  ATTACK(diamond_enter, 2, 1);
 
   EXIT();
 

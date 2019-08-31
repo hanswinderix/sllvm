@@ -23,8 +23,8 @@ int main(void)
 
   sancus_enable(&triangle);
 
-  SS_MOUNT(triangle_enter, 1, 2);
-  SS_MOUNT(triangle_enter, 2, 1);
+  ATTACK(triangle_enter, 1, 2);
+  ATTACK(triangle_enter, 2, 1);
 
   EXIT();
 

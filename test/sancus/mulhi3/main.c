@@ -20,7 +20,7 @@ int main(void)
 
   sancus_enable(&mulhi3);
 
-  SS_MOUNT(mulhi3_enter, 1, 2);
+  ATTACK(mulhi3_enter, 1, 2);
 
   EXIT();
 

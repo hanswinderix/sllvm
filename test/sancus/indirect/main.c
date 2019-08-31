@@ -20,8 +20,8 @@ int main(void)
 
   sancus_enable(&indirect);
 
-  SS_MOUNT(indirect_enter, 1, 2);
-  SS_MOUNT(indirect_enter, 2, 1);
+  ATTACK(indirect_enter, 1, 2);
+  ATTACK(indirect_enter, 2, 1);
 
   EXIT();
 

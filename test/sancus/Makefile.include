@@ -144,6 +144,8 @@ $(EXE):
 %.fst: %.objdump
 	unbuffer $(SANCUS_SIM) $(SIMFLAGS) $(EXE) | tee $(EXE).sim
 
+%.sim: %.fst
+
 %.vcd: %.fst
 	$(FST2VCD) -f $< -o $@
 

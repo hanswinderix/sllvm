@@ -20,9 +20,9 @@ int main(void)
 
   sancus_enable(&ifcompound);
 
-  SS_MOUNT(ifcompound_enter, 1, 1, 2);
-  SS_MOUNT(ifcompound_enter, 1, 1, 1);
-  SS_MOUNT(ifcompound_enter, 2, 1, 2);
+  ATTACK(ifcompound_enter, 1, 1, 2);
+  ATTACK(ifcompound_enter, 1, 1, 1);
+  ATTACK(ifcompound_enter, 2, 1, 2);
 
   EXIT();
 

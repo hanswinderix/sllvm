@@ -20,8 +20,8 @@ int main(void)
 
   sancus_enable(&ifthenloop);
 
-  SS_MOUNT(ifthenloop_enter, 1, 2);
-  SS_MOUNT(ifthenloop_enter, 2, 1);
+  ATTACK(ifthenloop_enter, 1, 2);
+  ATTACK(ifthenloop_enter, 2, 1);
 
   EXIT();
 

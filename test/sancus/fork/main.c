@@ -20,8 +20,8 @@ int main(void)
 
   sancus_enable(&fork);
 
-  SS_MOUNT(fork_enter, 1, 2);
-  SS_MOUNT(fork_enter, 2, 1);
+  ATTACK(fork_enter, 1, 2);
+  ATTACK(fork_enter, 2, 1);
 
   EXIT();
 

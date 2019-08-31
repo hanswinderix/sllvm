@@ -1,2 +1,12 @@
 fork.vulnerable
+fork.vulnerable.fst
+fork.vulnerable.fst.hier
+fork.vulnerable.sim
+fork.vulnerable.vcdcat
 fork.nemdef
+fork.nemdef.fst
+fork.nemdef.fst.hier
+fork.nemdef.sim
+fork.nemdef.vcdcat
+*-before.dot
+*-after.dot

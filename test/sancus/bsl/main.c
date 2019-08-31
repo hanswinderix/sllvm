@@ -22,7 +22,7 @@ int main(void)
 
   sancus_enable(&bsl);
 
-  SS_MOUNT(BSL430_unlock_BSL, data);
+  ATTACK(BSL430_unlock_BSL, data);
 
   EXIT();
 

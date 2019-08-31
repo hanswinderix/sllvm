@@ -18,11 +18,11 @@ header = """
 # Parse command line
 assert len(sys.argv) > 1, "Argument expected"
 exename       = sys.argv[1]
+sim_output    = "%s.sim" % exename
 vcdcat_output = "%s.vcdcat" % exename
 
-data = []
-
-# Post-process vcdcat output
+# Parse vcdcat output
+signals = []
 with open(vcdcat_output) as f:
   prev_inst_pc = 0
   for line in f:
@@ -37,7 +37,7 @@ with open(vcdcat_output) as f:
         inst_full = [inst_full[i:i + 2] for i in range(0, len(inst_full), 2)]
         inst_full = "".join([chr(int(x, 16)) for x in inst_full])
         inst_full = inst_full.replace('\0', '').strip()
-        data.append([cur_tsc, inst_pc, exec_sm, inst_full])
+        signals.append([cur_tsc, inst_pc, exec_sm, inst_full])
         prev_inst_pc = inst_pc
     except:
       # Assert this is the expected line of the header and just skip it
@@ -47,15 +47,21 @@ with open(vcdcat_output) as f:
       header_pos = header_pos + 1
 
 # Compute instruction latencies
-z = list(zip(data[1:], data[:-1]))
-for idx in range(len(data)-1):
+z = list(zip(signals[1:], signals[:-1]))
+for idx in range(len(signals)-1):
   l, r = z[idx]
-  data[idx][0] = l[0] - r[0]
+  signals[idx][0] = l[0] - r[0]
+
+# Parse simulation standard output
+attacks = []
+with open(sim_output) as f:
+  attacks = re.findall(r'attack: (.*)?', f.read())
 
 #############################################################################
 
-for record in data:
-  print(record)
+for epoch in signals:
+  print(epoch)
+print(attacks)
 
 """
 with open(fname) as f:
