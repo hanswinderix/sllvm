@@ -8,3 +8,5 @@ triangle.nemdef.fst
 triangle.nemdef.fst.hier
 triangle.nemdef.sim
 triangle.nemdef.vcdcat
+*-before.dot
+*-after.dot
