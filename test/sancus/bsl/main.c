@@ -18,7 +18,10 @@ int main(void)
   char data[BSL_PASSWORD_LENGTH];
 
   msp430_io_init();
+
+#ifdef SANCUS_STEP_ENABLED
   __ss_init();
+#endif
 
   sancus_enable(&bsl);
 

@@ -16,7 +16,10 @@ void attack(void)
 int main(void)
 {
   msp430_io_init();
+
+#ifdef SANCUS_STEP_ENABLED
   __ss_init();
+#endif
 
   sancus_enable(&keypad_mmio);
   sancus_enable(&keypad);
