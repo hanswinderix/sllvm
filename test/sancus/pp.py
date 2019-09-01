@@ -79,8 +79,8 @@ for idx in range(len(attacks)):
   fname = '%s.experiment%02d.txt' % (exename, idx)
   with open(fname, 'w') as f:
     f.write("%s\n" % attack_names[idx])
-    for epoch in attacks[idx]:
-      f.write("%s\n" % epoch)
+    for latency, inst_pc, inst_full in attacks[idx]:
+      f.write("%d %x %s\n" % (latency, inst_pc, inst_full))
 
 """
 with open(fname) as f:
