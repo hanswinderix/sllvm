@@ -408,6 +408,7 @@ test-sancus-examples:
 test-sllvm: clean-test-sllvm
 	$(MAKE) -C $(SRCDIR_TEST_SANCUS) SANCUS_KEY=$(SANCUS_KEY) sim
 	$(MAKE) -C $(SRCDIR_TEST_SANCUS) nemdef-all
+	$(MAKE) -C $(SRCDIR_TEST_SANCUS) ifcompound.nemdef-pp # TO BE REMOVED
 
 .PHONY: test-nemdef
 TEST_DIR = $(SRCDIR_SLLVM)/llvm/test/CodeGen/MIR/MSP430
