@@ -1,12 +1,2 @@
 ifcompound.vulnerable
-ifcompound.vulnerable.fst
-ifcompound.vulnerable.fst.hier
-ifcompound.vulnerable.sim
-ifcompound.vulnerable.vcdcat
 ifcompound.nemdef
-ifcompound.nemdef.fst
-ifcompound.nemdef.fst.hier
-ifcompound.nemdef.sim
-ifcompound.nemdef.vcdcat
-*-before.dot
-*-after.dot

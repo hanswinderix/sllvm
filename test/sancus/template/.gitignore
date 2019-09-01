@@ -1,12 +1,2 @@
 xxx.vulnerable
-xxx.vulnerable.fst
-xxx.vulnerable.fst.hier
-xxx.vulnerable.sim
-xxx.vulnerable.vcdcat
 xxx.nemdef
-xxx.nemdef.fst
-xxx.nemdef.fst.hier
-xxx.nemdef.sim
-xxx.nemdef.vcdcat
-*-before.dot
-*-after.dot

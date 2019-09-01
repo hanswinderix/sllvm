@@ -1,12 +1,2 @@
 diamond.vulnerable
-diamond.vulnerable.fst
-diamond.vulnerable.fst.hier
-diamond.vulnerable.sim
-diamond.vulnerable.vcdcat
 diamond.nemdef
-diamond.nemdef.fst
-diamond.nemdef.fst.hier
-diamond.nemdef.sim
-diamond.nemdef.vcdcat
-*-before.dot
-*-after.dot

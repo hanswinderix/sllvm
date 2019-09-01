@@ -1,12 +1,2 @@
 ifthenloopif.vulnerable
-ifthenloopif.vulnerable.fst
-ifthenloopif.vulnerable.fst.hier
-ifthenloopif.vulnerable.sim
-ifthenloopif.vulnerable.vcdcat
 ifthenloopif.nemdef
-ifthenloopif.nemdef.fst
-ifthenloopif.nemdef.fst.hier
-ifthenloopif.nemdef.sim
-ifthenloopif.nemdef.vcdcat
-*-before.dot
-*-after.dot

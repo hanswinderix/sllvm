@@ -1,12 +1,2 @@
 keypad.vulnerable
-keypad.vulnerable.fst
-keypad.vulnerable.fst.hier
-keypad.vulnerable.sim
-keypad.vulnerable.vcdcat
 keypad.nemdef
-keypad.nemdef.fst
-keypad.nemdef.fst.hier
-keypad.nemdef.sim
-keypad.nemdef.vcdcat
-*-before.dot
-*-after.dot

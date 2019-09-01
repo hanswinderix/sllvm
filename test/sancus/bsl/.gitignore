@@ -1,12 +1,2 @@
 bsl.vulnerable
-bsl.vulnerable.fst
-bsl.vulnerable.fst.hier
-bsl.vulnerable.sim
-bsl.vulnerable.vcdcat
 bsl.nemdef
-bsl.nemdef.fst
-bsl.nemdef.fst.hier
-bsl.nemdef.sim
-bsl.nemdef.vcdcat
-*-before.dot
-*-after.dot

@@ -3,6 +3,14 @@
 *.o
 *.objdump
 
+*.fst
+*.fst.hier
+*.sim
+*.vcdcat
+*.experiment*.txt
+*.before.dot
+*.after.dot
+
 sancus_sim.fst
 sancus_sim.fst.hier
 sim-input.bin
