@@ -74,10 +74,13 @@ assert len(attacks) == len(attack_names), (len(attacks), len(attack_names))
 
 #############################################################################
 
+# Write results
 for idx in range(len(attacks)):
-  print(attack_names[idx])
-  for epoch in attacks[idx]:
-    print(epoch)
+  fname = '%s.experiment%02d.txt' % (exename, idx)
+  with open(fname, 'w') as f:
+    f.write("%s\n" % attack_names[idx])
+    for epoch in attacks[idx]:
+      f.write("%s\n" % epoch)
 
 """
 with open(fname) as f:

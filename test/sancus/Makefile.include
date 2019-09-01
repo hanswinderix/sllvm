@@ -173,5 +173,6 @@ clean:
 	$(RM) sim.out
 	$(RM) sim-input.bin
 	$(RM) sim-output.bin
-	$(RM) *-before.dot
-	$(RM) *-after.dot
+	$(RM) *.before.dot
+	$(RM) *.after.dot
+	$(RM) *.experiment*.txt
