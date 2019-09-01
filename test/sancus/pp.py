@@ -1,7 +1,10 @@
 import sys
 import re
 
+import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MultipleLocator
+
 
 header_pos = 0
 header = """
@@ -76,17 +79,25 @@ assert len(attacks) == len(attack_names), (len(attacks), len(attack_names))
 
 # Write results
 for idx in range(len(attacks)):
-  fname = '%s.experiment%02d.txt' % (exename, idx)
+  
+  # Write signals
+  fname = '%s.experiment%02d.txt' % (exename, idx+1)
   with open(fname, 'w') as f:
     f.write("%s\n" % attack_names[idx])
     for latency, inst_pc, inst_full in attacks[idx]:
       f.write("%d %x %s\n" % (latency, inst_pc, inst_full))
 
-"""
-with open(fname) as f:
-  l = re.findall(r'latency: (\d+)', f.read())
-  l = [int(x) for x in l if int(x) <= 6]
-  plt.plot(l)
-  plt.ylabel('some numbers')
-  plt.show()
-"""
+  # Create latency graph
+  #fname = '%s.experiment%02d.svg' % (exename, idx)
+  fname = '%s.experiment%02d.pdf' % (exename, idx+1)
+  latencies = [signals[0] for signals in attacks[idx]]
+  fig = plt.figure()
+  ax = plt.gca()
+  plt.xlabel('Instruction (interrupt number)')
+  plt.ylabel('IRQ latency (cycles)')
+  plt.yticks(np.arange(1, 6, 1))
+  ml = MultipleLocator(1)
+  ax.xaxis.set_minor_locator(ml)
+  plt.plot(latencies)
+  plt.savefig(fname)
+  #plt.show()

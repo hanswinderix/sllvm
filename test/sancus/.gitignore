@@ -3,13 +3,15 @@
 *.o
 *.objdump
 
+*.before.dot
+*.after.dot
 *.fst
 *.fst.hier
 *.sim
 *.vcdcat
 *.experiment*.txt
-*.before.dot
-*.after.dot
+*.experiment*.svg
+*.experiment*.pdf
 
 sancus_sim.fst
 sancus_sim.fst.hier

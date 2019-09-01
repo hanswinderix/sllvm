@@ -176,3 +176,5 @@ clean:
 	$(RM) *.before.dot
 	$(RM) *.after.dot
 	$(RM) *.experiment*.txt
+	$(RM) *.experiment*.svg
+	$(RM) *.experiment*.pdf
