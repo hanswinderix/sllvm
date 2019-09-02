@@ -79,11 +79,12 @@ assert len(attacks) == len(attack_names), (len(attacks), len(attack_names))
 
 # Write results
 for idx in range(len(attacks)):
+  name = attack_names[idx]
   
   # Write signals
   fname = '%s.experiment%02d.txt' % (exename, idx+1)
   with open(fname, 'w') as f:
-    f.write("%s\n" % attack_names[idx])
+    f.write("%s\n" % name)
     for latency, inst_pc, inst_full in attacks[idx]:
       f.write("%d %x %s\n" % (latency, inst_pc, inst_full))
 
@@ -93,11 +94,16 @@ for idx in range(len(attacks)):
   latencies = [signals[0] for signals in attacks[idx]]
   fig = plt.figure()
   ax = plt.gca()
+  plt.title(name)
   plt.xlabel('Instruction (interrupt number)')
   plt.ylabel('IRQ latency (cycles)')
   plt.yticks(np.arange(1, 6, 1))
   ml = MultipleLocator(1)
   ax.xaxis.set_minor_locator(ml)
+  ml = MultipleLocator(5)
+  ax.xaxis.set_major_locator(ml)
+  plt.grid(b=True, which='major', color='lightgray', linestyle='-')
+  plt.grid(b=True, which='minor', color='lightgray', linestyle=':')
   plt.plot(latencies)
   plt.savefig(fname)
   #plt.show()
