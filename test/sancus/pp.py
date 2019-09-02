@@ -64,12 +64,12 @@ with open(sim_output) as f:
 attacks = []
 idx = 0
 in_sm = False
-for latency, inst_pc, exec_sm, inst_full in signals:
+for inst_latency, inst_pc, exec_sm, inst_full in signals:
   if exec_sm == 1:
     if not in_sm:
       attacks.append([])
       in_sm = True
-    attacks[-1].append([latency, inst_pc, inst_full])
+    attacks[-1].append([inst_latency, inst_pc, inst_full])
   else:
     in_sm = False
 
@@ -79,14 +79,17 @@ assert len(attacks) == len(attack_names), (len(attacks), len(attack_names))
 
 # Write results
 for idx in range(len(attacks)):
+  total_cycles = 0
   name = attack_names[idx]
   
   # Write signals
   fname = '%s.experiment%02d.txt' % (exename, idx+1)
   with open(fname, 'w') as f:
     f.write("%s\n" % name)
-    for latency, inst_pc, inst_full in attacks[idx]:
-      f.write("%d %x %s\n" % (latency, inst_pc, inst_full))
+    for inst_latency, inst_pc, inst_full in attacks[idx]:
+      total_cycles = total_cycles + inst_latency
+      f.write("%d %x %s\n" % (inst_latency, inst_pc, inst_full))
+    f.write("total cycles: %d\n" % total_cycles)
 
   # Create latency graph
   #fname = '%s.experiment%02d.svg' % (exename, idx)
@@ -95,8 +98,8 @@ for idx in range(len(attacks)):
   fig = plt.figure()
   ax = plt.gca()
   plt.title(name)
-  plt.xlabel('Instruction (interrupt number)')
-  plt.ylabel('IRQ latency (cycles)')
+  plt.xlabel('Instruction number)')
+  plt.ylabel('Instruction latency (cycles)')
   plt.yticks(np.arange(1, 6, 1))
   ml = MultipleLocator(1)
   ax.xaxis.set_minor_locator(ml)
