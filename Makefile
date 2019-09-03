@@ -32,6 +32,7 @@ DEPS += gcc-msp430
 DEPS += expect
 DEPS += tcl
 DEPS += iverilog
+DEPS += gtkwave
 
 PIP2S =
 PIP2S += vcdvcd # for vcdcat
