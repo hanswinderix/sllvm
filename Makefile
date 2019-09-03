@@ -25,6 +25,8 @@ DEPS += texinfo
 # Python 2 (required by vcdcat)
 DEPS += python
 DEPS += python-pip
+DEPS += python-numpy
+DEPS += python-matplotlib
 # Python 3
 DEPS += python3
 DEPS += python3-pip
