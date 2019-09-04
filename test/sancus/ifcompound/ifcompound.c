@@ -15,7 +15,7 @@ int ifcompound_enter(__attribute((secret)) int a, int b, int c)
   }
 
   /* Secret-independent branch */
-  if ( (b | c) == 0)
+  if ( (b ^ c) == 0)
   {
     result *= 3;
   }
