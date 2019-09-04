@@ -2,9 +2,12 @@ import sys
 import re
 
 import numpy as np
+
+import matplotlib
+# Make sure this works when DISPLAY env variable is not set (e.g. Jenkins)
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
-
 
 header_pos = 0
 header = """
