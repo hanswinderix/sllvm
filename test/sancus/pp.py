@@ -90,10 +90,13 @@ assert len(attacks) == len(attack_names), (len(attacks), len(attack_names))
 
 #############################################################################
 
+fig, axs = plt.subplots(len(attacks), sharex=True)
+
 # Write results
 for idx in range(len(attacks)):
   total_cycles = 0
   name = attack_names[idx]
+  ax = axs[idx]
 
   # Write signals
   fname = '%s.experiment%02d.txt' % (exename, idx+1)
@@ -108,28 +111,35 @@ for idx in range(len(attacks)):
   #fname = '%s.experiment%02d.svg' % (exename, idx)
   fname = '%s.experiment%02d.pdf' % (exename, idx+1)
   latencies = [signals[0] for signals in attacks[idx]]
-  fig = plt.figure()
-  ax = plt.gca()
-  plt.title(name)
-  plt.xlabel('Instruction number)')
-  plt.ylabel('Instruction latency (cycles)')
-  plt.yticks(np.arange(1, 6, 1))
+
+  ax.set_title(name)
+  ax.set_xlabel('Instruction number')
+  ax.set_ylabel('Instruction latency (cycles)')
+  ax.set_yticks(np.arange(1, 6, 1))
   ml = MultipleLocator(1)
   ax.xaxis.set_minor_locator(ml)
   ml = MultipleLocator(5)
   ax.xaxis.set_major_locator(ml)
-  plt.grid(b=True, which='major', color='lightgray', linestyle='-')
-  plt.grid(b=True, which='minor', color='lightgray', linestyle=':')
-  plt.plot(latencies)
+  ax.grid(b=True, which='major', color='lightgray', linestyle='-')
+  ax.grid(b=True, which='minor', color='lightgray', linestyle=':')
+  ax.plot(latencies)
 
-  plt.savefig(fname)
+  # TODO: Also create a file for each attack
+  # ax.savefig(fname)
 
   if interactive:
     cursor = mplcursors.cursor(hover=True)
     @cursor.connect("add")
     def on_add(sel):
       x, _ = sel.target
-      _, inst_pc, inst_full = attacks[idx][int(x)]
+      _, inst_pc, inst_full = attacks[idx][int(round(x))]
       sel.annotation.set(text="%04X (%s)" % (inst_pc, inst_full))
 
-    plt.show()
+fname = '%s.pdf' % exename
+plt.savefig(fname)
+
+# Hide x labels and tick labels for top plots and y ticks for right plots.
+for ax in axs.flat:
+  ax.label_outer()
+
+plt.show()
