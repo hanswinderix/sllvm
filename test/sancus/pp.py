@@ -3,12 +3,27 @@ import re
 
 import numpy as np
 
+# Parse command line
+assert len(sys.argv) > 1, "Argument expected"
+exename       = sys.argv[1]
+sim_output    = "%s.sim" % exename
+vcdcat_output = "%s.vcdcat" % exename
+
+interactive = False
+if len(sys.argv) > 2:
+  interactive = True
+
 import matplotlib
+
 # Using matplotlib.use('Agg') selects the non-interactive backend
 #  instead of defaulting to Xwindows. This makes sure the scripts runs when
 #  when invoked withoug haveing the DISPLAY env variable set (e.g. Jenkins)
+if not interactive:
+  matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
+import mplcursors
 
 header_pos = 0
 header = """
@@ -22,12 +37,6 @@ header = """
 0                x    x 0                                                                x
 """.strip().split('\n')
 
-# Parse command line
-assert len(sys.argv) > 1, "Argument expected"
-exename       = sys.argv[1]
-sim_output    = "%s.sim" % exename
-vcdcat_output = "%s.vcdcat" % exename
-
 # Parse vcdcat output
 signals = []
 with open(vcdcat_output) as f:
@@ -37,7 +46,7 @@ with open(vcdcat_output) as f:
       # Parse the next line of the vcdcat output
       t, cur_tsc, inst_pc, exec_sm, inst_full = line.split()
       inst_pc = int(inst_pc, 16)
-      if (prev_inst_pc != inst_pc):
+      if prev_inst_pc != inst_pc:
         cur_tsc   = int(cur_tsc, 16)
         exec_sm   = int(exec_sm, 16)
         inst_full = inst_full[:-1] # Drop trailing 'L'
@@ -85,7 +94,7 @@ assert len(attacks) == len(attack_names), (len(attacks), len(attack_names))
 for idx in range(len(attacks)):
   total_cycles = 0
   name = attack_names[idx]
-  
+
   # Write signals
   fname = '%s.experiment%02d.txt' % (exename, idx+1)
   with open(fname, 'w') as f:
@@ -112,5 +121,15 @@ for idx in range(len(attacks)):
   plt.grid(b=True, which='major', color='lightgray', linestyle='-')
   plt.grid(b=True, which='minor', color='lightgray', linestyle=':')
   plt.plot(latencies)
+
   plt.savefig(fname)
-  #plt.show()
+
+  if interactive:
+    cursor = mplcursors.cursor(hover=True)
+    @cursor.connect("add")
+    def on_add(sel):
+      x, _ = sel.target
+      _, inst_pc, inst_full = attacks[idx][int(x)]
+      sel.annotation.set(text="%04X (%s)" % (inst_pc, inst_full))
+
+    plt.show()

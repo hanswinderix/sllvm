@@ -41,6 +41,7 @@ PIP2S += vcdvcd # for vcdcat
 
 PIP3S =
 PIP3S += pyelftools
+PIP3S += mplcursors # for adding annotations to matplotlib grahps
 
 WGET  = wget
 GIT   = git

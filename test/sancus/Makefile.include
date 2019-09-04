@@ -159,6 +159,10 @@ sim: $(EXE).fst
 pp: $(EXE).vcdcat
 	$(PYTHON) $(MAKEFILE_DIR)pp.py $(EXE)
 
+.PHONY: ppi
+ppi: $(EXE).vcdcat
+	$(PYTHON) $(MAKEFILE_DIR)pp.py $(EXE) -mode=interactive
+
 .PHONY: clean
 clean:
 	$(RM) *.ll
