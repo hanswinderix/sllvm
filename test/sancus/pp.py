@@ -137,11 +137,12 @@ for idx in range(len(attacks)):
       _, inst_pc, inst_full = attacks[idx][int(round(x))]
       sel.annotation.set(text="%04X (%s)" % (inst_pc, inst_full))
 
-fname = '%s.pdf' % exename
-plt.savefig(fname)
-
 # Hide x labels and tick labels for top plots and y ticks for right plots.
 for ax in axs.flat:
   ax.label_outer()
 
-plt.show()
+fname = '%s.pdf' % exename
+plt.savefig(fname)
+
+if interactive:
+  plt.show()

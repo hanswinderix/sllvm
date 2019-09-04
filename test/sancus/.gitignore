@@ -9,6 +9,8 @@
 *.fst.hier
 *.sim
 *.vcdcat
+*.vulnerable.pdf
+*.nemdef.pdf
 *.experiment*.txt
 *.experiment*.svg
 *.experiment*.pdf

@@ -182,3 +182,5 @@ clean:
 	$(RM) *.experiment*.txt
 	$(RM) *.experiment*.svg
 	$(RM) *.experiment*.pdf
+	$(RM) *.nemdef.pdf
+	$(RM) *.vulnerable.pdf
