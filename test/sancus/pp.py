@@ -23,7 +23,9 @@ if not interactive:
 
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
-import mplcursors
+
+if interactive:
+  import mplcursors # For annotations
 
 header_pos = 0
 header = """
