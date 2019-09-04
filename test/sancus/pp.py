@@ -134,8 +134,9 @@ for idx in range(len(attacks)):
     @cursor.connect("add")
     def on_add(sel):
       x, _ = sel.target
-      _, inst_pc, inst_full = attacks[idx][int(round(x))]
-      sel.annotation.set(text="%04X (%s)" % (inst_pc, inst_full))
+      x = int(round(x))
+      _, inst_pc, inst_full = attacks[idx][x]
+      sel.annotation.set(text="%d: %04X (%s)" % (x, inst_pc, inst_full))
 
 # Hide x labels and tick labels for top plots and y ticks for right plots.
 for ax in axs.flat:
