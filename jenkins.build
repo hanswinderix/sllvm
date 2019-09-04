@@ -1,4 +1,5 @@
 echo "JOBS            = 4"      > Makefile.local
+echo "BUILD_TYPE      = Debug" >> Makefile.local
 echo "CMAKE_GENERATOR = Ninja" >> Makefile.local
 make fetch
 make configure
