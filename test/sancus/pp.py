@@ -4,8 +4,9 @@ import re
 import numpy as np
 
 import matplotlib
-# Make sure this works when DISPLAY env variable is not set (e.g. Jenkins)
-matplotlib.use('Agg')
+# Using matplotlib.use('Agg') selects the non-interactive backend
+#  instead of defaulting to Xwindows. This makes sure the scripts runs when
+#  when invoked withoug haveing the DISPLAY env variable set (e.g. Jenkins)
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
 
