@@ -92,13 +92,21 @@ assert len(attacks) == len(attack_names), (len(attacks), len(attack_names))
 
 #############################################################################
 
+"""
 fig, axs = plt.subplots(len(attacks), sharex=True)
+"""
 
 # Write results
 for idx in range(len(attacks)):
   total_cycles = 0
   name = attack_names[idx]
+
+  fig = plt.figure()
+  ax = plt.gca()
+
+  """
   ax = axs[idx]
+  """
 
   # Write signals
   fname = '%s.experiment%02d.txt' % (exename, idx+1)
@@ -110,10 +118,10 @@ for idx in range(len(attacks)):
     f.write("total cycles: %d\n" % total_cycles)
 
   # Create latency graph
-  #fname = '%s.experiment%02d.svg' % (exename, idx)
-  fname = '%s.experiment%02d.pdf' % (exename, idx+1)
   latencies = [signals[0] for signals in attacks[idx]]
+  plt.plot(latencies)
 
+  """
   ax.set_title(name)
   ax.set_xlabel('Instruction number')
   ax.set_ylabel('Instruction latency (cycles)')
@@ -125,19 +133,25 @@ for idx in range(len(attacks)):
   ax.grid(b=True, which='major', color='lightgray', linestyle='-')
   ax.grid(b=True, which='minor', color='lightgray', linestyle=':')
   ax.plot(latencies)
+  """
 
-  # TODO: Also create a file for each attack
-  # ax.savefig(fname)
+  fname = '%s.experiment%02d.pdf' % (exename, idx+1)
+  plt.savefig(fname)
 
   if interactive:
     cursor = mplcursors.cursor(hover=True)
     @cursor.connect("add")
     def on_add(sel):
+      print(sel)
       x, _ = sel.target
       x = int(round(x))
       _, inst_pc, inst_full = attacks[idx][x]
       sel.annotation.set(text="%d: %04X (%s)" % (x, inst_pc, inst_full))
 
+if interactive:
+  plt.show()
+
+"""
 # Hide x labels and tick labels for top plots and y ticks for right plots.
 for ax in axs.flat:
   ax.label_outer()
@@ -147,3 +161,4 @@ plt.savefig(fname)
 
 if interactive:
   plt.show()
+"""
