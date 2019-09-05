@@ -69,8 +69,9 @@ LLCFLAGS += -O3
 
 LLCFLAGSNEMDEF =
 LLCFLAGSNEMDEF += -O3
-LLCFLAGSNEMDEF += -msp430-nemesis-defender-enable=true
 LLCFLAGSNEMDEF += -verify-machineinstrs
+LLCFLAGSNEMDEF += -msp430-nemesis-defender-enable=true
+LLCFLAGSNEMDEF += -msp430-nemesis-defender-save-cfg=true
 #LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
 #LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
 
