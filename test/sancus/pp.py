@@ -100,8 +100,10 @@ fig, axs = plt.subplots(len(attacks), sharex=True)
 for idx in range(len(attacks)):
   total_cycles = 0
   name = attack_names[idx]
+  hsize = 16
+  vsize = 4
 
-  fig = plt.figure()
+  fig = plt.figure(figsize=(hsize, vsize))
   ax = plt.gca()
 
   """
@@ -121,6 +123,23 @@ for idx in range(len(attacks)):
   latencies = [signals[0] for signals in attacks[idx]]
   plt.plot(latencies)
 
+  plt.title(name)
+  plt.xlabel('Instruction number')
+  plt.ylabel('Instruction latency (cycles)')
+  plt.yticks(np.arange(1, 6, 1))
+  ml = MultipleLocator(1)
+  ax.xaxis.set_minor_locator(ml)
+  #ml = MultipleLocator(5)
+  #ax.xaxis.set_major_locator(ml)
+  plt.grid(b=True, which='major', color='lightgray', linestyle='-')
+  plt.grid(b=True, which='minor', color='lightgray', linestyle=':')
+  plt.plot(latencies)
+
+  fname = '%s.experiment%02d.pdf' % (exename, idx+1)
+  plt.savefig(fname)
+  fname = '%s.experiment%02d.svg' % (exename, idx+1)
+  plt.savefig(fname)
+
   """
   ax.set_title(name)
   ax.set_xlabel('Instruction number')
@@ -135,9 +154,6 @@ for idx in range(len(attacks)):
   ax.plot(latencies)
   """
 
-  fname = '%s.experiment%02d.pdf' % (exename, idx+1)
-  plt.savefig(fname)
-
   if interactive:
     cursor = mplcursors.cursor(hover=True)
     @cursor.connect("add")
@@ -148,8 +164,8 @@ for idx in range(len(attacks)):
       _, inst_pc, inst_full = attacks[idx][x]
       sel.annotation.set(text="%d: %04X (%s)" % (x, inst_pc, inst_full))
 
-if interactive:
-  plt.show()
+  if interactive:
+    plt.show()
 
 """
 # Hide x labels and tick labels for top plots and y ticks for right plots.
@@ -157,6 +173,8 @@ for ax in axs.flat:
   ax.label_outer()
 
 fname = '%s.pdf' % exename
+plt.savefig(fname)
+fname = '%s.svg' % exename
 plt.savefig(fname)
 
 if interactive:
