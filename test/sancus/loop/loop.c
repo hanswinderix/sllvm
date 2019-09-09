@@ -10,7 +10,9 @@ int loop_enter(__attribute((secret)) int a, int b)
 
   while (i < b)
   {
-    result *= ((a % i) < 3) ? v++ : w++;
+    int t = (a & i);
+
+    result *= (t == 0x01) ? v++ : w++;
     i++;
   }
 
