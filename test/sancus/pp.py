@@ -156,6 +156,7 @@ for idx in range(len(attacks)):
 
   if interactive:
     cursor = mplcursors.cursor(hover=True)
+
     @cursor.connect("add")
     def on_add(sel):
       print(sel)
@@ -164,8 +165,10 @@ for idx in range(len(attacks)):
       _, inst_pc, inst_full = attacks[idx][x]
       sel.annotation.set(text="%d: %04X (%s)" % (x, inst_pc, inst_full))
 
-  if interactive:
-    plt.show()
+    if idx == (len(attacks)-1):
+      plt.show(block=True)
+    else:
+      plt.show(block=False)
 
 """
 # Hide x labels and tick labels for top plots and y ticks for right plots.
