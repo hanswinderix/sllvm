@@ -10,7 +10,9 @@
 *.sim
 *.vcdcat
 *.vulnerable.pdf
+*.vulnerable.svg
 *.nemdef.pdf
+*.nemdef.svg
 *.experiment*.txt
 *.experiment*.svg
 *.experiment*.pdf

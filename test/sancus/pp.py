@@ -92,9 +92,7 @@ assert len(attacks) == len(attack_names), (len(attacks), len(attack_names))
 
 #############################################################################
 
-"""
 fig, axs = plt.subplots(len(attacks), sharex=True)
-"""
 
 # Write results
 for idx in range(len(attacks)):
@@ -103,12 +101,10 @@ for idx in range(len(attacks)):
   hsize = 16
   vsize = 4
 
-  fig = plt.figure(figsize=(hsize, vsize))
-  ax = plt.gca()
+  figi = plt.figure(figsize=(hsize, vsize))
+  axi = plt.gca()
 
-  """
   ax = axs[idx]
-  """
 
   # Write signals
   fname = '%s.experiment%02d.signals.txt' % (exename, idx+1)
@@ -125,43 +121,30 @@ for idx in range(len(attacks)):
     for inst_latency, _, _ in attacks[idx]:
       f.write("%d\n" % inst_latency)
 
-  # Create latency graph
+  # Plot latency
   latencies = [signals[0] for signals in attacks[idx]]
-  plt.plot(latencies)
 
-  plt.title(name)
-  plt.xlabel('Instruction number')
-  plt.ylabel('Instruction latency (cycles)')
-  plt.yticks(np.arange(1, 6, 1))
-  #ml = MultipleLocator(1)
-  #ax.xaxis.set_minor_locator(ml)
-  #ml = MultipleLocator(5)
-  #ax.xaxis.set_major_locator(ml)
-  plt.grid(b=True, which='major', color='lightgray', linestyle='-')
-  plt.grid(b=True, which='minor', color='lightgray', linestyle=':')
-  plt.plot(latencies)
+  for x in (axi, ax):
+    x.set_title(name)
+    x.set_xlabel('Instruction number')
+    x.set_ylabel('Instruction latency (cycles)')
+    x.set_yticks(np.arange(1, 6, 1))
+    #ml = MultipleLocator(1)
+    #axi.xaxis.set_minor_locator(ml)
+    #ml = MultipleLocator(5)
+    #axi.xaxis.set_major_locator(ml)
+    x.grid(b=True, which='major', color='lightgray', linestyle='-')
+    x.grid(b=True, which='minor', color='lightgray', linestyle=':')
+    x.plot(latencies)
 
   fname = '%s.experiment%02d.pdf' % (exename, idx+1)
-  plt.savefig(fname)
+  figi.savefig(fname)
   fname = '%s.experiment%02d.svg' % (exename, idx+1)
-  plt.savefig(fname)
-
-  """
-  ax.set_title(name)
-  ax.set_xlabel('Instruction number')
-  ax.set_ylabel('Instruction latency (cycles)')
-  ax.set_yticks(np.arange(1, 6, 1))
-  ml = MultipleLocator(1)
-  ax.xaxis.set_minor_locator(ml)
-  ml = MultipleLocator(5)
-  ax.xaxis.set_major_locator(ml)
-  ax.grid(b=True, which='major', color='lightgray', linestyle='-')
-  ax.grid(b=True, which='minor', color='lightgray', linestyle=':')
-  ax.plot(latencies)
-  """
+  figi.savefig(fname)
 
   if interactive:
-    cursor = mplcursors.cursor(hover=True)
+    #cursor = mplcursors.cursor(hover=True)
+    cursor = mplcursors.cursor(axi)
 
     @cursor.connect("add")
     def on_add(sel):
@@ -171,21 +154,21 @@ for idx in range(len(attacks)):
       _, inst_pc, inst_full = attacks[idx][x]
       sel.annotation.set(text="%d: %04X (%s)" % (x, inst_pc, inst_full))
 
+    """
     if idx == (len(attacks)-1):
-      plt.show(block=True)
+      figi.show()
     else:
-      plt.show(block=False)
+      figi.show()
+    """
 
-"""
 # Hide x labels and tick labels for top plots and y ticks for right plots.
 for ax in axs.flat:
   ax.label_outer()
 
 fname = '%s.pdf' % exename
-plt.savefig(fname)
+fig.savefig(fname)
 fname = '%s.svg' % exename
-plt.savefig(fname)
+fig.savefig(fname)
 
 if interactive:
   plt.show()
-"""
