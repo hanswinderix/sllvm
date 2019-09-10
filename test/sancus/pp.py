@@ -94,6 +94,9 @@ assert len(attacks) == len(attack_names), (len(attacks), len(attack_names))
 
 fig, axs = plt.subplots(len(attacks), sharex=True)
 
+if len(attacks) == 1:
+  axs = np.array([axs])
+
 # Write results
 for idx in range(len(attacks)):
   total_cycles = 0
