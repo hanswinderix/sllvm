@@ -13,7 +13,7 @@ int modexp_enter(int base, __attribute__((secret)) int exp, int mod)
     while (exp > 0) /* Number of iterations should not depend on secret */
 #else
     int i;
-    for (i=0; i<sizeof(int); i++)
+    for (i=0; i<(sizeof(int)*8); i++)
 #endif
     {
       if ((exp & 0x01) == 0x01)
