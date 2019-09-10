@@ -1,0 +1,10 @@
+EXE = threeway.vulnerable
+
+threeway.ll: CFLAGS += -Os
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): threeway.o
+$(EXE): main.o
