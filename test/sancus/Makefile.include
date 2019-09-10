@@ -172,6 +172,7 @@ clean:
 	$(RM) $(EXE)
 	$(RM) $(EXE).sim
 	$(RM) $(EXE).fst
+	$(RM) $(EXE).fst.hier
 	$(RM) $(EXE).vcd
 	$(RM) $(EXE).vcdcat
 	$(RM) *.objdump
@@ -184,4 +185,6 @@ clean:
 	$(RM) *.experiment*.svg
 	$(RM) *.experiment*.pdf
 	$(RM) *.nemdef.pdf
+	$(RM) *.nemdef.svg
+	$(RM) *.vulnerable.svg
 	$(RM) *.vulnerable.pdf
