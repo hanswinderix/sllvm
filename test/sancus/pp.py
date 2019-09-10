@@ -111,13 +111,19 @@ for idx in range(len(attacks)):
   """
 
   # Write signals
-  fname = '%s.experiment%02d.txt' % (exename, idx+1)
+  fname = '%s.experiment%02d.signals.txt' % (exename, idx+1)
   with open(fname, 'w') as f:
     f.write("%s\n" % name)
     for inst_latency, inst_pc, inst_full in attacks[idx]:
       total_cycles = total_cycles + inst_latency
       f.write("%d %x %s\n" % (inst_latency, inst_pc, inst_full))
     f.write("total cycles: %d\n" % total_cycles)
+
+  # Write latency trace
+  fname = '%s.experiment%02d.latencies.txt' % (exename, idx+1)
+  with open(fname, 'w') as f:
+    for inst_latency, _, _ in attacks[idx]:
+      f.write("%d\n" % inst_latency)
 
   # Create latency graph
   latencies = [signals[0] for signals in attacks[idx]]
