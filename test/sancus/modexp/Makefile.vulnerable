@@ -1,0 +1,10 @@
+EXE = modexp.vulnerable
+
+modexp.ll: CFLAGS += -Os
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE): modexp.o
+$(EXE): main.o
