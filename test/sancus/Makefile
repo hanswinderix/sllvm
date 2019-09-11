@@ -31,8 +31,8 @@ $(TEST_CLEAN): %.clean:
 NEMDEF =
 NEMDEF += triangle
 NEMDEF += diamond
-#NEMDEF += fork
-#NEMDEF += multifork
+NEMDEF += fork
+NEMDEF += multifork
 NEMDEF += call
 NEMDEF += indirect
 NEMDEF += ifcompound
