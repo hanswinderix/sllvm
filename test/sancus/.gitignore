@@ -2,6 +2,7 @@
 *.s
 *.o
 *.objdump
+*.nomac
 
 *.before.dot
 *.after.dot
