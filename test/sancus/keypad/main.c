@@ -21,8 +21,8 @@ int main(void)
   __ss_init();
 #endif
 
-  sancus_enable(&keypad_mmio);
   sancus_enable(&keypad);
+  sancus_enable(&keypad_mmio);
   keypad_init();
 
   ATTACK(keypad_poll);

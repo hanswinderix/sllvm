@@ -8,6 +8,7 @@ DECLARE_EXCLUSIVE_MMIO_SM(keypad_mmio,
 
 key_state_t SM_MMIO_ENTRY(keypad_mmio) keypad_mmio_read_key_state(void)
 {
+#if 0
   asm(
     "clr r12        \n\t"   /* return value key_state bitmask */
     "clr r14        \n\t"   /* loop counter */
@@ -56,6 +57,14 @@ key_state_t SM_MMIO_ENTRY(keypad_mmio) keypad_mmio_read_key_state(void)
     "4: inv r12     \n\t"
     ::"m"(P2OUT), "m"(P2IN):
       );
+#else
+  asm(
+    "clr r12     \n\t"   /* return value key_state bitmask */
+    "bis #16, r12\n\t"
+    "inv r12     \n\t"   /* Row pins are active low */
+    :::
+    );
+#endif
 }
 
 void SM_MMIO_ENTRY(keypad_mmio) keypad_mmio_init(void)

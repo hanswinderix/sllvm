@@ -74,7 +74,7 @@ NEMDEF += modexp
 
 # 4) Sancus applications (inspired on applications from Nemesis paper)
 NEMDEF += bsl
-#NEMDEF += keypad   => Support "secret return types" (or use dummy param)
+NEMDEF += keypad   # TODO: Support "secret return types" (or use dummy param)
 
 #--------------------------------------------------------------------------
 
