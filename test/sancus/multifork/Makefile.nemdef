@@ -8,5 +8,5 @@ include ../Makefile.include
 
 LDFLAGS += -lsancus-step
 
-$(EXE): multifork.nemdef.o
-$(EXE): main.o
+$(EXE).nomac: multifork.nemdef.o
+$(EXE).nomac: main.o

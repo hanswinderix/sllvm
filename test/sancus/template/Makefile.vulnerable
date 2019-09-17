@@ -1,10 +1,12 @@
 EXE = xxx.vulnerable
 
 xxx.ll: CFLAGS += -Os
+#xxx.s: LLCFLAGS += -print-machineinstrs
+#xxx.s: LLCFLAGS += -filter-print-funcs=xxx_
 
 include ../Makefile.include
 
 LDFLAGS += -lsancus-step
 
-$(EXE): xxx.o
-$(EXE): main.o
+$(EXE).nomac: xxx.o
+$(EXE).nomac: main.o

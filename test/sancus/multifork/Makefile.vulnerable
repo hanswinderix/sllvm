@@ -6,5 +6,5 @@ include ../Makefile.include
 
 LDFLAGS += -lsancus-step
 
-$(EXE): multifork.o
-$(EXE): main.o
+$(EXE).nomac: multifork.o
+$(EXE).nomac: main.o

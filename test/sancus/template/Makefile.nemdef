@@ -3,10 +3,12 @@ EXE = xxx.nemdef
 xxx.ll: CFLAGS += -Os
 #xxx.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
 #xxx.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
+#xxx.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs
+#xxx.nemdef.s: LLCFLAGSNEMDEF += -filter-print-funcs=xxx_
 
 include ../Makefile.include
 
 LDFLAGS += -lsancus-step
 
-$(EXE): xxx.nemdef.o
-$(EXE): main.o
+$(EXE).nomac: xxx.nemdef.o
+$(EXE).nomac: main.o

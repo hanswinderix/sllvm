@@ -6,5 +6,5 @@ include ../Makefile.include
 
 LDFLAGS += -lsancus-step
 
-$(EXE): bsl.o
-$(EXE): main.o
+$(EXE).nomac: bsl.o
+$(EXE).nomac: main.o

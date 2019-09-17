@@ -1,8 +1,10 @@
 MAKEFILE_DIR      = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 SLLVM_INSTALL_DIR = $(MAKEFILE_DIR)../../install
 
-SANCUS_KEY         = deadbeefcafebabe
-SANCUS_SECURITY    = $(shell echo $$(($$(echo -n $(SANCUS_KEY) | wc -m) * 4)))
+#SANCUS_KEY      = deadbeefcafebabe
+SANCUS_KEY      = deadbeefcafebabec0defeeddefec8ed
+SANCUS_SECURITY = $(shell echo $$(($$(echo -n $(SANCUS_KEY) | wc -m) * 4)))
+
 SANCUS_SUPPORT_DIR = $(SLLVM_INSTALL_DIR)/share/sancus-support
 SANCUS_CRYPTO      = $(SLLVM_INSTALL_DIR)/bin/crypto.py
 SANCUS_SIM         = $(SLLVM_INSTALL_DIR)/bin/sancus-sim
@@ -114,6 +116,7 @@ LOADFLAGS += -baudrate $(FPGA_RATE)
 .PRECIOUS: %.sancus.ll
 .PRECIOUS: %.s
 .PRECIOUS: %.nemdef.s
+.PRECIOUS: %.nomac
 
 .PHONY: all
 all: $(EXE).objdump
@@ -136,8 +139,11 @@ all: $(EXE).objdump
 %.o: %.s
 	$(AS) $(ASFLAGS) -c $< -o $@
 
-$(EXE):
+$(EXE).nomac:
 	$(LD) $^ $(LDFLAGS) -o $@
+
+$(EXE): $(EXE).nomac
+	$(SANCUS_CRYPTO) --fill-macs $(CRYPTOFLAGS) -o $@ $<
 
 %.objdump: %
 	$(OBJDUMP) -D $< > $@
@@ -164,18 +170,23 @@ pp: $(EXE).vcdcat
 ppi: $(EXE).vcdcat
 	$(PYTHON) $(MAKEFILE_DIR)pp.py $(EXE) -mode=interactive
 
+.PHONY: force
+force: clean
+force: all
+
 .PHONY: clean
 clean:
 	$(RM) *.ll
 	$(RM) *.s
 	$(RM) *.o
-	$(RM) $(EXE)
-	$(RM) $(EXE).sim
-	$(RM) $(EXE).fst
-	$(RM) $(EXE).fst.hier
-	$(RM) $(EXE).vcd
-	$(RM) $(EXE).vcdcat
+	$(RM) *.fst
+	$(RM) *.fst.hier
+	$(RM) *.vcd
+	$(RM) *.sim
+	$(RM) *.vcdcat
 	$(RM) *.objdump
+	$(RM) *.nomac
+	$(RM) $(EXE)
 	$(RM) sim.out
 	$(RM) sim-input.bin
 	$(RM) sim-output.bin

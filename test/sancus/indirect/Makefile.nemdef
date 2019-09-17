@@ -9,5 +9,5 @@ include ../Makefile.include
 
 LDFLAGS += -lsancus-step
 
-$(EXE): indirect.nemdef.o
-$(EXE): main.o
+$(EXE).nomac: indirect.nemdef.o
+$(EXE).nomac: main.o

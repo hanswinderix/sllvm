@@ -7,5 +7,5 @@ include ../Makefile.include
 
 LDFLAGS += -lsancus-step
 
-$(EXE): diamond.nemdef.o
-$(EXE): main.o
+$(EXE).nomac: diamond.nemdef.o
+$(EXE).nomac: main.o
