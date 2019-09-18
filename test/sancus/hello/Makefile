@@ -2,5 +2,5 @@ EXE = hello
 
 include ../Makefile.include
 
-$(EXE): hello.o
-$(EXE): main.o
+$(EXE).nomac: hello.o
+$(EXE).nomac: main.o

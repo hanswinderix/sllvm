@@ -2,5 +2,5 @@ EXE = multiply
 
 include ../Makefile.include
 
-$(EXE): multiply.o
-$(EXE): main.o
+$(EXE).nomac: multiply.o
+$(EXE).nomac: main.o
