@@ -25,7 +25,7 @@ int main(void)
   sancus_enable(&keypad_mmio);
 
   ATTACK(keypad_init);
-  ATTACK(keypad_poll);
+  ATTACK(keypad_poll, 10);
 
   EXIT();
 

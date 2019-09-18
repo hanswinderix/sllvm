@@ -8,6 +8,10 @@ extern struct SancusModule keypad_mmio;
 extern struct SancusModule keypad;
 
 __attribute__((eentry)) int keypad_init(void);
-__attribute__((eentry)) int keypad_poll(void);
+
+/* keypad_poll has a dummy parameter merely to trigger the Nemesis SLLVM
+ * countermeasure for the function.
+ */
+__attribute__((eentry)) int keypad_poll(__attribute__((secret)) int dummy);
 
 #endif

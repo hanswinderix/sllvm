@@ -53,7 +53,10 @@ int keypad_init(void)
  * also explicitly returned. By carefully interrupting the function each for
  * loop iteration, an untrusted ISR can learn the value of the secret PIN code.
  */
-int keypad_poll(void)
+/* keypad_poll has a dummy parameter merely to trigger the Nemesis SLLVM
+ * countermeasure for the function.
+ */
+int keypad_poll(__attribute__((secret)) int dummy)
 {
   int key_mask = 0x1;
 
