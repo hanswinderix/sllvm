@@ -27,6 +27,13 @@ $(TEST_CLEAN): %.clean:
 # Nemesis Defender benchmarks
 ##############################################################"
 
+RESULT_DIR = results
+PYTHONPATH = ../../sancus/crypto
+
+RMDIR = rm -rf
+MKDIR = mkdir -p
+PYTHON = PYTHONPATH=$(PYTHONPATH) python3
+
 # 1) Nemdef unit tests (have high code coverage)
 NEMDEF =
 NEMDEF += triangle
@@ -85,9 +92,16 @@ NEMDEF_CLEAN = $(NEMDEF:=.nemdef-clean)
 NEMDEF_FORCE = $(NEMDEF:=.nemdef-force)
 
 nemdef-all  : $(NEMDEF_ALL)
+
 nemdef-sim  : $(NEMDEF_SIM)
+
 nemdef-pp   : $(NEMDEF_PP)
+	$(RMDIR) $(RESULT_DIR)
+	$(MKDIR) $(RESULT_DIR)
+	$(PYTHON) pp2.py > $(RESULT_DIR)/performance.csv
+
 nemdef-clean: $(NEMDEF_CLEAN)
+
 nemdef-force: $(NEMDEF_FORCE)
 
 $(NEMDEF_ALL): %.nemdef-all:
