@@ -17,7 +17,7 @@ import matplotlib
 
 # Using matplotlib.use('Agg') selects the non-interactive backend
 #  instead of defaulting to Xwindows. This makes sure the scripts runs when
-#  when invoked withoug haveing the DISPLAY env variable set (e.g. Jenkins)
+#  when invoked withoug having the DISPLAY env variable set (e.g. Jenkins)
 if not interactive:
   matplotlib.use('Agg')
 
