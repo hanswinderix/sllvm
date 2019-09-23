@@ -63,7 +63,7 @@ assert len(labels) == len(cycleoverheads)
 assert len(labels) == len(sizeoverheads)
 
 x = np.arange(len(labels))
-width = 0.15
+width = 0.30
 
 fig, ax = plt.subplots()
 rects1 = \
@@ -72,7 +72,10 @@ rects2 = ax.bar(x + width/2, sizeoverheads, width, label='Code size (bytes)')
 ax.set_ylabel("Relative overhead")
 ax.set_xticklabels(labels, rotation='vertical', fontsize='xx-small')
 ax.set_xticks(range(len(cycleoverheads)))
+ax.grid(b=True, which='major', color='lightgray', linestyle='-')
+ax.grid(b=True, which='minor', color='lightgray', linestyle=':')
 ax.legend()
+#plt.axhline(y=1.0, color='b', linestyle='-')
 fig.tight_layout()
 # TODO: targetdir should be a command line argument
 fig.savefig('results/performance.pdf')
