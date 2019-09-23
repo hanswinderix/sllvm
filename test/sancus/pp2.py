@@ -70,7 +70,7 @@ rects1 = \
   ax.bar(x - width/2, cycleoverheads, width, label='Execution time (cycles)')
 rects2 = ax.bar(x + width/2, sizeoverheads, width, label='Code size (bytes)')
 ax.set_ylabel("Relative overhead")
-ax.set_xticklabels(labels, rotation='vertical')
+ax.set_xticklabels(labels, rotation='vertical', fontsize='xx-small')
 ax.set_xticks(range(len(cycleoverheads)))
 ax.legend()
 fig.tight_layout()
