@@ -7,7 +7,7 @@ __attribute__((noinline)) static void foo(int n, int m)
   n < m ? v++ : v--;
 }
 
-int ifthenlooploop_enter(__attribute((secret)) int a, int b)
+int ifthenlooploop_enter(__attribute__((secret)) int a, int b)
 {
   int result = 3;
 

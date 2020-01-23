@@ -7,7 +7,7 @@ __attribute__((noinline)) static int foo(int n, int m)
   return v++;
 }
 
-int ifthenlooplooptail_enter(__attribute((secret)) int a, int b)
+int ifthenlooplooptail_enter(__attribute__((secret)) int a, int b)
 {
   int result = 3;
 

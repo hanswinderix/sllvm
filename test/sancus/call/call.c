@@ -7,7 +7,7 @@ __attribute__((noinline)) static int foo(int v)
   return v++;
 }
 
-int call_enter(__attribute((secret)) int a, int b)
+int call_enter(__attribute__((secret)) int a, int b)
 {
   if (a == 2)
   {

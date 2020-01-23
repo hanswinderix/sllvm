@@ -1,6 +1,6 @@
 #include "ifcompound.h"
 
-int ifcompound_enter(__attribute((secret)) int a, int b, int c)
+int ifcompound_enter(__attribute__((secret)) int a, int b, int c)
 {
   int result;
 

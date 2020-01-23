@@ -1,6 +1,6 @@
 #include "multifork.h"
 
-int multifork_enter(__attribute((secret)) int v)
+int multifork_enter(__attribute__((secret)) int v)
 {
   int result;
 

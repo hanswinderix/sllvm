@@ -9,7 +9,7 @@ __attribute__((noinline)) static int foo(int i)
   return v;
 }
 
-int ifthenloopif_enter(__attribute((secret)) int a, int b)
+int ifthenloopif_enter(__attribute__((secret)) int a, int b)
 {
   int result = 3;
 

@@ -2,7 +2,7 @@
 
 static int v;
 
-int indirect_enter(__attribute((secret)) int a, int b)
+int indirect_enter(__attribute__((secret)) int a, int b)
 {
   int result = 3;
 

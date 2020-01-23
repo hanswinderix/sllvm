@@ -10,7 +10,7 @@ int i=1;
  * void mu(word32 *a)
  *  Inverts the order of the bits of a
  */
-void threeway_enter(__attribute((secret)) word32 * a)
+void threeway_enter(__attribute__((secret)) word32 * a)
 {
   int i;
   word32 b[3];

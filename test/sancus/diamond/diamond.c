@@ -1,6 +1,6 @@
 #include "diamond.h"
 
-int diamond_enter(__attribute((secret)) int a, int b)
+int diamond_enter(__attribute__((secret)) int a, int b)
 {
   int result;
 

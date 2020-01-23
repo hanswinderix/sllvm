@@ -3,7 +3,7 @@
 static int v = 42;
 static int w = 777;
 
-int loop_enter(__attribute((secret)) int a, int b)
+int loop_enter(__attribute__((secret)) int a, int b)
 {
   int result = 1;
   int i = 0;
