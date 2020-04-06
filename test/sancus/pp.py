@@ -128,22 +128,37 @@ for idx in range(len(attacks)):
   latencies = [signals[0] for signals in attacks[idx]]
 
   for x in (axi, ax):
-    x.set_title(name)
-    x.set_xlabel('Instruction number')
-    x.set_ylabel('Instruction latency (cycles)')
+    #x.set_title(name)
+    x.set_xlabel('instruction number')
+    x.set_ylabel('cycles')
     x.set_yticks(np.arange(1, 6, 1))
     #ml = MultipleLocator(1)
-    #axi.xaxis.set_minor_locator(ml)
+    #x.xaxis.set_minor_locator(ml)
     #ml = MultipleLocator(5)
-    #axi.xaxis.set_major_locator(ml)
+    #x.xaxis.set_major_locator(ml)
     x.grid(b=True, which='major', color='lightgray', linestyle='-')
     x.grid(b=True, which='minor', color='lightgray', linestyle=':')
+
+    # annotations for diamond.vulnerable (see paper)
+    """
+    if idx == 0:
+      x.annotate("",
+              xy=(25, 2.3), xycoords='data',
+              xytext=(-10, 25), textcoords='offset points',
+              arrowprops=dict(color="tab:red", arrowstyle="fancy"))
+    if idx == 1:
+      x.annotate("",
+              xy=(21, 1.3), xycoords='data',
+              xytext=(10, 25), textcoords='offset points',
+              arrowprops=dict(color="tab:red", arrowstyle="fancy"))
+    """
+
     x.plot(latencies)
 
   fname = '%s.experiment%02d.pdf' % (exename, idx+1)
-  figi.savefig(fname)
+  figi.savefig(fname, bbox_inches='tight', pad_inches=0)
   fname = '%s.experiment%02d.svg' % (exename, idx+1)
-  figi.savefig(fname)
+  figi.savefig(fname, bbox_inches='tight', pad_inches=0)
 
   if interactive:
     #cursor = mplcursors.cursor(hover=True)
@@ -169,9 +184,9 @@ for ax in axs.flat:
   ax.label_outer()
 
 fname = '%s.pdf' % exename
-fig.savefig(fname)
+fig.savefig(fname, bbox_inches='tight', pad_inches =0)
 fname = '%s.svg' % exename
-fig.savefig(fname)
+fig.savefig(fname, bbox_inches='tight', pad_inches=0)
 
 if interactive:
   plt.show()
