@@ -26,7 +26,8 @@ for root, _, files in os.walk("."):
     if m:
       case       = m.group(1)
       experiment = m.group(2)
-      labels.append('%s %s' % (case, experiment))
+      labels.append('%s %s' % \
+                      (case, str.replace(experiment, "experiment", "exp")))
 
       # Determine space overhead
       velf = '%s/%s.vulnerable' % (root, case)
@@ -81,7 +82,7 @@ plt.axhline(y=2.0, color='lightgray', linestyle='-', linewidth='0.1')
 plt.axhline(y=3.0, color='lightgray', linestyle='-', linewidth='0.1')
 plt.axhline(y=4.0, color='lightgray', linestyle='-', linewidth='0.1')
 plt.axhline(y=5.0, color='lightgray', linestyle='-', linewidth='0.1')
-ax.set_aspect(3)
+ax.set_aspect(2.7)
 fig.tight_layout()
 # TODO: targetdir should be a command line argument
 fig.savefig('results/performance.pdf', bbox_inches='tight', pad_inches=0)
