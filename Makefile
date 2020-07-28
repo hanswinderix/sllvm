@@ -448,7 +448,7 @@ clean-vulcan:
 	$(MAKE) -C $(SRCDIR_VULCAN) clean
 
 .PHONY: clean-fetch
-clean-fetch:
+clean-fetch: clean
 	$(RM) $(TI_MSPGCC_TBZ)
 	$(RM) -r $(SRCDIR_MSPGCC)
 	$(RM) $(TI_MSPGCC_SUPPORT_ZIP)
@@ -561,13 +561,13 @@ sync-legacy-sancus:
 	$(GIT) -C $(SRCDIR_SANCUS_COMPILER) merge upstream/master
 	$(GIT) -C $(SRCDIR_SANCUS_SUPPORT) fetch upstream
 	$(GIT) -C $(SRCDIR_SANCUS_SUPPORT) checkout master
-	$(GIT) -C $(SRCDIR_SANCUS_SUPPORT) merge upstream/master
+#	$(GIT) -C $(SRCDIR_SANCUS_SUPPORT) merge upstream/master
 	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) fetch upstream
 	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) checkout master
-	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) merge upstream/master
+#	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) merge upstream/master
 
 .PHONY: sync-vulcan
 sync-vulcan:
 	$(GIT) -C $(SRCDIR_VULCAN) fetch upstream
 	$(GIT) -C $(SRCDIR_VULCAN) checkout master
-	$(GIT) -C $(SRCDIR_VULCAN) merge upstream/master
+#	$(GIT) -C $(SRCDIR_VULCAN) merge upstream/master
