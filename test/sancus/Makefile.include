@@ -7,7 +7,8 @@ SANCUS_SECURITY = $(shell echo $$(($$(echo -n $(SANCUS_KEY) | wc -m) * 4)))
 
 SANCUS_SUPPORT_DIR = $(SLLVM_INSTALL_DIR)/share/sancus-support
 SANCUS_CRYPTO      = $(SLLVM_INSTALL_DIR)/bin/crypto.py
-SANCUS_SIM         = $(SLLVM_INSTALL_DIR)/bin/sancus-sim
+#SANCUS_SIM         = $(SLLVM_INSTALL_DIR)/bin/sancus-sim
+SANCUS_SIM         = $(SLLVM_INSTALL_DIR)/bin/sancus-isim
 SANCUS_LOAD        = sancus-loader
 FST2VCD            = fst2vcd
 VCDCAT             = vcdcat
