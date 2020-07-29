@@ -93,8 +93,8 @@ LDFLAGS += -Wl,-gc-sections # To garbage collect unused trusted rt functions
 LDFLAGS += -mmcu=$(MCU)
 
 MEMFLAGS =
-#MEMFLAGS += --ram $(RAM_SIZE)
-#MEMFLAGS += --rom $(ROM_SIZE) 
+MEMFLAGS += --ram $(RAM_SIZE)
+MEMFLAGS += --rom $(ROM_SIZE) 
 
 CRYPTOFLAGS =
 CRYPTOFLAGS += --key $(VENDOR_KEY)
