@@ -222,9 +222,9 @@ install:
 	$(MAKE) install-crypto
 
 .PHONY: test
-test:	test-sancus-examples
 test:	test-sllvm
 test:	test-nemdef
+test:	test-sancus-examples
 #test:	test-vulcan
 
 #############################################################################
