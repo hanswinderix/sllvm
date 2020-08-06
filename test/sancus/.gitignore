@@ -10,6 +10,7 @@
 *.fst.hier
 *.sim
 *.vcdcat
+*.vcd
 *.vulnerable.pdf
 *.vulnerable.svg
 *.nemdef.pdf

@@ -30,13 +30,13 @@ if interactive:
 header_pos = 0
 header = """
 0 time
-1 tb_openMSP430.cur_tsc[63:0]
-2 tb_openMSP430.msp_debug_0.inst_pc[15:0]
-3 tb_openMSP430.dut.execution_unit_0.exec_sm
-4 tb_openMSP430.msp_debug_0.inst_full[255:0]
+1 TOP.tb_openMSP430.cur_tsc[63:0]
+2 TOP.tb_openMSP430.msp_debug_0.inst_pc[15:0]
+3 TOP.tb_openMSP430.dut.execution_unit_0.exec_sm
+4 TOP.tb_openMSP430.msp_debug_0.inst_full[255:0]
 
 ==========================================================================================
-0                x    x 0                                                                x
+0                1    2 3                                                                4
 """.strip().split('\n')
 
 # Parse vcdcat output
