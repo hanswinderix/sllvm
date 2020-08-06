@@ -59,10 +59,9 @@ key_state_t SM_MMIO_ENTRY(keypad_mmio) keypad_mmio_read_key_state(void)
       );
 #else
   asm(
-    "clr r12     \n\t"   /* return value key_state bitmask */
-    "bis #16, r12\n\t"
-    "inv r12     \n\t"   /* Row pins are active low */
-    :::
+    "mov &%0, r12\n\t"
+    "add  #1, &%0\n\t"
+    :"=m"(P2SEL):"m"(P2SEL):
     );
 #endif
 }

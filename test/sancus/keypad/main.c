@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "sancus_support/sm_io.h"
 #include "sancus_support/sancus_step.h"
 
@@ -24,10 +23,27 @@ int main(void)
   sancus_enable(&keypad);
   sancus_enable(&keypad_mmio);
 
+  /* Ignore initialization */
   ATTACK(keypad_init);
+
+  /* Ignore first call to keypad_poll, which sets up secure linking */
+  ATTACK(keypad_poll, 42);
+
+  /* With the current mmio mockup, calling keypad_poll five times in a row
+   * covers the whole range of possibe execution times with the current mmio
+   * mockup
+   */
+  ATTACK(keypad_poll, 42);
+#if 0 /* For now, only use the keypad benchmark for determining the average
+       * performance overhead of the nemdef transformation. Once the compiler
+       * bug, related to the handling of two-way branches in shared basic 
+       * blocks, has been fixed, enable the underlying calls again.
+       */
   ATTACK(keypad_poll, 42);
   ATTACK(keypad_poll, 42);
   ATTACK(keypad_poll, 42);
+  ATTACK(keypad_poll, 42);
+#endif
 
   EXIT();
 
