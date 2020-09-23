@@ -410,6 +410,7 @@ test-sancus-examples:
 
 .PHONY: test-sllvm
 test-sllvm: clean-test-sllvm
+	$(MAKE) test-nemdef
 	$(MAKE) -C $(SRCDIR_TEST_SANCUS) SANCUS_KEY=$(SANCUS_KEY) sim
 	$(MAKE) -C $(SRCDIR_TEST_SANCUS) nemdef-pp
 
@@ -470,10 +471,21 @@ clean-fetch-install:
 	$(MAKE) fetch
 	$(MAKE) clean-then-install
 
-# TODO: Make uninstall safer 
 .PHONY: uninstall
 uninstall:
-#	$(RM) -r $(INSTALLDIR)
+	$(RM) -r $(INSTALLDIR)
+
+.PHONY: realclean
+realclean:
+	$(MAKE) clean
+	$(MAKE) uninstall
+	$(MAKE) -C $(SRCDIR_TEST_SANCUS) clean
+	$(MAKE) -C $(SRCDIR_TEST_SANCUS) nemdef-clean
+
+.PHONY: realclean-then-install
+realclean-then-install:
+	$(MAKE) realclean
+	$(MAKE) clean-then-install
 
 #############################################################################
 
