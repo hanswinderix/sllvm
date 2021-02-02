@@ -564,7 +564,7 @@ sync: sync-vulcan
 sync-llvm:
 	$(GIT) -C $(SRCDIR_SLLVM) fetch upstream
 	$(GIT) -C $(SRCDIR_SLLVM) checkout master
-	$(GIT) -C $(SRCDIR_SLLVM) merge upstream/master
+	$(GIT) -C $(SRCDIR_SLLVM) merge upstream/main
 
 .PHONY: sync-legacy-sancus
 sync-legacy-sancus:
