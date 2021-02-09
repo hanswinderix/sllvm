@@ -1,0 +1,10 @@
+EXE = sharevalue.vulnerable
+
+sharevalue.ll: CFLAGS += -O0
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: sharevalue.o
+$(EXE).nomac: main.o

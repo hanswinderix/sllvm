@@ -83,6 +83,11 @@ NEMDEF += modexp
 NEMDEF += bsl
 NEMDEF += keypad   # TODO: Support "secret return types" (or use dummy param)
 
+# 5) Transforming Out Timing Leaks, More or Less (2015)
+#    Heiko Mantel and Artem Starostin
+NEMDEF += sharevalue
+NEMDEF += sharevalue.ifc
+
 #--------------------------------------------------------------------------
 
 NEMDEF_ALL   = $(NEMDEF:=.nemdef-all)
