@@ -17,12 +17,20 @@ int sharevalue_enter(__attribute__((secret)) int ids[], int qty[], int len)
     int id = ids[i];
     int val = lookupVal(id) * qty[i];
 
+    /* if (id == SPECIAL_SHARE) */
+    /* {  */
+
+    /* Compute true and false masks */
     int condition = (id == SPECIAL_SHARE);
     int tmask = -condition;
-    int sum = shareVal + val;
+    int fmask = ~tmask;
 
-    shareVal  = (sum & tmask);
-    shareVal |= (shareVal & ~tmask);
+    /* shareVal = shareVal + val; */
+    int tshareVal = (shareVal + val) & tmask; /* id == SPECIAL_SHARE */
+    int fshareVal = shareVal         & fmask; /* id != SPECIAL_SHARE */
+    shareVal = tshareVal | fshareVal;
+
+    /* } */
 
     i++;
   }

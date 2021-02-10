@@ -87,6 +87,8 @@ NEMDEF += keypad   # TODO: Support "secret return types" (or use dummy param)
 #    Heiko Mantel and Artem Starostin
 NEMDEF += sharevalue
 NEMDEF += sharevalue.ifc
+NEMDEF += kruskal
+NEMDEF += kruskal.ifc
 
 #--------------------------------------------------------------------------
 

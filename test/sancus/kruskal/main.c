@@ -3,7 +3,7 @@
 #include "sancus_support/sancus_step.h"
 
 #include "nemdef.h"
-#include "sharevalue.h"
+#include "kruskal.h"
 
 asm(".section __interrupt_vector_10,\"ax\",@progbits \n\t"
     ".word timerA_isr_entry2                         \n\t");
@@ -21,14 +21,13 @@ int main(void)
   __ss_init();
 #endif
 
-  sancus_enable(&sharevalue);
+  sancus_enable(&kruskal);
 
-  int ids1[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-  int ids2[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 42};
-  int qty[]  = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+  int g[] = {1, 2, 1, 3, 1, 4, 4, 5, 6, 7};
+  int mst[sizeof(g)];
+  int par[sizeof(g)];
 
-  ATTACK(sharevalue_enter, ids1, qty, sizeof(ids1)/sizeof(ids1[0]));
-  ATTACK(sharevalue_enter, ids2, qty, sizeof(ids2)/sizeof(ids2[0]));
+  ATTACK(kruskal_enter, g, mst, par, sizeof(g)/sizeof(g[0]));
 
   EXIT();
 

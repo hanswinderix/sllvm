@@ -1,0 +1,10 @@
+EXE = kruskal.vulnerable
+
+kruskal.ll: CFLAGS += -O0
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: kruskal.o
+$(EXE).nomac: main.o
