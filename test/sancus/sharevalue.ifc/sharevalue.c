@@ -18,19 +18,17 @@ int sharevalue_enter(__attribute__((secret)) int ids[], int qty[], int len)
     int val = lookupVal(id) * qty[i];
 
     /* if (id == SPECIAL_SHARE) */
-    /* {  */
+    {
+      /* Compute true and false masks */
+      int condition = (id == SPECIAL_SHARE);
+      int tmask = -condition;
+      int fmask = ~tmask;
 
-    /* Compute true and false masks */
-    int condition = (id == SPECIAL_SHARE);
-    int tmask = -condition;
-    int fmask = ~tmask;
-
-    /* shareVal = shareVal + val; */
-    int tshareVal = (shareVal + val) & tmask; /* id == SPECIAL_SHARE */
-    int fshareVal = shareVal         & fmask; /* id != SPECIAL_SHARE */
-    shareVal = tshareVal | fshareVal;
-
-    /* } */
+      /* shareVal = shareVal + val; */
+      int tshareVal = (shareVal + val) & tmask; /* id == SPECIAL_SHARE */
+      int fshareVal = shareVal         & fmask; /* id != SPECIAL_SHARE */
+      shareVal = tshareVal | fshareVal;
+    }
 
     i++;
   }

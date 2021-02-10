@@ -83,12 +83,14 @@ NEMDEF += modexp
 NEMDEF += bsl
 NEMDEF += keypad   # TODO: Support "secret return types" (or use dummy param)
 
-# 5) Transforming Out Timing Leaks, More or Less (2015)
-#    Heiko Mantel and Artem Starostin
+# 5) Benchmark programs from transforming Out Timing Leaks, More or Less (2015)
+#    (Heiko Mantel and Artem Starostin)
 NEMDEF += sharevalue
 NEMDEF += sharevalue.ifc
 NEMDEF += kruskal
 NEMDEF += kruskal.ifc
+NEMDEF += mulmod8
+NEMDEF += mulmod8.ifc
 
 #--------------------------------------------------------------------------
 
