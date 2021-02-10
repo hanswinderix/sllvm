@@ -23,11 +23,17 @@ int main(void)
 
   sancus_enable(&kruskal);
 
-  int g[] = {1, 2, 1, 3, 1, 4, 4, 5, 6, 7};
+  /* 5 vertices, 7 edges */
+  int g1[] = {0, 1, 0, 2, 0, 3, 0, 4, 1, 2, 2, 3, 3, 4}; 
+
+  /* 7 vertices, 7 edges */
+  int g2[] = {0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7};
+  
   int mst[sizeof(g)];
   int par[sizeof(g)];
 
-  ATTACK(kruskal_enter, g, mst, par, sizeof(g)/sizeof(g[0]));
+  ATTACK(kruskal_enter, g1, mst, par, sizeof(g1)/sizeof(g1[0]));
+  ATTACK(kruskal_enter, g2, mst, par, sizeof(g2)/sizeof(g2[0]));
 
   EXIT();
 

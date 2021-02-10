@@ -23,9 +23,9 @@ int main(void)
 
   sancus_enable(&sharevalue);
 
-  int ids1[] = {1, 2, 3, 4, 5, 6, 7, 8};
-  int ids2[] = {1, 2, 3, 4, 5, 6, 7, 42};
-  int qty[]  = {1, 1, 1, 1, 1, 1, 1, 1};
+  int ids1[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  int ids2[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 42};
+  int qty[]  = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
   ATTACK(sharevalue_enter, ids1, qty, sizeof(ids1)/sizeof(ids1[0]));
   ATTACK(sharevalue_enter, ids2, qty, sizeof(ids2)/sizeof(ids2[0]));
