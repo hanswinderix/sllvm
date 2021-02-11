@@ -1,4 +1,4 @@
-EXE = mulmod8.nemdef
+EXE = mulmod8.ifc.nemdef
 
 #mulmod8.ll: CFLAGS += -Os
 

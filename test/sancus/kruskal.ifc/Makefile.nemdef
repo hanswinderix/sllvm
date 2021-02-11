@@ -1,4 +1,4 @@
-EXE = kruskal.nemdef
+EXE = kruskal.ifc.nemdef
 
 #kruskal.ll: CFLAGS += -Os
 

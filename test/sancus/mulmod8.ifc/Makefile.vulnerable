@@ -1,4 +1,4 @@
-EXE = mulmod8.vulnerable
+EXE = mulmod8.ifc.vulnerable
 
 #mulmod8.ll: CFLAGS += -Os
 

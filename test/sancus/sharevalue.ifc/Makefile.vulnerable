@@ -1,4 +1,4 @@
-EXE = sharevalue.vulnerable
+EXE = sharevalue.ifc.vulnerable
 
 #sharevalue.ll: CFLAGS += -Os
 

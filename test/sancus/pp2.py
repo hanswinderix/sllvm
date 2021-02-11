@@ -13,8 +13,9 @@ def get_cycles(fname):
 
 def get_size(elfname, pmname):
   l = loader.Loader(elfname)
-  pm = l.find_protected_module_by_name(pmname)
-  assert pm, pmname
+  n = pmname.replace(".ifc", "") # Drop if-conversion suffix, if any
+  pm = l.find_protected_module_by_name(n)
+  assert pm, (pmname, n)
   return pm.get_text_size()
 
 # TODO: Get rid of do_ignore.
@@ -58,6 +59,7 @@ acycleoverheads = []
 # running time
 rcycleoverheads = []
 sizeoverheads   = []
+results = {}
 for root, _, files in os.walk("."):
   for fn in sorted(files):
     m = re.match('(.*)\.nemdef\.(experiment.*).signals.txt$', fn)
@@ -86,7 +88,8 @@ for root, _, files in os.walk("."):
         acycleoverheads.append(acycleoverhead)
         rcycleoverhead = float(hcycles)/max(run_times[benchmark])
         rcycleoverheads.append(rcycleoverhead)
-        
+
+        # Write CSV to stdout
         sys.stdout.write("%s," % benchmark)
         sys.stdout.write("%d," % vsize)
         sys.stdout.write("%d," % hsize)
@@ -97,6 +100,16 @@ for root, _, files in os.walk("."):
         sys.stdout.write("%.02f," % round(acycleoverhead, 2))
         sys.stdout.write("%.02f," % round(rcycleoverhead, 2))
         sys.stdout.write("\n")
+
+        # Record the results for outputting results in other formats,
+        # such as LaTeX
+        if benchmark not in results:
+          results[benchmark] = (vsize, hsize, sizeoverhead, [])
+        t = (vcycles, hcycles, acycleoverhead, rcycleoverhead)
+        results[benchmark][3].append(t)
+
+# Generate LaTeX performance table for EuroS&P paper
+# TODO
 
 import numpy as np
 import matplotlib

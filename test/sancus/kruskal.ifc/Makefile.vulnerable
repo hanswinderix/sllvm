@@ -1,4 +1,4 @@
-EXE = kruskal.vulnerable
+EXE = kruskal.ifc.vulnerable
 
 #kruskal.ll: CFLAGS += -Os
 

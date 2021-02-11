@@ -1,4 +1,4 @@
-EXE = sharevalue.nemdef
+EXE = sharevalue.ifc.nemdef
 
 #sharevalue.ll: CFLAGS += -Os
 

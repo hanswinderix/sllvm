@@ -78,11 +78,16 @@ with open(sim_output) as f:
   attack_names = re.findall(r'attack: (.*)?', l)
 
   l = re.findall(r'New SM config: ([0-9a-f]*) ([0-9a-f]*)', l)
-  assert len(l) == 1
-  l = l[0]
-  assert len(l) == 2
-  l = [int(x, 16) for x in l]
-  sm_text_size = l[1] - l[0]
+  assert len(l) > 0
+  if len(l) == 1:
+    l = l[0]
+    assert len(l) == 2
+    l = [int(x, 16) for x in l]
+    sm_text_size = l[1] - l[0]
+  else:
+      # TODO: keypad benchmark instantiates two enclaves
+      pass
+
 
 # Create attack data structures
 attacks = []
