@@ -1,0 +1,13 @@
+EXE = modexp2.vulnerable
+
+#modexp2.ll: CFLAGS += -Os
+
+#modexp2.s: LLCFLAGS += -print-machineinstrs
+#modexp2.s: LLCFLAGS += -filter-print-funcs=modexp2_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: modexp2.o
+$(EXE).nomac: main.o

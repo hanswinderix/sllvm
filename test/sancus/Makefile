@@ -91,6 +91,10 @@ NEMDEF += kruskal
 NEMDEF += kruskal.ifc
 NEMDEF += mulmod8
 NEMDEF += mulmod8.ifc
+NEMDEF += modexp2
+NEMDEF += modexp2.ifc
+
+# 6) TI benchmark suite
 
 #--------------------------------------------------------------------------
 

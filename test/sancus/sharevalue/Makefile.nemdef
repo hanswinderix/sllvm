@@ -1,6 +1,7 @@
 EXE = sharevalue.nemdef
 
-sharevalue.ll: CFLAGS += -O0
+#sharevalue.ll: CFLAGS += -Os
+
 #sharevalue.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
 #sharevalue.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
 

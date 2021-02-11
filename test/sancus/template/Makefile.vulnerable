@@ -1,6 +1,7 @@
 EXE = xxx.vulnerable
 
-xxx.ll: CFLAGS += -Os
+#xxx.ll: CFLAGS += -Os
+	
 #xxx.s: LLCFLAGS += -print-machineinstrs
 #xxx.s: LLCFLAGS += -filter-print-funcs=xxx_
 

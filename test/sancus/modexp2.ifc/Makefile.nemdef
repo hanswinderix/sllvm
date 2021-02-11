@@ -1,0 +1,15 @@
+EXE = modexp2.nemdef
+
+#modexp2.ll: CFLAGS += -Os
+
+#modexp2.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
+#modexp2.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
+#modexp2.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs
+#modexp2.nemdef.s: LLCFLAGSNEMDEF += -filter-print-funcs=modexp2_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: modexp2.nemdef.o
+$(EXE).nomac: main.o

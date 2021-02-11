@@ -1,6 +1,7 @@
 EXE = kruskal.nemdef
 
-kruskal.ll: CFLAGS += -O0
+#kruskal.ll: CFLAGS += -Os
+
 #kruskal.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
 #kruskal.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
 

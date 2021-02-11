@@ -1,6 +1,6 @@
 EXE = kruskal.vulnerable
 
-kruskal.ll: CFLAGS += -O0
+#kruskal.ll: CFLAGS += -Os
 
 include ../Makefile.include
 

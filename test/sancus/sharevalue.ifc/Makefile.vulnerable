@@ -1,6 +1,6 @@
 EXE = sharevalue.vulnerable
 
-sharevalue.ll: CFLAGS += -O0
+#sharevalue.ll: CFLAGS += -Os
 
 include ../Makefile.include
 

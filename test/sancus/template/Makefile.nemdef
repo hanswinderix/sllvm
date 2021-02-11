@@ -1,6 +1,7 @@
 EXE = xxx.nemdef
 
-xxx.ll: CFLAGS += -Os
+#xxx.ll: CFLAGS += -Os
+
 #xxx.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
 #xxx.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
 #xxx.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs
