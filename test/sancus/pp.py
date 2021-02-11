@@ -72,8 +72,17 @@ for idx in range(len(signals)-1):
 
 # Parse simulation standard output
 attack_names = []
+sm_text_size = 0
 with open(sim_output) as f:
-  attack_names = re.findall(r'attack: (.*)?', f.read())
+  l = f.read()
+  attack_names = re.findall(r'attack: (.*)?', l)
+
+  l = re.findall(r'New SM config: ([0-9a-f]*) ([0-9a-f]*)', l)
+  assert len(l) == 1
+  l = l[0]
+  assert len(l) == 2
+  l = [int(x, 16) for x in l]
+  sm_text_size = l[1] - l[0]
 
 # Create attack data structures
 attacks = []
@@ -98,6 +107,10 @@ if len(attacks) == 1:
   axs = np.array([axs])
 
 # Write results
+fname = '%s.info' % exename
+with open(fname, 'w') as f:
+  f.write("sm_text_size=%d\n" % sm_text_size)
+
 for idx in range(len(attacks)):
   total_cycles = 0
   name = attack_names[idx]

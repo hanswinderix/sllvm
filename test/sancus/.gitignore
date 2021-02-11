@@ -13,8 +13,10 @@
 *.vcd
 *.vulnerable.pdf
 *.vulnerable.svg
+*.vulnerable.info
 *.nemdef.pdf
 *.nemdef.svg
+*.nemdef.info
 *.experiment*.txt
 *.experiment*.svg
 *.experiment*.pdf
