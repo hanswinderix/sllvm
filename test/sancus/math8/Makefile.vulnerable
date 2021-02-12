@@ -1,0 +1,13 @@
+EXE = math8.vulnerable
+
+#math8.ll: CFLAGS += -Os
+	
+#math8.s: LLCFLAGS += -print-machineinstrs
+#math8.s: LLCFLAGS += -filter-print-funcs=math8_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: math8.o
+$(EXE).nomac: main.o

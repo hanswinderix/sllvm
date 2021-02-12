@@ -1,0 +1,13 @@
+EXE = matrixcc8.ifc.vulnerable
+
+#matrixcc8.ll: CFLAGS += -Os
+	
+#matrixcc8.s: LLCFLAGS += -print-machineinstrs
+#matrixcc8.s: LLCFLAGS += -filter-print-funcs=matrixcc8_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: matrixcc8.o
+$(EXE).nomac: main.o

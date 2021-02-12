@@ -1,0 +1,15 @@
+EXE = matrixcc8.nemdef
+
+#matrixcc8.ll: CFLAGS += -Os
+
+#matrixcc8.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
+#matrixcc8.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
+#matrixcc8.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs
+#matrixcc8.nemdef.s: LLCFLAGSNEMDEF += -filter-print-funcs=matrixcc8_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: matrixcc8.nemdef.o
+$(EXE).nomac: main.o

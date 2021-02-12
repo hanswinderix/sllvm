@@ -1,0 +1,15 @@
+EXE = math8.ifc.nemdef
+
+#math8.ll: CFLAGS += -Os
+
+#math8.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
+#math8.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
+#math8.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs
+#math8.nemdef.s: LLCFLAGSNEMDEF += -filter-print-funcs=math8_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: math8.nemdef.o
+$(EXE).nomac: main.o
