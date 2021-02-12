@@ -109,7 +109,79 @@ for root, _, files in os.walk("."):
         results[benchmark][3].append(t)
 
 # Generate LaTeX performance table for EuroS&P paper
-# TODO
+fname = 'results/performance.tex'
+with open(fname, 'w') as f:
+
+  def writeln(s):
+    print(s, file=f)
+
+  f.write(r'''
+\documentclass[a4paper]{article}
+
+\usepackage{todonotes}
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
+
+\begin{document}
+
+\begin{table*}[!htb]
+\normalsize
+\caption{Caption}
+\label{tab:benchmarks-overview}
+\centering
+\scalebox{0.8}{
+\begin{tabular}{ L{2.75cm}|C{1.35cm}L{3.4cm}|C{1.35cm}L{4.3cm}C{1.35cm} }
+  
+\hline
+\multicolumn{1}{c|}{\textbf{Benchmark}} & \multicolumn{2}{c|}{\textbf{Vulnerable Baseline}}                 & \multicolumn{3}{c}{\textbf{Overhead of Hardening}}\\
+\hline
+                                          & \multicolumn{1}{c}{Size}    & \multicolumn{1}{c|}{Execution time} & \multicolumn{1}{c}{Size} & \multicolumn{1}{c}{Execution time} & \multicolumn{1}{c}{Execution time}\\
+                                          & \multicolumn{1}{c}{(bytes)} & \multicolumn{1}{c|}{(cycles)}       & \multicolumn{1}{c}{}     & \multicolumn{1}{c}{}               & \multicolumn{1}{c}{(relative to best case)}\\
+\hline
+\hline
+
+
+
+''')
+
+  for benchmark in results.keys():
+    vsize, hsize, sizeoverhead, experiments = results[benchmark]
+    f.write(benchmark)
+    f.write(" & ")
+    f.write("%d" % vsize)
+    f.write(" & ")
+    komma = ''
+    for vcycles, hcycles, acycleoverhead, rcycleoverhead in experiments:
+      f.write(komma)
+      komma = ', '
+      f.write("%d" % vcycles)
+    f.write(" & ")
+    f.write("%.02f" % sizeoverhead)
+    f.write(" & ")
+    komma = ''
+    for vcycles, hcycles, acycleoverhead, rcycleoverhead in experiments:
+      f.write(komma)
+      komma = ', '
+      f.write("%.02f" % acycleoverhead)
+    f.write(" & ")
+    f.write("%d" % 0) # TODO
+    f.write(r"\\")
+    f.write("\n")
+  
+  f.write('''
+
+
+
+\hline
+
+\end{tabular}
+}
+\end{table*}
+
+\end{document}
+''')
 
 import numpy as np
 import matplotlib
