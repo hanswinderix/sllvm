@@ -89,13 +89,14 @@ NEMDEF += sharevalue
 NEMDEF += sharevalue.ifc
 NEMDEF += kruskal
 NEMDEF += kruskal.ifc
-NEMDEF += mulmod8
+#NEMDEF += mulmod8
 NEMDEF += mulmod8.ifc
 NEMDEF += modexp2
 NEMDEF += modexp2.ifc
 
-# 6) TI benchmark suite
-NEMDEF += 
+# 6) TI MSP430 competitive benchmarking suite
+#NEMDEF += switch8
+NEMDEF += switch8.ifc
 
 #--------------------------------------------------------------------------
 
