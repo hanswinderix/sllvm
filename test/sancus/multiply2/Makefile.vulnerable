@@ -1,0 +1,13 @@
+EXE = multiply.vulnerable
+
+#multiply.ll: CFLAGS += -Os
+	
+#multiply.s: LLCFLAGS += -print-machineinstrs
+#multiply.s: LLCFLAGS += -filter-print-funcs=multiply_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: multiply.o
+$(EXE).nomac: main.o

@@ -1,0 +1,15 @@
+EXE = multiply.nemdef
+
+#multiply.ll: CFLAGS += -Os
+
+#multiply.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
+#multiply.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
+#multiply.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs
+#multiply.nemdef.s: LLCFLAGSNEMDEF += -filter-print-funcs=multiply_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: multiply.nemdef.o
+$(EXE).nomac: main.o

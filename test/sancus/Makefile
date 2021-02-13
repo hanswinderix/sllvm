@@ -34,8 +34,12 @@ RMDIR = rm -rf
 MKDIR = mkdir -p
 PYTHON = PYTHONPATH=$(PYTHONPATH) python3
 
-# 1) Nemdef unit tests (have high code coverage)
 NEMDEF =
+
+# 0) Test compiler-rt
+NEMDEF += multiply2
+
+# 1) Nemdef unit tests (have high code coverage)
 NEMDEF += triangle
 NEMDEF += diamond
 NEMDEF += fork
