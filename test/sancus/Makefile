@@ -97,6 +97,14 @@ NEMDEF += modexp2.ifc
 # 6) TI MSP430 competitive benchmarking suite
 #NEMDEF += switch8
 NEMDEF += switch8.ifc
+NEMDEF += math8
+NEMDEF += math8.ifc
+NEMDEF += matrixcc8
+NEMDEF += matrixcc8.ifc
+NEMDEF += ffilter
+NEMDEF += ffilter.ifc
+NEMDEF += matrixmul
+NEMDEF += matrixmul.ifc
 
 #--------------------------------------------------------------------------
 
