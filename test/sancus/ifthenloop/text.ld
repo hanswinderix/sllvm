@@ -1,6 +1,7 @@
 sllvm_pm_ifthenloop_text_start = .;
 *(.sllvm.text.dispatch.ifthenloop)  /* Make sure the dispatcher is put first */
 *(.sllvm.text.ifthenloop)
+*(.sllvm.text.ifthenloop.*)
 sllvm_pm_ifthenloop_text_end = .;
 
 sllvm_pm_sancus_step_text_start = .;
