@@ -27,7 +27,10 @@ int main(void)
   ATTACK(multiply_enter, 0, 1);
   ATTACK(multiply_enter, 1, 0);
   ATTACK(multiply_enter, 1, 1);
+  ATTACK(multiply_enter, 2, 2);
+  ATTACK(multiply_enter, 8, 6);
   ATTACK(multiply_enter, 127, 7);
+  ATTACK(multiply_enter, 7, 127);
 
   EXIT();
 
