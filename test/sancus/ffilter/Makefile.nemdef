@@ -1,0 +1,15 @@
+EXE = ffilter.nemdef
+
+#ffilter.ll: CFLAGS += -Os
+
+#ffilter.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
+#ffilter.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
+#ffilter.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs
+#ffilter.nemdef.s: LLCFLAGSNEMDEF += -filter-print-funcs=ffilter_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: ffilter.nemdef.o
+$(EXE).nomac: main.o

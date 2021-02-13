@@ -1,0 +1,13 @@
+EXE = matrixmul.ifc.vulnerable
+
+#matrixmul.ll: CFLAGS += -Os
+	
+#matrixmul.s: LLCFLAGS += -print-machineinstrs
+#matrixmul.s: LLCFLAGS += -filter-print-funcs=matrixmul_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: matrixmul.o
+$(EXE).nomac: main.o

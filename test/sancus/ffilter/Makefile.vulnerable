@@ -1,0 +1,13 @@
+EXE = ffilter.vulnerable
+
+#ffilter.ll: CFLAGS += -Os
+	
+#ffilter.s: LLCFLAGS += -print-machineinstrs
+#ffilter.s: LLCFLAGS += -filter-print-funcs=ffilter_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: ffilter.o
+$(EXE).nomac: main.o
