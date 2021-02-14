@@ -1,8 +1,8 @@
-#include "switch8.h"
+#include "switch16.h"
 
-UInt8 switch8_case(__attribute__((secret)) UInt8 a)
+UInt16 switch16_case(__attribute__((secret)) UInt16 a)
 {
-  UInt8 output;
+  UInt16 output;
   
   int condition;
   int tmask;
