@@ -1,0 +1,13 @@
+EXE = switch16.vulnerable
+
+#switch16.ll: CFLAGS += -Os
+	
+#switch16.s: LLCFLAGS += -print-machineinstrs
+#switch16.s: LLCFLAGS += -filter-print-funcs=switch16_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: switch16.o
+$(EXE).nomac: main.o

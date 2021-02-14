@@ -2,8 +2,8 @@
 
 /*******************************************************************************
 *
-*          Name    : 8-bit Math
-*          Purpose : Benchmark 8-bit math functions.
+*          Name    : 16-bit Math
+*          Purpose : Benchmark 16-bit math functions.
 *
 *******************************************************************************/
 

@@ -1,0 +1,15 @@
+EXE = matrixcc16.ifc.nemdef
+
+#matrixcc16.ll: CFLAGS += -Os
+
+#matrixcc16.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
+#matrixcc16.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
+#matrixcc16.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs
+#matrixcc16.nemdef.s: LLCFLAGSNEMDEF += -filter-print-funcs=matrixcc16_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: matrixcc16.nemdef.o
+$(EXE).nomac: main.o

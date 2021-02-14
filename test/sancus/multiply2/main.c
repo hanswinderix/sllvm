@@ -23,6 +23,7 @@ int main(void)
 
   sancus_enable(&multiply);
 
+#if 1
   ATTACK(multiply_enter, 0, 0);
   ATTACK(multiply_enter, 0, 1);
   ATTACK(multiply_enter, 1, 0);
@@ -31,6 +32,16 @@ int main(void)
   ATTACK(multiply_enter, 8, 6);
   ATTACK(multiply_enter, 127, 7);
   ATTACK(multiply_enter, 7, 127);
+#else
+  printf("%d\n", multiply_enter(0, 0));
+  printf("%d\n", multiply_enter(0, 1));
+  printf("%d\n", multiply_enter(1, 0));
+  printf("%d\n", multiply_enter(1, 1));
+  printf("%d\n", multiply_enter(2, 2));
+  printf("%d\n", multiply_enter(8, 6));
+  printf("%d\n", multiply_enter(127, 7));
+  printf("%d\n", multiply_enter(7, 127));
+#endif
 
   EXIT();
 

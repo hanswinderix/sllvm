@@ -1,0 +1,13 @@
+EXE = math32.ifc.vulnerable
+
+#math32.ll: CFLAGS += -Os
+	
+#math32.s: LLCFLAGS += -print-machineinstrs
+#math32.s: LLCFLAGS += -filter-print-funcs=math32_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: math32.o
+$(EXE).nomac: main.o
