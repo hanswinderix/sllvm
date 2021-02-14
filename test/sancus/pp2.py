@@ -146,7 +146,7 @@ with open(fname, 'w') as f:
 
 ''')
 
-  for benchmark in results.keys():
+  for benchmark in sorted(results.keys()):
     vsize, hsize, sizeoverhead, experiments = results[benchmark]
     f.write(benchmark)
     f.write(" & ")

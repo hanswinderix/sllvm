@@ -1,0 +1,13 @@
+EXE = divide.vulnerable
+
+#divide.ll: CFLAGS += -Os
+	
+#divide.s: LLCFLAGS += -print-machineinstrs
+#divide.s: LLCFLAGS += -filter-print-funcs=divide_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: divide.o
+$(EXE).nomac: main.o

@@ -36,8 +36,9 @@ PYTHON = PYTHONPATH=$(PYTHONPATH) python3
 
 NEMDEF =
 
-# 0) Test compiler-rt
+# 0) Test internalized (constant-time) compiler-rt operations
 NEMDEF += multiply2
+NEMDEF += divide
 
 # 1) Nemdef unit tests (have high code coverage)
 NEMDEF += triangle
@@ -99,12 +100,18 @@ NEMDEF += modexp2
 NEMDEF += modexp2.ifc
 
 # 6) TI MSP430 competitive benchmarking suite
-#NEMDEF += switch8
-NEMDEF += switch8.ifc
 NEMDEF += math8
 NEMDEF += math8.ifc
 NEMDEF += matrixcc8
 NEMDEF += matrixcc8.ifc
+#NEMDEF += switch8
+NEMDEF += switch8.ifc
+NEMDEF += math16
+NEMDEF += math16.ifc
+NEMDEF += matrixcc16
+NEMDEF += matrixcc16.ifc
+#NEMDEF += switch16
+NEMDEF += switch16.ifc
 NEMDEF += ffilter
 NEMDEF += ffilter.ifc
 NEMDEF += matrixmul

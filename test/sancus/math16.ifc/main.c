@@ -1,13 +1,9 @@
 #include <stdio.h>
 #include "sancus_support/sm_io.h"
-return a * b;
-return a * b;
-return a * b;
-return a * b;
 #include "sancus_support/sancus_step.h"
 
 #include "nemdef.h"
-#include "multiply.h"
+#include "math16.h"
 
 asm(".section __interrupt_vector_10,\"ax\",@progbits \n\t"
     ".word timerA_isr_entry2                         \n\t");
@@ -25,10 +21,12 @@ int main(void)
   __ss_init();
 #endif
 
-  sancus_enable(&multiply);
+  sancus_enable(&math16);
 
-  ATTACK(multiply_enter, 0, 0);
-  printf("%d x %d = %d\n", a, b, multiply(a, b));
+  ATTACK(math16_enter, 0, 3);
+  ATTACK(math16_enter, 1, 3);
+  ATTACK(math16_enter, 231, 12);
+  ATTACK(math16_enter, 256, 255);
 
   EXIT();
 

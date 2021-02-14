@@ -1,0 +1,15 @@
+EXE = math16.nemdef
+
+#math16.ll: CFLAGS += -Os
+
+#math16.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
+#math16.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
+#math16.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs
+#math16.nemdef.s: LLCFLAGSNEMDEF += -filter-print-funcs=math16_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: math16.nemdef.o
+$(EXE).nomac: main.o

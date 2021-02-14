@@ -35,14 +35,12 @@ __attribute__((section(".sllvm.text.ifthenloop.nemdef"), noinline, used))
 static void _nds_foo(int i) 
 { 
   asm("\tinc &v\n"); 
-  asm("\tret\n"); 
 }
 
 __attribute__((section(".sllvm.text.ifthenloop.nemdef"), noinline, used))
 static void _ndd_foo(int i) 
 { 
   asm("\tadd #0, &v\n"); 
-  asm("\tret\n"); 
 }
 #endif
 

@@ -3,7 +3,7 @@
 #include "sancus_support/sancus_step.h"
 
 #include "nemdef.h"
-#include "math8.h"
+#include "divide.h"
 
 asm(".section __interrupt_vector_10,\"ax\",@progbits \n\t"
     ".word timerA_isr_entry2                         \n\t");
@@ -21,12 +21,14 @@ int main(void)
   __ss_init();
 #endif
 
-  sancus_enable(&math8);
+  sancus_enable(&divide);
 
-  ATTACK(math8_enter, 0, 3);
-  ATTACK(math8_enter, 1, 3);
-  ATTACK(math8_enter, 12, 3);
-  ATTACK(math8_enter, 16, 15);
+  ATTACK(divide_enter, 0, 1);
+  ATTACK(divide_enter, 1, 1);
+  ATTACK(divide_enter, 2, 2);
+  ATTACK(divide_enter, 8, 6);
+  ATTACK(divide_enter, 16, 8);
+  ATTACK(divide_enter, 127, 7);
 
   EXIT();
 

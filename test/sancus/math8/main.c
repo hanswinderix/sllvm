@@ -26,6 +26,7 @@ int main(void)
   ATTACK(math8_enter, 0, 3);
   ATTACK(math8_enter, 1, 3);
   ATTACK(math8_enter, 12, 3);
+  ATTACK(math8_enter, 16, 15);
 
   EXIT();
 

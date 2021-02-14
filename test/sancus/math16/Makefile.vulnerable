@@ -1,0 +1,13 @@
+EXE = math16.vulnerable
+
+#math16.ll: CFLAGS += -Os
+	
+#math16.s: LLCFLAGS += -print-machineinstrs
+#math16.s: LLCFLAGS += -filter-print-funcs=math16_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: math16.o
+$(EXE).nomac: main.o

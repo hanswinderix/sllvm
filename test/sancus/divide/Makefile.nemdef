@@ -1,0 +1,15 @@
+EXE = divide.nemdef
+
+#divide.ll: CFLAGS += -Os
+
+#divide.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
+#divide.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
+#divide.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs
+#divide.nemdef.s: LLCFLAGSNEMDEF += -filter-print-funcs=divide_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: divide.nemdef.o
+$(EXE).nomac: main.o
