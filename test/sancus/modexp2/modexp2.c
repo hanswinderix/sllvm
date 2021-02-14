@@ -11,9 +11,10 @@ int modexp2_enter(int y, __attribute__((secret)) int k)
     if ((k % 2) == 1)
     {
       r = (r * y) % MOD;
-      y = (y * y) % MOD;
-      k >>= 1;
     }
+
+    y = (y * y) % MOD;
+    k >>= 1;
   }
 
   return r % MOD;
