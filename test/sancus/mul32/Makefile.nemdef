@@ -1,15 +1,15 @@
 EXE = mul32.nemdef
 
-#multiply.ll: CFLAGS += -Os
+#mul32.ll: CFLAGS += -Os
 
-#multiply.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
-#multiply.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
-#multiply.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs
-#multiply.nemdef.s: LLCFLAGSNEMDEF += -filter-print-funcs=multiply_
+#mul32.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
+#mul32.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
+#mul32.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs
+#mul32.nemdef.s: LLCFLAGSNEMDEF += -filter-print-funcs=mul32_
 
 include ../Makefile.include
 
 LDFLAGS += -lsancus-step
 
-$(EXE).nomac: multiply.nemdef.o
+$(EXE).nomac: mul32.nemdef.o
 $(EXE).nomac: main.o

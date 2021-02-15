@@ -1,13 +1,13 @@
 EXE = mul32.vulnerable
 
-#multiply.ll: CFLAGS += -Os
+#mul32.ll: CFLAGS += -Os
 	
-#multiply.s: LLCFLAGS += -print-machineinstrs
-#multiply.s: LLCFLAGS += -filter-print-funcs=multiply_
+#mul32.s: LLCFLAGS += -print-machineinstrs
+#mul32.s: LLCFLAGS += -filter-print-funcs=mul32_
 
 include ../Makefile.include
 
 LDFLAGS += -lsancus-step
 
-$(EXE).nomac: multiply.o
+$(EXE).nomac: mul32.o
 $(EXE).nomac: main.o

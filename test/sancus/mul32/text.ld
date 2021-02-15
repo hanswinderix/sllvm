@@ -1,8 +1,8 @@
-sllvm_pm_multiply_text_start = .;
-*(.sllvm.text.dispatch.multiply)  /* Make sure the dispatcher is put first */
-*(.sllvm.text.multiply)
-*(.sllvm.text.multiply.*)         /* Internalized runtime functions */
-sllvm_pm_multiply_text_end = .;
+sllvm_pm_mul32_text_start = .;
+*(.sllvm.text.dispatch.mul32)  /* Make sure the dispatcher is put first */
+*(.sllvm.text.mul32)
+*(.sllvm.text.mul32.*)         /* Internalized runtime functions */
+sllvm_pm_mul32_text_end = .;
 
 sllvm_pm_sancus_step_text_start = .;
 *(.sllvm.text.dispatch.sancus_step)  /* Make sure the dispatcher is put first */

@@ -3,7 +3,7 @@
 #include "sancus_support/sancus_step.h"
 
 #include "nemdef.h"
-#include "multiply.h"
+#include "mul32.h"
 
 asm(".section __interrupt_vector_10,\"ax\",@progbits \n\t"
     ".word timerA_isr_entry2                         \n\t");
@@ -21,23 +21,23 @@ int main(void)
   __ss_init();
 #endif
 
-  sancus_enable(&multiply);
+  sancus_enable(&mul32);
 
 #if 1
-  ATTACK(multiply_enter, 0, 0);
-  ATTACK(multiply_enter, 0, 1);
-  ATTACK(multiply_enter, 1, 0);
-  ATTACK(multiply_enter, 1, 1);
-  ATTACK(multiply_enter, 10, 123456);
+  ATTACK(mul32_enter, 0, 0);
+  ATTACK(mul32_enter, 0, 1);
+  ATTACK(mul32_enter, 1, 0);
+  ATTACK(mul32_enter, 1, 1);
+  ATTACK(mul32_enter, 10, 123456);
 #else
-  printf("%lu\n", multiply_enter(0, 0));
-  printf("%lu\n", multiply_enter(0, 1));
-  printf("%lu\n", multiply_enter(1, 0));
-  printf("%lu\n", multiply_enter(1, 1));
-  printf("%lu\n", multiply_enter(2, 2));
-  printf("%lu\n", multiply_enter(8, 6));
-  printf("%lu\n", multiply_enter(127, 7));
-  printf("%lu\n", multiply_enter(10, 123456));
+  printf("%lu\n", mul32_enter(0, 0));
+  printf("%lu\n", mul32_enter(0, 1));
+  printf("%lu\n", mul32_enter(1, 0));
+  printf("%lu\n", mul32_enter(1, 1));
+  printf("%lu\n", mul32_enter(2, 2));
+  printf("%lu\n", mul32_enter(8, 6));
+  printf("%lu\n", mul32_enter(127, 7));
+  printf("%lu\n", mul32_enter(10, 123456));
 #endif
 
   EXIT();
