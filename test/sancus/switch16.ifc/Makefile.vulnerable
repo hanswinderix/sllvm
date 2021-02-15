@@ -1,4 +1,4 @@
-EXE = switch16.vulnerable
+EXE = switch16.ifc.vulnerable
 
 #switch16.ll: CFLAGS += -Os
 	

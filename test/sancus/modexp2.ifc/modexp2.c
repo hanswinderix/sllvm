@@ -19,17 +19,10 @@ int modexp2_enter(int y, __attribute__((secret)) int k)
       int tr = ((r * y) % MOD) & tmask;
       int fr = r               & fmask;
       r = tr | fr;
-
-      /* y = (y * y) % MOD; */
-      int ty = ((y * y) % MOD) & tmask;
-      int fy = y               & fmask;
-      y = ty | fy;
-
-      /* k >>= 1; */
-      int tk = (k >> 1) & tmask;
-      int fk = k        & fmask;
-      k = tk | fk;
     }
+
+    y = (y * y) % MOD;
+    k >>= 1;
   }
 
   return r % MOD;

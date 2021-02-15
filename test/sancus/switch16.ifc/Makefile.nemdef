@@ -1,4 +1,4 @@
-EXE = switch16.nemdef
+EXE = switch16.ifc.nemdef
 
 #switch16.ll: CFLAGS += -Os
 
