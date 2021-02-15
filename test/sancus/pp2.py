@@ -158,15 +158,15 @@ with open(fname, 'w') as f:
       komma = ', '
       f.write("%d" % vcycles)
     f.write(" & ")
-    f.write("%.02f" % sizeoverhead)
+    f.write("%.02fx" % sizeoverhead)
     f.write(" & ")
     komma = ''
     for vcycles, hcycles, acycleoverhead, rcycleoverhead in experiments:
       f.write(komma)
       komma = ', '
-      f.write("%.02f" % acycleoverhead)
+      f.write("%.02fx" % acycleoverhead)
     f.write(" & ")
-    f.write("%d" % 0) # TODO
+    f.write("%dx" % 0) # TODO
     f.write(r"\\")
     f.write("\n")
   
