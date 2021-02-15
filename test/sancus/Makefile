@@ -40,6 +40,7 @@ NEMDEF =
 # 0) Test internalized (constant-time) compiler-rt operations
 NEMDEF += multiply2
 NEMDEF += divide
+NEMDEF += mul32
 
 # 1) Nemdef unit tests (have high code coverage)
 NEMDEF += triangle
