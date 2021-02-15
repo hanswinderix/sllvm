@@ -33,6 +33,7 @@ PYTHONPATH = ../../sancus/crypto
 RMDIR = rm -rf
 MKDIR = mkdir -p
 PYTHON = PYTHONPATH=$(PYTHONPATH) python3
+LATEXMK = latexmk
 
 NEMDEF =
 
@@ -104,13 +105,13 @@ NEMDEF += math8
 NEMDEF += math8.ifc
 NEMDEF += matrixcc8
 NEMDEF += matrixcc8.ifc
-#NEMDEF += switch8
+NEMDEF += switch8
 NEMDEF += switch8.ifc
 NEMDEF += math16
 NEMDEF += math16.ifc
 NEMDEF += matrixcc16
 NEMDEF += matrixcc16.ifc
-#NEMDEF += switch16
+NEMDEF += switch16
 NEMDEF += switch16.ifc
 NEMDEF += math32
 NEMDEF += math32.ifc
@@ -137,6 +138,7 @@ nemdef-pp   : $(NEMDEF_PP)
 	$(RMDIR) $(RESULT_DIR)
 	$(MKDIR) $(RESULT_DIR)
 	$(PYTHON) pp2.py > $(RESULT_DIR)/performance.csv
+	$(LATEXMK) -pdf -outdir=$(RESULT_DIR) $(RESULT_DIR)/performance.tex
 
 nemdef-clean: $(NEMDEF_CLEAN)
 
