@@ -1,0 +1,18 @@
+EXE = aesdust.nemdef
+
+aesdust.ll: CFLAGS += -Os
+aesdust.ll: CFLAGS += -DDYNAMIC
+aesdust.ll: CFLAGS += -DCTR
+aesdust.ll: CFLAGS += -DOFB
+
+aesdust.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
+#aesdust.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
+#aesdust.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs
+#aesdust.nemdef.s: LLCFLAGSNEMDEF += -filter-print-funcs=aesdust_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: aesdust.nemdef.o
+$(EXE).nomac: main.o

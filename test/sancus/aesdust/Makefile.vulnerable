@@ -1,0 +1,16 @@
+EXE = aesdust.vulnerable
+
+aesdust.ll: CFLAGS += -Os
+aesdust.ll: CFLAGS += -DDYNAMIC
+aesdust.ll: CFLAGS += -DCTR
+aesdust.ll: CFLAGS += -DOFB
+	
+#aesdust.s: LLCFLAGS += -print-machineinstrs
+#aesdust.s: LLCFLAGS += -filter-print-funcs=aesdust_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: aesdust.o
+$(EXE).nomac: main.o
