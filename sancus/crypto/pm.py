@@ -50,6 +50,9 @@ class PM:
   def get_data_end(self):
     return self.get_layout()[3]
 
+  def get_data_size(self):
+    return self.get_data_end() - self.get_data_start()
+
   def get_text(self):
     return self.elf.extract_text(self.get_text_start(), self.get_text_size())
 
