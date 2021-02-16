@@ -1,0 +1,13 @@
+EXE = twofish.vulnerable
+
+#twofish.ll: CFLAGS += -Os
+	
+#twofish.s: LLCFLAGS += -print-machineinstrs
+#twofish.s: LLCFLAGS += -filter-print-funcs=twofish_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: twofish.o
+$(EXE).nomac: main.o

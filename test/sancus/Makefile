@@ -64,25 +64,34 @@ NEMDEF += ifthenlooplooptail
 NEMDEF += mulhi3
 
 # 3) Primitives from cryptographic libraries
+
 # [Agat, 2000]
 #NEMDEF +=
+
 # [Molnar, 2005] (section 5.1)
 #NEMDEF +=
+
 # [Coppens, 2009] (section 4)
+#NEMDEF +=
+
 # "The following is an example in pseudocode based on Applied Cryptography by
 #   Bruce Schneier." [Wikipedia]
 NEMDEF += modexp
-# [Mantel, 2015] (sections 2 and 4)
-#NEMDEF +=
+
 # [Almeida, 2016]
 #NEMDEF +=
+
 # [Dewald, 2017] (section 6.2) => source code is in paper
 #NEMDEF +=
+
 # [Wu, 2018] (section 7)
 #NEMDEF += threeway   # Useless since LLVM generates CT code for mu() :-/
+#NEMDEF += twofish
+
 # [Simon, 2018] (section 4.1.2)
 # OpenSSL, mbedTLS
 #NEMDEF +=
+
 # [Cauligi, 2019] (section 5.1)
 #NEMDEF +=
 
