@@ -1,4 +1,4 @@
-EXE = mulhi3.nemdef
+EXE = mulhi3.ifc.nemdef
 
 #mulhi3.ll: CFLAGS += -Os
 

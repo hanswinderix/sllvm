@@ -1,4 +1,4 @@
-EXE = mulhi3.vulnerable
+EXE = mulhi3.ifc.vulnerable
 
 #mulhi3.ll: CFLAGS += -Os
 

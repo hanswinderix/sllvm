@@ -62,6 +62,7 @@ NEMDEF += ifthenlooplooptail
 #                        (MSPGCC has a similar timing channel [Cuyt])
 #   o compiler-rt (LLVM): has no support for MSP430
 NEMDEF += mulhi3
+NEMDEF += mulhi3.ifc
 
 # 3) Primitives from cryptographic libraries
 
