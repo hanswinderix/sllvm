@@ -1,4 +1,4 @@
-EXE = keypad.nemdef
+EXE = keypad.ifc.nemdef
 
 #keypad.ll: CFLAGS += -Os
 keypad_mmio.sancus.ll: SANCUS_TRANSFORM_FLAGS += --fix-data-section

@@ -103,7 +103,8 @@ NEMDEF += modexp
 # 4) Sancus applications (inspired on applications from Nemesis paper)
 NEMDEF += bsl
 NEMDEF += bsl.ifc
-NEMDEF += keypad   # TODO: Support "secret return types" (or use dummy param)
+NEMDEF += keypad     # TODO: Support "secret return types" (or use dummy param)
+NEMDEF += keypad.ifc # TODO: Support "secret return types" (or use dummy param)
 
 # 5) Benchmark programs from transforming Out Timing Leaks, More or Less (2015)
 #    (Heiko Mantel and Artem Starostin)
