@@ -86,8 +86,8 @@ NEMDEF += modexp
 
 # [Wu, 2018] (section 7)
 #NEMDEF += threeway   # Useless since LLVM generates CT code for mu() :-/
-#NEMDEF += twofish  # Simulation does not start on vulnerable binary
-                    # Compiler crashes when hardening
+#NEMDEF += twofish  # - Simulation does not start on vulnerable binary
+                   # - Implementation crashes when hardening
 
 # [Simon, 2018] (section 4.1.2)
 # OpenSSL, mbedTLS
@@ -97,11 +97,12 @@ NEMDEF += modexp
 #NEMDEF +=
 
 # AES-dust (https://github.com/odzhan/aes_dust)
-#NEMDEF += aesdust
+#NEMDEF += aesdust  # Loop analysis fails (because of -O0)
 
 
 # 4) Sancus applications (inspired on applications from Nemesis paper)
 NEMDEF += bsl
+NEMDEF += bsl.ifc
 NEMDEF += keypad   # TODO: Support "secret return types" (or use dummy param)
 
 # 5) Benchmark programs from transforming Out Timing Leaks, More or Less (2015)

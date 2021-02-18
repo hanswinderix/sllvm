@@ -50,13 +50,14 @@ CFLAGS += $(INCFLAGS)
 CFLAGS += -D__$(shell echo $(MCU) | tr a-z A-Z)__
 CFLAGS += -DCONFIG_SECURITY=$(SANCUS_SECURITY)
 CFLAGS += -Werror
-CFLAGS += -O0
+#CFLAGS += -O0
 CFLAGS += -target msp430-elf
 CFLAGS += -emit-llvm
 
 SLLVM_TRANSFORM_FLAGS =  
 SLLVM_TRANSFORM_FLAGS += --load $(SLLVM_INSTALL_DIR)/lib/SLLVM.so
 SLLVM_TRANSFORM_FLAGS += --sllvm-transform
+#SLLVM_TRANSFORM_FLAGS += --time-passes
 
 SANCUS_TRANSFORM_FLAGS = 
 SANCUS_TRANSFORM_FLAGS += --load $(SLLVM_INSTALL_DIR)/lib/SLLVM.so
@@ -64,12 +65,15 @@ SANCUS_TRANSFORM_FLAGS += --sancus-transform
 SANCUS_TRANSFORM_FLAGS += --key-size $(SANCUS_SECURITY)
 SANCUS_TRANSFORM_FLAGS += --stack-size $(STACK_SIZE)
 SANCUS_TRANSFORM_FLAGS += --vendor-id 0x$(VENDOR_ID)
+#SANCUS_TRANSFORM_FLAGS += --time-passes
+#SANCUS_TRANSFORM_FLAGS += --loop-simplify
+#SANCUS_TRANSFORM_FLAGS += --loop-rotate
 
 LLCFLAGS =
 LLCFLAGS += -O3
 
 LLCFLAGSNEMDEF =
-LLCFLAGSNEMDEF += -O3
+LLCFLAGSNEMDEF += $(LLCFLAGS)
 # TODO: Temporarily disable -verify-machineinstrs option until the code
 #       generation bug of the keypad benchmark has been fixed
 #LLCFLAGSNEMDEF += -verify-machineinstrs

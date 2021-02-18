@@ -1,4 +1,4 @@
-EXE = bsl.vulnerable
+EXE = bsl.ifc.vulnerable
 
 #bsl.ll: CFLAGS += -Os
 

@@ -42,24 +42,42 @@ char BSL430_unlock_BSL(__attribute__((secret)) char * data)
     * as explained in
     * https://github.com/jovanbulck/nemesis/blob/master/sancus/bsl/sm-bsl.c */
 
-    if (*ivt != data[i])
+    /* if (*ivt != data[i]) */
     {
-      retValue |= 0x40;
+      /* Compute true and false masks */
+      int condition = (*ivt != data[i]);
+      int tmask = -condition;
+      int fmask = ~tmask;
+
+      /* retValue |= 0x40; */
+      retValue = ((retValue | 0x40) & tmask) | (retValue & fmask);
     }
 #endif
   }
 
-  if (retValue == 0)
-  {
-    LockedStatus = UNLOCKED;
+  /* if (retValue == 0) */
 
-    result = SUCCESSFUL_OPERATION;
+  /* Compute true and false masks */
+  int condition = (retValue == 0);
+  int tmask = -condition;
+  int fmask = ~tmask;
+
+  {
+    /* LockedStatus = UNLOCKED; */
+    LockedStatus |= (UNLOCKED & tmask) | (LockedStatus & fmask);
+
+    /* result = SUCCESSFUL_OPERATION; */
+    result = (SUCCESSFUL_OPERATION & tmask) | (result & fmask);
   }
-  else
-  {
-    LockedStatus = LOCKED;
 
-    result = BSL_PASSWORD_ERROR;
+  /* else */
+
+  {
+    /* LockedStatus = LOCKED; */
+    LockedStatus |= (LOCKED & tmask) | (LockedStatus & fmask);
+
+    /* result = BSL_PASSWORD_ERROR; */
+    result = (BSL_PASSWORD_ERROR & tmask) | (result & fmask);
   }
 
   return result;

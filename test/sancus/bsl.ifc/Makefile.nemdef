@@ -1,4 +1,4 @@
-EXE = bsl.nemdef
+EXE = bsl.ifc.nemdef
 
 #bsl.ll: CFLAGS += -Os
 #bsl.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
