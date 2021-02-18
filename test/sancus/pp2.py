@@ -4,6 +4,10 @@ import re
 
 import loader
 
+result_dir = '.'
+if len(sys.argv) > 1:
+  result_dir = sys.argv[1]
+
 def get_cycles(fname):
   with open(fname, 'r') as f:
     m = re.search('^total cycles: (\d*)$', f.read(), re.MULTILINE)
@@ -89,27 +93,35 @@ for root, _, files in os.walk("."):
         rcycleoverhead = float(hcycles)/max(run_times[benchmark])
         rcycleoverheads.append(rcycleoverhead)
 
-        # Write CSV to stdout
-        sys.stdout.write("%s," % benchmark)
-        sys.stdout.write("%d," % vsize)
-        sys.stdout.write("%d," % hsize)
-        sys.stdout.write("%.02f," % round(sizeoverhead, 2))
-        sys.stdout.write("%s," % experiment)
-        sys.stdout.write("%d," % vcycles)
-        sys.stdout.write("%d," % hcycles)
-        sys.stdout.write("%.02f," % round(acycleoverhead, 2))
-        sys.stdout.write("%.02f," % round(rcycleoverhead, 2))
-        sys.stdout.write("\n")
-
         # Record the results for outputting results in other formats,
         # such as LaTeX
         if benchmark not in results:
           results[benchmark] = (vsize, hsize, sizeoverhead, [])
-        t = (vcycles, hcycles, acycleoverhead, rcycleoverhead)
+        t = (experiment, vcycles, hcycles, acycleoverhead, rcycleoverhead)
         results[benchmark][3].append(t)
 
+# Generate CSV
+fname = '%s/performance.csv' % result_dir
+with open(fname, 'w') as f:
+
+  for benchmark in sorted(results.keys()):
+
+    vsize, hsize, sizeoverhead, experiments = results[benchmark]
+    for experiment, vcycles, hcycles, acycleoverhead, rcycleoverhead in experiments:
+      f.write("%s," % benchmark)
+      f.write("%d," % vsize)
+      f.write("%d," % hsize)
+      f.write("%.02f," % round(sizeoverhead, 2))
+      f.write("%s," % experiment)
+      f.write("%d," % vcycles)
+      f.write("%d," % hcycles)
+      f.write("%.02f," % round(acycleoverhead, 2))
+      #f.write("%.02f," % round(rcycleoverhead, 2))
+      f.write("\n")
+
+
 # Generate LaTeX performance table for EuroS&P paper
-fname = 'results/performance.tex'
+fname = '%s/performance.tex' % result_dir
 with open(fname, 'w') as f:
 
   def writeln(s):
@@ -153,7 +165,7 @@ with open(fname, 'w') as f:
     f.write("%d" % vsize)
     f.write(" & ")
     komma = ''
-    for vcycles, hcycles, acycleoverhead, rcycleoverhead in experiments:
+    for name, vcycles, hcycles, acycleoverhead, rcycleoverhead in experiments:
       f.write(komma)
       komma = ', '
       f.write("%d" % vcycles)
@@ -161,7 +173,7 @@ with open(fname, 'w') as f:
     f.write("%.02fx" % sizeoverhead)
     f.write(" & ")
     komma = ''
-    for vcycles, hcycles, acycleoverhead, rcycleoverhead in experiments:
+    for name, vcycles, hcycles, acycleoverhead, rcycleoverhead in experiments:
       f.write(komma)
       komma = ', '
       f.write("%.02fx" % acycleoverhead)
