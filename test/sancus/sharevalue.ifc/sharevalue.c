@@ -25,9 +25,7 @@ int sharevalue_enter(__attribute__((secret)) int ids[], int qty[], int len)
       int fmask = ~tmask;
 
       /* shareVal = shareVal + val; */
-      int tshareVal = (shareVal + val) & tmask; /* id == SPECIAL_SHARE */
-      int fshareVal = shareVal         & fmask; /* id != SPECIAL_SHARE */
-      shareVal = tshareVal | fshareVal;
+      shareVal = ((shareVal + val) & tmask) | (shareVal & fmask);
     }
 
     i++;

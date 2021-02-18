@@ -34,25 +34,15 @@ kruskal_enter(__attribute__((secret)) int g[], int mst[], int par[], int len)
       int fmask = ~tmask;
 
       /* mst[++idx] = src; */
-      int tidx = (idx + 1) & tmask;
-      int fidx = idx       & fmask;
-      idx = tidx | fidx;
-      int tv = src      & tmask;
-      int fv = mst[idx] & fmask;
-      mst[idx] = tv | fv;
+      idx = ((idx + 1) & tmask) | (idx & fmask);
+      mst[idx] = (src & tmask) | (mst[idx] & fmask);
 
       /* mst[++idx] = tgt; */
-      tidx = (idx + 1) & tmask;
-      fidx = idx       & fmask;
-      idx = tidx | fidx;
-      tv = tgt      & tmask;
-      fv = mst[idx] & fmask;
-      mst[idx] = tv | fv;
+      idx = ((idx + 1) & tmask) | (idx & fmask);
+      mst[idx] = (tgt & tmask) | (mst[idx] & fmask);
 
       /* par[src] = tgt; */
-      tv = tgt      & tmask;
-      fv = par[src] & fmask;
-      par[src] = tv | fv;
+      par[src] = (tgt & tmask) | (par[src] & fmask);
     }
   }
 
