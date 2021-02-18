@@ -1,4 +1,4 @@
-EXE = modexp.vulnerable
+EXE = modexp.ifc.vulnerable
 
 #modexp.ll: CFLAGS += -Os
 

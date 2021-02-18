@@ -1,4 +1,4 @@
-EXE = modexp.nemdef
+EXE = modexp.ifc.nemdef
 
 #modexp.ll: CFLAGS += -Os
 

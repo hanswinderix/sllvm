@@ -78,6 +78,7 @@ NEMDEF += mulhi3.ifc
 # "The following is an example in pseudocode based on Applied Cryptography by
 #   Bruce Schneier." [Wikipedia]
 NEMDEF += modexp
+NEMDEF += modexp.ifc
 
 # [Almeida, 2016]
 #NEMDEF +=
