@@ -556,6 +556,10 @@ diff:
 	$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) difftool
 	$(GIT) -C $(SRCDIR_VULCAN) difftool
 
+.PHONY: diff-sllvm
+diff-sllvm:
+	$(GIT) -C $(SRCDIR_SLLVM) difftool
+
 .PHONY: sync
 sync: sync-llvm
 sync: sync-legacy-sancus
