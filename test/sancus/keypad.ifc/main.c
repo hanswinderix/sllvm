@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "sancus_support/sm_io.h"
 #include "sancus_support/sancus_step.h"
 
@@ -21,7 +22,6 @@ int main(void)
 #endif
 
   sancus_enable(&keypad);
-  sancus_enable(&keypad_mmio);
 
   /* Ignore initialization */
   ATTACK(keypad_init);
@@ -29,9 +29,13 @@ int main(void)
   /* Ignore first call to keypad_poll, which sets up secure linking */
   ATTACK(keypad_poll, 42);
 
-  /* With the current mmio mockup, calling keypad_poll five times in a row
+  /* With the current mmio mockup, calling keypad_poll ten times in a row
    * covers the full range of execution times.
    */
+  ATTACK(keypad_poll, 42);
+  ATTACK(keypad_poll, 42);
+  ATTACK(keypad_poll, 42);
+  ATTACK(keypad_poll, 42);
   ATTACK(keypad_poll, 42);
   ATTACK(keypad_poll, 42);
   ATTACK(keypad_poll, 42);

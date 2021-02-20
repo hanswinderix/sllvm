@@ -2,47 +2,64 @@
 #include <msp430.h>
 #include "sancus_support/sm_io.h"
 #include "keypad.h"
-#include "keypad_mmio.h"
 
-#define EXPECTED_ID   1
+typedef uint16_t key_state_t;
 
-static key_state_t key_state;
+static int         count = 0;
+static key_state_t key_state = 0;
 static char        pin[PIN_LEN];
 static int         pin_idx;
 static int         keymap[NB_KEYS];
 
+static key_state_t read_key_state()
+{
+  key_state_t result;
+
+  switch (count++)
+  {
+    case 0: result = 0x00; break;
+    case 1: result = 0x01; break;
+    case 2: result = 0x01; break;
+    case 3: result = 0x00; break;
+    case 4: result = 0x02; break;
+    case 5: result = 0x00; break;
+    case 6: result = 0x04; break;
+    case 7: result = 0x00; break;
+    case 8: result = 0x08; break;
+    case 9: result = 0x00; break;
+    case 10: result = 0x10; break;
+
+    default: result = 0x00; break;
+  }
+
+  return result;
+}
+
 int keypad_init(void)
 {
-  int result = 0;
+  int result = 1;
 
-  /* keypad_mmio SM has the ID of this SM hardcoded */
-  if (sancus_get_self_id() == EXPECTED_ID)
-  {
-    /* call and verify keypad_mmio SM */
-    keypad_mmio_init();
-    pin_idx = 0;
-    key_state = 0x0;
-    /* avoid an unprotected global constant */
-    /* TODO consider an SM_CONST compiler attribute (?) */
-    keymap[0]  = '1';
-    keymap[1]  = '4';
-    keymap[2]  = '7';
-    keymap[3]  = '0';
-    keymap[4]  = '2';
-    keymap[5]  = '5';
-    keymap[6]  = '8';
-    keymap[7]  = 'F';
-    keymap[8]  = '3';
-    keymap[9]  = '6';
-    keymap[10] = '9';
-    keymap[11] = 'E';
-    keymap[12] = 'A';
-    keymap[13] = 'B';
-    keymap[14] = 'C';
-    keymap[15] = 'D';
-
-    result = 1;
-  }
+  count = 0;
+  pin_idx = 0;
+  key_state = 0x0;
+  /* avoid an unprotected global constant */
+  /* TODO consider an SM_CONST compiler attribute (?) */
+  keymap[0]  = '1';
+  keymap[1]  = '4';
+  keymap[2]  = '7';
+  keymap[3]  = '0';
+  keymap[4]  = '2';
+  keymap[5]  = '5';
+  keymap[6]  = '8';
+  keymap[7]  = 'F';
+  keymap[8]  = '3';
+  keymap[9]  = '6';
+  keymap[10] = '9';
+  keymap[11] = 'E';
+  keymap[12] = 'A';
+  keymap[13] = 'B';
+  keymap[14] = 'C';
+  keymap[15] = 'D';
 
   return result;
 }
@@ -60,8 +77,7 @@ int keypad_poll(__attribute__((secret)) int dummy)
 {
   int key_mask = 0x1;
 
-  /* Fetch key state from MMIO driver SM. */
-  key_state_t new_key_state = keypad_mmio_read_key_state();
+  key_state_t new_key_state = read_key_state();
 
   /* Store down keys in private PIN array. */
   for (int key = 0; key < NB_KEYS; key++)
@@ -74,7 +90,7 @@ int keypad_poll(__attribute__((secret)) int dummy)
          && !was_pressed && (pin_idx < PIN_LEN))
 #endif
     {
-      int condition = is_pressed && !was_pressed && (pin_idx < PIN_LEN);
+      int condition = (is_pressed & (!was_pressed)) & (pin_idx < PIN_LEN);
       int tmask = -condition;
       int fmask = ~tmask;
 
@@ -91,3 +107,4 @@ int keypad_poll(__attribute__((secret)) int dummy)
 
   return (PIN_LEN - pin_idx);
 }
+

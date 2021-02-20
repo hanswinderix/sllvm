@@ -1,16 +1,13 @@
 EXE = keypad.ifc.vulnerable
 
 #keypad.ll: CFLAGS += -Os
-keypad_mmio.sancus.ll: SANCUS_TRANSFORM_FLAGS += --fix-data-section
-
-#keypad.s: LLCFLAGS += -debug-only=msp430-lower
+	
 #keypad.s: LLCFLAGS += -print-machineinstrs
-#keypad.s: LLCFLAGS += -filter-print-funcs=keypad_poll
+#keypad.s: LLCFLAGS += -filter-print-funcs=keypad_
 
 include ../Makefile.include
 
 LDFLAGS += -lsancus-step
 
 $(EXE).nomac: keypad.o
-$(EXE).nomac: keypad_mmio.o
 $(EXE).nomac: main.o

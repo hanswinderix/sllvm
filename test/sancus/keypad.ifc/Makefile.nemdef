@@ -1,17 +1,15 @@
 EXE = keypad.ifc.nemdef
 
 #keypad.ll: CFLAGS += -Os
-keypad_mmio.sancus.ll: SANCUS_TRANSFORM_FLAGS += --fix-data-section
 
-#keypad.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
 #keypad.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
+#keypad.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
 #keypad.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs
-#keypad.nemdef.s: LLCFLAGSNEMDEF += -filter-print-funcs=keypad_poll
+#keypad.nemdef.s: LLCFLAGSNEMDEF += -filter-print-funcs=keypad_
 
 include ../Makefile.include
 
 LDFLAGS += -lsancus-step
 
 $(EXE).nomac: keypad.nemdef.o
-$(EXE).nomac: keypad_mmio.o
 $(EXE).nomac: main.o
