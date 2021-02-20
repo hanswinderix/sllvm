@@ -90,7 +90,8 @@ int keypad_poll(__attribute__((secret)) int dummy)
          && !was_pressed && (pin_idx < PIN_LEN))
 #endif
     {
-      int condition = (is_pressed & (!was_pressed)) & (pin_idx < PIN_LEN);
+      int condition = 
+        (is_pressed & (!was_pressed)) & (PIN_LEN - pin_idx != 0);
       int tmask = -condition;
       int fmask = ~tmask;
 
