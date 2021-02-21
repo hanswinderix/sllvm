@@ -23,10 +23,10 @@ int main(void)
 
   sancus_enable(&modexp2);
 
-  ATTACK(modexp_enter, 10, 1  );
-  ATTACK(modexp_enter, 10, 15 );
-  ATTACK(modexp_enter, 10, 63 );
-  ATTACK(modexp_enter, 10, 255);
+  ATTACK(modexp2_enter, 10, 1  );
+  ATTACK(modexp2_enter, 10, 15 );
+  ATTACK(modexp2_enter, 10, 63 );
+  ATTACK(modexp2_enter, 10, 255);
 
   EXIT();
 
