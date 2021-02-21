@@ -37,7 +37,7 @@ int mulmod8_enter(__attribute__((secret)) int a, int b)
   /* else */
   {
     /* Compute true and false masks */
-    int condition = (a != 0) && (b != 0);
+    int condition = (a != 0) & (b != 0);
     int tmask = -condition;
     int fmask = ~tmask;
 
@@ -59,7 +59,11 @@ int mulmod8_enter(__attribute__((secret)) int a, int b)
     /* a = b - a + (b < a ? 1 : 0); */
     int t;
     {
-      int condition = (b < a);
+#if 0
+      int condition = (b < a); /* Clang generates a branch instruction */
+#else
+      int condition = ((b - a) & 0x8000);
+#endif
       int tmask = -condition;
       int fmask = ~tmask;
       int tt = 1 & tmask;
