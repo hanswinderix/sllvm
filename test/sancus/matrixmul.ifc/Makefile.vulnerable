@@ -1,7 +1,5 @@
 EXE = matrixmul.ifc.vulnerable
 
-#matrixmul.ll: CFLAGS += -Os
-	
 #matrixmul.s: LLCFLAGS += -print-machineinstrs
 #matrixmul.s: LLCFLAGS += -filter-print-funcs=matrixmul_
 

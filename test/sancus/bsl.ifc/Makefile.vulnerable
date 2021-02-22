@@ -1,7 +1,5 @@
 EXE = bsl.ifc.vulnerable
 
-#bsl.ll: CFLAGS += -Os
-
 include ../Makefile.include
 
 LDFLAGS += -lsancus-step

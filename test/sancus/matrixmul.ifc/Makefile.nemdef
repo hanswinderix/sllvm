@@ -1,7 +1,5 @@
 EXE = matrixmul.ifc.nemdef
 
-#matrixmul.ll: CFLAGS += -Os
-
 #matrixmul.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
 #matrixmul.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
 #matrixmul.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs

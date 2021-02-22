@@ -1,7 +1,5 @@
 EXE = modexp.ifc.vulnerable
 
-#modexp.ll: CFLAGS += -Os
-
 include ../Makefile.include
 
 LDFLAGS += -lsancus-step

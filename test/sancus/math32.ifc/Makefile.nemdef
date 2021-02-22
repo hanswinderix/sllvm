@@ -1,7 +1,5 @@
 EXE = math32.ifc.nemdef
 
-#math32.ll: CFLAGS += -Os
-
 #math32.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
 #math32.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
 #math32.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs

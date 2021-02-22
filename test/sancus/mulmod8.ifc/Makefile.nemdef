@@ -1,7 +1,5 @@
 EXE = mulmod8.ifc.nemdef
 
-#mulmod8.ll: CFLAGS += -Os
-
 #mulmod8.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
 #mulmod8.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
 #mulmod8.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs

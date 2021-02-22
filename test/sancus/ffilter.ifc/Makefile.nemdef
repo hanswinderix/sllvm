@@ -1,7 +1,5 @@
 EXE = ffilter.ifc.nemdef
 
-#ffilter.ll: CFLAGS += -Os
-
 #ffilter.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
 #ffilter.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
 #ffilter.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs

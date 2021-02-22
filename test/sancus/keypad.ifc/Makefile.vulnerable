@@ -1,7 +1,5 @@
 EXE = keypad.ifc.vulnerable
 
-#keypad.ll: CFLAGS += -Os
-	
 #keypad.s: LLCFLAGS += -print-machineinstrs
 #keypad.s: LLCFLAGS += -filter-print-funcs=keypad_
 

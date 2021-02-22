@@ -1,7 +1,5 @@
 EXE = mathf.ifc.vulnerable
 
-#mathf.ll: CFLAGS += -Os
-	
 #mathf.s: LLCFLAGS += -print-machineinstrs
 #mathf.s: LLCFLAGS += -filter-print-funcs=mathf_
 

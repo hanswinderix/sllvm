@@ -1,7 +1,5 @@
 EXE = kruskal.vulnerable
 
-#kruskal.ll: CFLAGS += -Os
-
 include ../Makefile.include
 
 LDFLAGS += -lsancus-step

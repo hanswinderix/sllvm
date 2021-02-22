@@ -1,7 +1,5 @@
 EXE = modexp2.ifc.nemdef
 
-#modexp2.ll: CFLAGS += -Os
-
 #modexp2.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
 #modexp2.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
 #modexp2.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs

@@ -1,7 +1,5 @@
 EXE = math32.ifc.vulnerable
 
-#math32.ll: CFLAGS += -Os
-	
 #math32.s: LLCFLAGS += -print-machineinstrs
 #math32.s: LLCFLAGS += -filter-print-funcs=math32_
 

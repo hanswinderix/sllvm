@@ -1,7 +1,5 @@
 EXE = matrixcc16.ifc.vulnerable
 
-#matrixcc16.ll: CFLAGS += -Os
-	
 #matrixcc16.s: LLCFLAGS += -print-machineinstrs
 #matrixcc16.s: LLCFLAGS += -filter-print-funcs=matrixcc16_
 

@@ -1,7 +1,5 @@
 EXE = mulhi3.ifc.vulnerable
 
-#mulhi3.ll: CFLAGS += -Os
-
 include ../Makefile.include
 
 LDFLAGS += -lsancus-step

@@ -1,7 +1,5 @@
 EXE = sharevalue.ifc.vulnerable
 
-#sharevalue.ll: CFLAGS += -Os
-
 include ../Makefile.include
 
 LDFLAGS += -lsancus-step

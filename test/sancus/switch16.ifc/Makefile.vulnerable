@@ -1,7 +1,5 @@
 EXE = switch16.ifc.vulnerable
 
-#switch16.ll: CFLAGS += -Os
-	
 #switch16.s: LLCFLAGS += -print-machineinstrs
 #switch16.s: LLCFLAGS += -filter-print-funcs=switch16_
 

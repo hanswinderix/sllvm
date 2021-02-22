@@ -1,7 +1,5 @@
 EXE = switch8.vulnerable
 
-#switch8.ll: CFLAGS += -Os
-	
 #switch8.s: LLCFLAGS += -print-machineinstrs
 #switch8.s: LLCFLAGS += -filter-print-funcs=switch8_
 

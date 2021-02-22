@@ -1,7 +1,5 @@
 EXE = ffilter.ifc.vulnerable
 
-#ffilter.ll: CFLAGS += -Os
-	
 #ffilter.s: LLCFLAGS += -print-machineinstrs
 #ffilter.s: LLCFLAGS += -filter-print-funcs=ffilter_
 

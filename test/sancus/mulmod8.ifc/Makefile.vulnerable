@@ -1,7 +1,5 @@
 EXE = mulmod8.ifc.vulnerable
 
-#mulmod8.ll: CFLAGS += -Os
-
 #mulmod8.s: LLCFLAGS += -print-machineinstrs
 #mulmod8.s: LLCFLAGS += -filter-print-funcs=mulmod8_
 

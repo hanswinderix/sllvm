@@ -1,7 +1,5 @@
 EXE = math16.ifc.vulnerable
 
-#math16.ll: CFLAGS += -Os
-	
 #math16.s: LLCFLAGS += -print-machineinstrs
 #math16.s: LLCFLAGS += -filter-print-funcs=math16_
 
