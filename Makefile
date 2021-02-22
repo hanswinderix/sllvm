@@ -560,6 +560,16 @@ diff:
 diff-sllvm:
 	$(GIT) -C $(SRCDIR_SLLVM) difftool
 
+.PHONY: checkout-sllvm-0.9a
+checkout-sllvm-0.9a:
+	$(GIT) checkout sllvm-0.9a
+	$(GIT) -C $(SRCDIR_SLLVM) checkout sllvm-0.9a
+
+.PHONY: checkout-master
+checkout-master:
+	$(GIT) checkout master
+	$(GIT) -C $(SRCDIR_SLLVM) checkout master
+
 .PHONY: sync
 sync: sync-llvm
 sync: sync-legacy-sancus
