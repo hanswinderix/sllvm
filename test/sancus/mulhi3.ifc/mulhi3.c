@@ -41,25 +41,29 @@ int mulhi3_enter (__attribute__((secret)) int x, __attribute__((secret)) int y)
     /* if (y) */
     {
       int condition = y;
+#if 0 /* Avoid excessive amount of memory operations */
       int tmask = -condition;
       int fmask = ~tmask;
+#endif
 #endif
 
       /* if (y & 1) */
       {
-        int condition2 = ((y & 1) & tmask);
+        int condition2 = ((y & 1) & -condition);
+#if 0 /* Avoid excessive amount of memory operations */
         int tmask = -condition2;
         int fmask = ~tmask;
+#endif
 
         /* rv += x; */
-        rv = ((rv + x) & tmask) | (rv | fmask);
+        rv = ((rv + x) & -condition2) | (rv | ~(-condition2));
       }
 
       /* x <<= 1; */
-      x = ((x << 1) & tmask) | (x & fmask);
+      x = ((x << 1) & -condition) | (x & ~(-condition));
 
       /* y >>= 1; */
-      y = ((y >> 1) & tmask) | (y & fmask);
+      y = ((y >> 1) & -condition) | (y & ~(-condition));
     }
   }
 

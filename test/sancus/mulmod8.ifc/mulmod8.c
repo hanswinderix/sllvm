@@ -14,25 +14,25 @@ int mulmod8_enter(__attribute__((secret)) int a, int b)
   {
     /* Compute true and false masks */
     int condition = (a == 0);
+#if 0 /* Avoid excessive amount of memory operations */
     int tmask = -condition;
     int fmask = ~tmask;
+#endif
 
     /* a = mulModulus - b; */
-    int ta = (mulModulus - b) & tmask;
-    int fa = a                & fmask;
-    a = ta | fa;
+    a = ((mulModulus - b) & -condition) | (a & ~(-condition));
   }
   /* else if (b == 0) */
   {
     /* Compute true and false masks */
     int condition = (b == 0);
+#if 0 /* Avoid excessive amount of memory operations */
     int tmask = -condition;
     int fmask = ~tmask;
+#endif
 
     /*  a = mulModulus - a; */
-    int ta = (mulModulus - a) & tmask;
-    int fa = a                & fmask;
-    a = ta | fa;
+    a = ((mulModulus - a) & -condition) | (a & ~(-condition));
   }
   /* else */
   {
@@ -42,38 +42,26 @@ int mulmod8_enter(__attribute__((secret)) int a, int b)
     int fmask = ~tmask;
 
     /* p = a * b; */
-    int tp = (a * b) & tmask;
-    int fp = p       & fmask;
-    int p = tp | fp;
+    p = ((a * b) & tmask) | (p & fmask);
 
     /* b = p & mulMask; */
-    int tb = (p & mulMask) & tmask;
-    int fb = b             & fmask;
-    int b = tb | fb;
+    b = ((p & mulMask) & tmask) | (b & fmask);
 
     /* a = p >> 8; */
-    int ta = (p >> 8) & tmask;
-    int fa = a        & fmask;
-    a = ta | fa;
+    a = ((p >> 8) & tmask) | (a & fmask);
 
     /* a = b - a + (b < a ? 1 : 0); */
-    int t;
-    {
 #if 0
-      int condition = (b < a); /* Clang generates a branch instruction */
+    int condition2 = (b < a); /* Clang generates a branch instruction */
 #else
-      int condition = ((b - a) & 0x8000);
+    int condition2 = ((b - a) & 0x8000);
 #endif
-      int tmask = -condition;
-      int fmask = ~tmask;
-      int tt = 1 & tmask;
-      int ft = 0 & fmask;
-      t = tt | ft;
-    }
-    ta = (b - a) & tmask;
-    fa = a       & fmask;
-    a = ta | fa;
-    a += t;
+#if 0 /* Avoid excessive amount of memory operations */
+    int tmask2 = -condition;
+    int fmask2 = ~tmask2;
+#endif
+    a = ((b - a) & tmask) | (a & fmask);
+    a += (1 & -condition2) | (0 & ~(-condition2));
   }
 
   return a & mulMask;

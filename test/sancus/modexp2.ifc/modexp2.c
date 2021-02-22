@@ -12,11 +12,13 @@ int modexp2_enter(int y, __attribute__((secret)) int k)
     {
       /* Compute true and false masks */
       int condition = ((k % 2) == 1);
+#if 0 /* Avoid excessive amount of memory operations */
       int tmask = -condition;
       int fmask = ~tmask;
+#endif
 
       /* r = (r * y) % MOD; */
-      r = (((r * y) % MOD) & tmask) | (r & fmask);
+      r = (((r * y) % MOD) & -condition) | (r & ~(-condition));
     }
 
     y = (y * y) % MOD;

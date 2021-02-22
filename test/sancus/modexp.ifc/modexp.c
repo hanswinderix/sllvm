@@ -19,11 +19,13 @@ int modexp_enter(int base, __attribute__((secret)) int exp, int mod)
       /* if ((exp & 0x01) == 0x01) */
       {
         int condition = ((exp & 0x01) == 0x01);
+#if 0 /* Avoid excessive amount of memory operations */
         int tmask = -condition;
         int fmask = ~tmask;
+#endif
 
         /* result = (result * base) % mod; */
-        result = (((result * base) % mod) & tmask) | (result & fmask);
+        result = (((result * base) % mod) & -condition) | (result & ~(-condition));
       }
 
       exp >>= 1;

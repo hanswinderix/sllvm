@@ -46,11 +46,13 @@ char BSL430_unlock_BSL(__attribute__((secret)) char * data)
     {
       /* Compute true and false masks */
       int condition = (*ivt != data[i]);
+#if 0 /* Avoid excessive amount of memory operations */
       int tmask = -condition;
       int fmask = ~tmask;
+#endif
 
       /* retValue |= 0x40; */
-      retValue = ((retValue | 0x40) & tmask) | (retValue & fmask);
+      retValue = ((retValue | 0x40) & -condition) | (retValue & ~(-condition));
     }
 #endif
   }

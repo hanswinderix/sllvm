@@ -30,19 +30,21 @@ kruskal_enter(__attribute__((secret)) int g[], int mst[], int par[], int len)
     {
       /* Compute true and false masks */
       int condition = (src != tgt);
+#if 0 /* Avoid excessive amount of memory operations */
       int tmask = -condition;
       int fmask = ~tmask;
+#endif
 
       /* mst[++idx] = src; */
-      idx = ((idx + 1) & tmask) | (idx & fmask);
-      mst[idx] = (src & tmask) | (mst[idx] & fmask);
+      idx = ((idx + 1) & -condition) | (idx & ~(-condition));
+      mst[idx] = (src & -condition) | (mst[idx] & ~(-condition));
 
       /* mst[++idx] = tgt; */
-      idx = ((idx + 1) & tmask) | (idx & fmask);
-      mst[idx] = (tgt & tmask) | (mst[idx] & fmask);
+      idx = ((idx + 1) & -condition) | (idx & ~(-condition));
+      mst[idx] = (tgt & -condition) | (mst[idx] & ~(-condition));
 
       /* par[src] = tgt; */
-      par[src] = (tgt & tmask) | (par[src] & fmask);
+      par[src] = (tgt & -condition) | (par[src] & ~(-condition));
     }
   }
 

@@ -92,12 +92,14 @@ int keypad_poll(__attribute__((secret)) int dummy)
     {
       int condition = 
         (is_pressed & (!was_pressed)) & (PIN_LEN - pin_idx != 0);
+#if 0 /* Avoid excessive amount of memory operations */
       int tmask = -condition;
       int fmask = ~tmask;
+#endif
 
       /* pin[pin_idx++] = keymap[key]; */
-      pin_idx = ((pin_idx + 1) & tmask) | (pin_idx & fmask);
-      pin[pin_idx] = (keymap[key] & tmask) | (pin[pin_idx] & fmask);
+      pin_idx = ((pin_idx + 1) & -condition) | (pin_idx & ~(-condition));
+      pin[pin_idx] = (keymap[key] & -condition) | (pin[pin_idx] & ~(-condition));
     }
     /* .. OR HERE. */
 
