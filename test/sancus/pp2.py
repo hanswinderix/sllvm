@@ -29,9 +29,12 @@ def get_size(elfname, pmname):
 def do_ignore(benchmark, experiment):
 
   #  - keypad_init call, it does not contain secret-dependent control-flow
-  if benchmark == "keypad" and experiment == "experiment01": return True
+  if benchmark in ("keypad", "keypad.ifc") \
+      and experiment == "experiment01": return True
+
   #  - first call to keypad_poll, it sets up secure linking (high latency)
-  if benchmark == "keypad" and experiment == "experiment02": return True
+  if benchmark in ("keypad", "keypad.ifc") \
+      and experiment == "experiment02": return True
 
   return False
 
@@ -80,45 +83,63 @@ for root, _, files in os.walk("."):
         # Determine the space overhead
         vsize = get_size(velf, benchmark)
         hsize = get_size(helf, benchmark)
-        sizeoverhead = float(hsize)/vsize
-        sizeoverheads.append(sizeoverhead)
 
         # Determine the time overheads
         vsignals = '%s.%s.signals.txt' % (velf, experiment)
         hsignals = '%s.%s.signals.txt' % (helf, experiment)
         vcycles = get_cycles(vsignals)
         hcycles = get_cycles(hsignals)
-        acycleoverhead = float(hcycles)/vcycles
-        acycleoverheads.append(acycleoverhead)
-        rcycleoverhead = float(hcycles)/max(run_times[benchmark])
-        rcycleoverheads.append(rcycleoverhead)
 
         # Record the results for outputting results in other formats,
         # such as LaTeX
         if benchmark not in results:
-          results[benchmark] = (vsize, hsize, sizeoverhead, [])
-        t = (experiment, vcycles, hcycles, acycleoverhead, rcycleoverhead)
-        results[benchmark][3].append(t)
+          results[benchmark] = (vsize, hsize, [])
+        t = (experiment, vcycles, hcycles)
+        results[benchmark][2].append(t)
 
 # Generate CSV
 fname = '%s/performance.csv' % result_dir
 with open(fname, 'w') as f:
 
+  def find_benchmark_ifc(benchmark):
+    try:
+      return results['%s.ifc' % benchmark]
+    except:
+      return None
+
+  def find_experiment(l, name):
+    for experiment, vcycles, hcycles in l:
+      if name == experiment:
+        return experiment, vcycles, hcycles
+    assert False, "Experiment not found"
+
   for benchmark in sorted(results.keys()):
 
-    vsize, hsize, sizeoverhead, experiments = results[benchmark]
-    for experiment, vcycles, hcycles, acycleoverhead, rcycleoverhead in experiments:
+    ifc = find_benchmark_ifc(benchmark)
+
+    vsize, hsize, experiments = results[benchmark]
+    for experiment, vcycles, hcycles in experiments:
+
       f.write("%s," % benchmark)
       f.write("%d," % vsize)
       f.write("%d," % hsize)
-      f.write("%.02f," % round(sizeoverhead, 2))
+      f.write("%.02f," % round(float(hsize)/vsize, 2))
       f.write("%s," % experiment)
       f.write("%d," % vcycles)
       f.write("%d," % hcycles)
-      f.write("%.02f," % round(acycleoverhead, 2))
-      #f.write("%.02f," % round(rcycleoverhead, 2))
-      f.write("\n")
+      f.write("%.02f," % round(float(hcycles)/vcycles, 2))
 
+      if ifc:
+        vsize2, _, l = ifc
+
+        _, vcycles2, _ = find_experiment(l, experiment)
+
+        f.write("%.02f," % round(float(vsize2)/vsize, 2))
+        f.write("%.02f," % round(float(vsize2)/hsize, 2))
+        f.write("%.02f," % round(float(vcycles2)/vcycles, 2))
+        f.write("%.02f," % round(float(vcycles2)/hcycles, 2))
+
+      f.write("\n")
 
 # Generate LaTeX performance table for EuroS&P paper
 fname = '%s/performance.tex' % result_dir
@@ -158,6 +179,7 @@ with open(fname, 'w') as f:
 
 ''')
 
+  """
   for benchmark in sorted(results.keys()):
     vsize, hsize, sizeoverhead, experiments = results[benchmark]
     f.write(benchmark)
@@ -181,6 +203,7 @@ with open(fname, 'w') as f:
     f.write("%dx" % 0) # TODO
     f.write(r"\\")
     f.write("\n")
+  """
   
   f.write('''
 
@@ -195,6 +218,7 @@ with open(fname, 'w') as f:
 \end{document}
 ''')
 
+"""
 import numpy as np
 import matplotlib
 matplotlib.use('Agg') # Select non-interactive backend
@@ -227,3 +251,4 @@ ax.set_aspect(2.7)
 fig.tight_layout()
 # TODO: targetdir should be a command line argument
 fig.savefig('results/performance.pdf', bbox_inches='tight', pad_inches=0)
+"""
