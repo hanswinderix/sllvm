@@ -130,14 +130,14 @@ with open(fname, 'w') as f:
       f.write("%.02f," % round(float(hcycles)/vcycles, 2))
 
       if ifc:
-        vsize2, _, l = ifc
+        vsize2, hsize2, l = ifc
 
-        _, vcycles2, _ = find_experiment(l, experiment)
+        _, vcycles2, hcycles2 = find_experiment(l, experiment)
 
-        f.write("%.02f," % round(float(vsize2)/vsize, 2))
-        f.write("%.02f," % round(float(vsize2)/hsize, 2))
-        f.write("%.02f," % round(float(vcycles2)/vcycles, 2))
-        f.write("%.02f," % round(float(vcycles2)/hcycles, 2))
+        f.write("%.02f," % round(float(hsize2)/vsize, 2))
+        f.write("%.02f," % round(float(hsize2)/hsize, 2))
+        f.write("%.02f," % round(float(hcycles2)/vcycles, 2))
+        f.write("%.02f," % round(float(hcycles2)/hcycles, 2))
 
       f.write("\n")
 
