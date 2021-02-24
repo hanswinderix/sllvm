@@ -246,8 +246,8 @@ with open(fname1, 'w') as f1:
 
     # External benchmarks
     f = f2
-    lhsizes = []
-    lhcycles = []
+    lhsizes2 = []
+    lhcycles2 = []
     lifcsizes = []
     lifccycles = []
     for benchmark in sorted([x for x in results.keys() if x in l2]):
@@ -264,11 +264,11 @@ with open(fname1, 'w') as f1:
       f.write(" & ")
 
       v = float(hsize)/vsize
-      lhsizes.append(v)
+      lhsizes2.append(v)
       f.write("%.02fx" % round(v, 2))
       f.write(" & ")
       v = float(hcycles)/vcycles
-      lhcycles.append(v)
+      lhcycles2.append(v)
       f.write("%.02fx" % round(v, 2))
       f.write(" & ")
 
@@ -294,12 +294,18 @@ with open(fname1, 'w') as f1:
     f.write(" & ")
     f.write(" & ")
     f.write(" & ")
-    f.write("\\textbf{%.02fx}" % mean(lhsizes))
+    f.write("\\textbf{%.02fx}" % mean(lhsizes2))
     f.write(" & ")
-    f.write("\\textbf{%.02fx}" % mean(lhcycles))
+    f.write("\\textbf{%.02fx}" % mean(lhcycles2))
     f.write(" & ")
     f.write("\\textbf{%.02fx}" % mean(lifcsizes))
     f.write(" & ")
     f.write("\\textbf{%.02fx}" % mean(lifccycles))
     f.write(r"\\")
     f.write("\n")
+
+    # Output geometric means
+    lhsizes.extend(lhsizes2)
+    loptcycles.extend(lhcycles2)
+    print("Geometric mean overhead size  : %.02f" % mean(lhsizes))
+    print("Geometric mean overhead cycles: %.02f" % mean(loptcycles))
