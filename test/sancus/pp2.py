@@ -1,6 +1,7 @@
 import sys
 import os
 import re
+import functools
 
 import loader
 
@@ -96,22 +97,22 @@ for root, _, files in os.walk("."):
           results[benchmark] = (vsize, hsize, [])
         t = (experiment, vcycles, hcycles)
         results[benchmark][2].append(t)
+        
+def find_benchmark_ifc(benchmark):
+  try:
+    return results['%s.ifc' % benchmark]
+  except:
+    return None
+
+def find_experiment(l, name):
+  for experiment, vcycles, hcycles in l:
+    if name == experiment:
+      return experiment, vcycles, hcycles
+  assert False, "Experiment not found"
 
 # Generate CSV
 fname = '%s/performance.csv' % result_dir
 with open(fname, 'w') as f:
-
-  def find_benchmark_ifc(benchmark):
-    try:
-      return results['%s.ifc' % benchmark]
-    except:
-      return None
-
-  def find_experiment(l, name):
-    for experiment, vcycles, hcycles in l:
-      if name == experiment:
-        return experiment, vcycles, hcycles
-    assert False, "Experiment not found"
 
   for benchmark in sorted(results.keys()):
 
@@ -141,114 +142,164 @@ with open(fname, 'w') as f:
 
       f.write("\n")
 
-# Generate LaTeX performance table for EuroS&P paper
-fname = '%s/performance.tex' % result_dir
-with open(fname, 'w') as f:
+# Generate LaTeX performance tables for EuroS&P paper
 
-  def writeln(s):
-    print(s, file=f)
+l1 = (
+  'call',
+  'diamond',
+  'fork',
+  'ifcompound',
+  'ifthenloop',
+  'ifthenloopif',
+  'ifthenlooploop',
+  'ifthenlooplooptail',
+  'indirect',
+  'loop',
+  'multifork',
+  'triangle'
+)
 
-  f.write(r'''
-\documentclass[a4paper]{article}
+l2 = (
+  'mulhi3',
+  'bsl',
+  'keypad',
+  'kruskal',
+  'mulmod8',
+  'modexp2',
+  'sharevalue',
+  'switch8',
+  'switch16'
+)
 
-\usepackage{todonotes}
-\usepackage{array}
-\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
-\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
-\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
+fname1 = '%s/table1.tex' % result_dir
+fname2 = '%s/table2.tex' % result_dir
+with open(fname1, 'w') as f1:
+  with open(fname2, 'w') as f2:
+    
+    def get_optimum(experiments):
+      result = (None, 0, 0) # (expname, vcycles, hcycles)
+      for expname, vcycles, hcycles in experiments:
+        if vcycles > result[1]:
+          result = (expname, vcycles, hcycles)
+      return result
 
-\begin{document}
+    def mean(l):
+      return functools.reduce(lambda x,y: x*y, l) ** (1.0 / len(l))
 
-\begin{table*}[!htb]
-\normalsize
-\caption{Caption}
-\label{tab:benchmarks-overview}
-\centering
-\scalebox{0.8}{
-\begin{tabular}{ L{2.75cm}|C{1.35cm}L{3.4cm}|C{1.35cm}L{4.3cm}C{1.35cm} }
-  
-\hline
-\multicolumn{1}{c|}{\textbf{Benchmark}} & \multicolumn{2}{c|}{\textbf{Vulnerable Baseline}}                 & \multicolumn{3}{c}{\textbf{Overhead of Hardening}}\\
-\hline
-                                          & \multicolumn{1}{c}{Size}    & \multicolumn{1}{c|}{Execution time} & \multicolumn{1}{c}{Size} & \multicolumn{1}{c}{Execution time} & \multicolumn{1}{c}{Execution time}\\
-                                          & \multicolumn{1}{c}{(bytes)} & \multicolumn{1}{c|}{(cycles)}       & \multicolumn{1}{c}{}     & \multicolumn{1}{c}{}               & \multicolumn{1}{c}{(relative to best case)}\\
-\hline
-\hline
+    # Self-made benchmarks
+    f = f1
+    lhsizes = []
+    lhcycles = []
+    loptcycles = []
+    for benchmark in sorted([x for x in results.keys() if x in l1]):
 
+      vsize, hsize, experiments = results[benchmark]
 
+      f.write(benchmark)
+      f.write(" & ")
+      f.write("%d" % vsize)
+      f.write(" & ")
 
-''')
+      komma = ''
+      for expname, vcycles, hcycles, in experiments:
+        f.write(komma)
+        komma = ', '
+        f.write("%d" % vcycles)
 
-  """
-  for benchmark in sorted(results.keys()):
-    vsize, hsize, sizeoverhead, experiments = results[benchmark]
-    f.write(benchmark)
+      f.write(" & ")
+      v = float(hsize)/vsize
+      lhsizes.append(v)
+      f.write("%.02fx" % round(v, 2))
+      f.write(" & ")
+
+      komma = ''
+      for expname, vcycles, hcycles in experiments:
+        f.write(komma)
+        komma = ', '
+        v = float(hcycles)/vcycles
+        lhcycles.append(v)
+        f.write("%.02fx" % round(v, 2))
+
+      expname, vcycles, hcycles = get_optimum(experiments)
+
+      f.write(" & ")
+      v = float(hcycles)/vcycles
+      loptcycles.append(v)
+      f.write("%.02fx" % round(v, 2))
+
+      f.write(r"\\")
+      f.write("\n")
+
+    f.write("\hline\n")
+    f.write("\hline\n")
+    f.write("\\textbf{Geometric mean}")
     f.write(" & ")
-    f.write("%d" % vsize)
     f.write(" & ")
-    komma = ''
-    for name, vcycles, hcycles, acycleoverhead, rcycleoverhead in experiments:
-      f.write(komma)
-      komma = ', '
-      f.write("%d" % vcycles)
     f.write(" & ")
-    f.write("%.02fx" % sizeoverhead)
+    f.write("\\textbf{%.02fx}" % mean(lhsizes))
     f.write(" & ")
-    komma = ''
-    for name, vcycles, hcycles, acycleoverhead, rcycleoverhead in experiments:
-      f.write(komma)
-      komma = ', '
-      f.write("%.02fx" % acycleoverhead)
+    f.write("\\textbf{%.02fx}" % mean(lhcycles))
     f.write(" & ")
-    f.write("%dx" % 0) # TODO
+    f.write("\\textbf{%.02fx}" % mean(loptcycles))
     f.write(r"\\")
     f.write("\n")
-  """
-  
-  f.write('''
 
+    # External benchmarks
+    f = f2
+    lhsizes = []
+    lhcycles = []
+    lifcsizes = []
+    lifccycles = []
+    for benchmark in sorted([x for x in results.keys() if x in l2]):
 
+      vsize, hsize, experiments = results[benchmark]
 
-\hline
+      expname, vcycles, hcycles = get_optimum(experiments)
 
-\end{tabular}
-}
-\end{table*}
+      f.write(benchmark)
+      f.write(" & ")
+      f.write("%d" % vsize)
+      f.write(" & ")
+      f.write("%d" % vcycles)
+      f.write(" & ")
 
-\end{document}
-''')
+      v = float(hsize)/vsize
+      lhsizes.append(v)
+      f.write("%.02fx" % round(v, 2))
+      f.write(" & ")
+      v = float(hcycles)/vcycles
+      lhcycles.append(v)
+      f.write("%.02fx" % round(v, 2))
+      f.write(" & ")
 
-"""
-import numpy as np
-import matplotlib
-matplotlib.use('Agg') # Select non-interactive backend
-import matplotlib.pyplot as plt
+      ifc = find_benchmark_ifc(benchmark) 
+      assert ifc, benchmark
+      _, ifcsize, l   = ifc
+      _, _, ifccycles = find_experiment(l, expname)
 
-assert len(labels) == len(acycleoverheads)
-assert len(labels) == len(rcycleoverheads)
-assert len(labels) == len(sizeoverheads)
+      v = float(ifcsize)/vsize
+      lifcsizes.append(v)
+      f.write("%.02fx" % round(v, 2))
+      f.write(" & ")
+      v = float(ifccycles)/vcycles
+      lifccycles.append(v)
+      f.write("%.02fx" % round(v, 2))
 
-x = np.arange(len(labels))
-width = 0.30
+      f.write(r"\\")
+      f.write("\n")
 
-fig, ax = plt.subplots()
-rects1 = \
-  ax.bar(x - width/2, acycleoverheads, width, label='Execution time (cycles)')
-rects2 = ax.bar(x + width/2, sizeoverheads, width, label='Code size (bytes)')
-ax.set_ylabel("Relative overhead")
-ax.set_xticklabels(labels, rotation="vertical", fontsize='x-small')
-ax.set_xticks(range(len(acycleoverheads)))
-ax.set_ylim(bottom=1.0)
-#ax.grid(b=True, which='major', color='lightgray', linestyle='-')
-#ax.grid(b=True, which='minor', color='lightgray', linestyle=':')
-ax.legend()
-plt.axhline(y=1.0, color='lightgray', linestyle='-', linewidth='0.1')
-plt.axhline(y=2.0, color='lightgray', linestyle='-', linewidth='0.1')
-plt.axhline(y=3.0, color='lightgray', linestyle='-', linewidth='0.1')
-plt.axhline(y=4.0, color='lightgray', linestyle='-', linewidth='0.1')
-plt.axhline(y=5.0, color='lightgray', linestyle='-', linewidth='0.1')
-ax.set_aspect(2.7)
-fig.tight_layout()
-# TODO: targetdir should be a command line argument
-fig.savefig('results/performance.pdf', bbox_inches='tight', pad_inches=0)
-"""
+    f.write("\hline\n")
+    f.write("\hline\n")
+    f.write("\\textbf{Geometric mean}")
+    f.write(" & ")
+    f.write(" & ")
+    f.write(" & ")
+    f.write("\\textbf{%.02fx}" % mean(lhsizes))
+    f.write(" & ")
+    f.write("\\textbf{%.02fx}" % mean(lhcycles))
+    f.write(" & ")
+    f.write("\\textbf{%.02fx}" % mean(lifcsizes))
+    f.write(" & ")
+    f.write("\\textbf{%.02fx}" % mean(lifccycles))
+    f.write(r"\\")
+    f.write("\n")
