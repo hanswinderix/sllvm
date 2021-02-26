@@ -561,10 +561,10 @@ diff-sllvm:
 	$(GIT) -C $(SRCDIR_SLLVM) difftool
 
 # EuroS&P 2021 submission
-.PHONY: checkout-sllvm-0.9
-checkout-sllvm-0.9:
-	$(GIT) checkout sllvm-0.9
-	$(GIT) -C $(SRCDIR_SLLVM) checkout sllvm-0.9
+.PHONY: checkout-sllvm-0.9b
+checkout-sllvm-0.9b:
+	$(GIT) checkout sllvm-0.9b
+	$(GIT) -C $(SRCDIR_SLLVM) checkout sllvm-0.9b
 
 .PHONY: checkout-master
 checkout-master:
