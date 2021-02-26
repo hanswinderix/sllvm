@@ -323,7 +323,11 @@ twofish_key_schedule(__attribute__((secret)) const uint8_t key[], int length)
     /* if (key[i]) */
     {
       int condition = (key[i]);
-#if 0
+#if 1 
+      /* TODO: Figure out why the sancus-sim keeps running when these
+       * variables are not used, i.e, when the masks are computed several 
+       * times in the expressions below.
+       */
       int tmask = -condition;
       int fmask = ~tmask;
 #endif
@@ -336,17 +340,17 @@ twofish_key_schedule(__attribute__((secret)) const uint8_t key[], int length)
       uint8_t RS4 = RS[(4*i+3) % 32];
 
       /* S[4*(i/8)  ] ^= EXP_TO_POLY[(X + POLY_TO_EXP[RS1 - 1]) % 255]; */
-      S[4*(i/8)] = ((EXP_TO_POLY[(X + POLY_TO_EXP[RS1 - 1]) % 255] ^ S[4*(i/8)  ]) & -condition)
-                 | (S[4*(i/8)] & ~(-condition));
+      S[4*(i/8)] = ((EXP_TO_POLY[(X + POLY_TO_EXP[RS1 - 1]) % 255] ^ S[4*(i/8)  ]) & tmask)
+                 | (S[4*(i/8)] & fmask);
       /* S[4*(i/8)+1] ^= EXP_TO_POLY[(X + POLY_TO_EXP[RS2 - 1]) % 255]; */
-      S[4*(i/8)+1] = ((EXP_TO_POLY[(X + POLY_TO_EXP[RS2 - 1]) % 255] ^ S[4*(i/8)+1]) & -condition)
-                   | (S[4*(i/8)+1] & ~(-condition));
+      S[4*(i/8)+1] = ((EXP_TO_POLY[(X + POLY_TO_EXP[RS2 - 1]) % 255] ^ S[4*(i/8)+1]) & tmask)
+                   | (S[4*(i/8)+1] & fmask);
       /* S[4*(i/8)+2] ^= EXP_TO_POLY[(X + POLY_TO_EXP[RS3 - 1]) % 255]; */
-      S[4*(i/8)+2] = ((EXP_TO_POLY[(X + POLY_TO_EXP[RS3 - 1]) % 255] ^ S[4*(i/8)+2]) & -condition)
-                   | (S[4*(i/8)+2] & ~(-condition));
+      S[4*(i/8)+2] = ((EXP_TO_POLY[(X + POLY_TO_EXP[RS3 - 1]) % 255] ^ S[4*(i/8)+2]) & tmask)
+                   | (S[4*(i/8)+2] & fmask);
       /* S[4*(i/8)+3] ^= EXP_TO_POLY[(X + POLY_TO_EXP[RS4 - 1]) % 255]; */
-      S[4*(i/8)+3] = ((EXP_TO_POLY[(X + POLY_TO_EXP[RS4 - 1]) % 255] ^ S[4*(i/8)+3]) & -condition)
-                   | (S[4*(i/8)+3] & ~(-condition));
+      S[4*(i/8)+3] = ((EXP_TO_POLY[(X + POLY_TO_EXP[RS4 - 1]) % 255] ^ S[4*(i/8)+3]) & tmask)
+                   | (S[4*(i/8)+3] & fmask);
     }
   }
 
