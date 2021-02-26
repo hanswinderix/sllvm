@@ -1,0 +1,15 @@
+EXE = twofish.ifc.nemdef
+
+#twofish.ll: CFLAGS += -Os
+
+#twofish.nemdef.s: LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
+#twofish.nemdef.s: LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
+#twofish.nemdef.s: LLCFLAGSNEMDEF += -print-machineinstrs
+#twofish.nemdef.s: LLCFLAGSNEMDEF += -filter-print-funcs=twofish_
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: twofish.nemdef.o
+$(EXE).nomac: main.o

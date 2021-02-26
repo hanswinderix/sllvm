@@ -320,8 +320,14 @@ twofish_key_schedule(__attribute__((secret)) const uint8_t key[], int length)
     /*
      * Do one column of the RS matrix multiplcation
      */
-    if (key[i])
+    /* if (key[i]) */
     {
+      int condition = (key[i]);
+#if 0
+      int tmask = -condition;
+      int fmask = ~tmask;
+#endif
+
       uint8_t X = POLY_TO_EXP[key[i] - 1];
 
       uint8_t RS1 = RS[(4*i  ) % 32];
@@ -329,10 +335,18 @@ twofish_key_schedule(__attribute__((secret)) const uint8_t key[], int length)
       uint8_t RS3 = RS[(4*i+2) % 32];
       uint8_t RS4 = RS[(4*i+3) % 32];
 
-      S[4*(i/8)  ] ^= EXP_TO_POLY[(X + POLY_TO_EXP[RS1 - 1]) % 255];
-      S[4*(i/8)+1] ^= EXP_TO_POLY[(X + POLY_TO_EXP[RS2 - 1]) % 255];
-      S[4*(i/8)+2] ^= EXP_TO_POLY[(X + POLY_TO_EXP[RS3 - 1]) % 255];
-      S[4*(i/8)+3] ^= EXP_TO_POLY[(X + POLY_TO_EXP[RS4 - 1]) % 255];
+      /* S[4*(i/8)  ] ^= EXP_TO_POLY[(X + POLY_TO_EXP[RS1 - 1]) % 255]; */
+      S[4*(i/8)] = ((EXP_TO_POLY[(X + POLY_TO_EXP[RS1 - 1]) % 255] ^ S[4*(i/8)  ]) & -condition)
+                 | (S[4*(i/8)] & ~(-condition));
+      /* S[4*(i/8)+1] ^= EXP_TO_POLY[(X + POLY_TO_EXP[RS2 - 1]) % 255]; */
+      S[4*(i/8)+1] = ((EXP_TO_POLY[(X + POLY_TO_EXP[RS2 - 1]) % 255] ^ S[4*(i/8)+1]) & -condition)
+                   | (S[4*(i/8)+1] & ~(-condition));
+      /* S[4*(i/8)+2] ^= EXP_TO_POLY[(X + POLY_TO_EXP[RS3 - 1]) % 255]; */
+      S[4*(i/8)+2] = ((EXP_TO_POLY[(X + POLY_TO_EXP[RS3 - 1]) % 255] ^ S[4*(i/8)+2]) & -condition)
+                   | (S[4*(i/8)+2] & ~(-condition));
+      /* S[4*(i/8)+3] ^= EXP_TO_POLY[(X + POLY_TO_EXP[RS4 - 1]) % 255]; */
+      S[4*(i/8)+3] = ((EXP_TO_POLY[(X + POLY_TO_EXP[RS4 - 1]) % 255] ^ S[4*(i/8)+3]) & -condition)
+                   | (S[4*(i/8)+3] & ~(-condition));
     }
   }
 

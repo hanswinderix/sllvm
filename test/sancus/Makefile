@@ -88,8 +88,8 @@ NEMDEF += modexp.ifc
 
 # [Wu, 2018] (section 7)
 #NEMDEF += threeway   # Useless since LLVM generates CT code for mu() :-/
-#NEMDEF += twofish  # - Simulation does not start on vulnerable binary
-                   # - Implementation crashes when hardening
+NEMDEF += twofish
+NEMDEF += twofish.ifc
 
 # [Simon, 2018] (section 4.1.2)
 # OpenSSL, mbedTLS

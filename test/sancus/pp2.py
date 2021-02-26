@@ -160,15 +160,16 @@ l1 = (
 )
 
 l2 = (
-  'mulhi3',
   'bsl',
   'keypad',
   'kruskal',
-  'mulmod8',
   'modexp2',
+  'mulhi3',
+  'mulmod8',
   'sharevalue',
   'switch8',
-  'switch16'
+  'switch16',
+  'twofish'
 )
 
 fname1 = '%s/table1.tex' % result_dir
@@ -304,7 +305,7 @@ with open(fname1, 'w') as f1:
     f.write(r"\\")
     f.write("\n")
 
-    # Output geometric means
+    # Output geometric means of all benchmarks
     lhsizes.extend(lhsizes2)
     loptcycles.extend(lhcycles2)
     print("Geometric mean overhead size  : %.02f" % mean(lhsizes))
