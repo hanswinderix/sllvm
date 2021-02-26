@@ -156,7 +156,7 @@ nemdef-sim  : $(NEMDEF_SIM)
 nemdef-pp   : $(NEMDEF_PP)
 	$(RMDIR) $(RESULT_DIR)
 	$(MKDIR) $(RESULT_DIR)
-	$(PYTHON) pp2.py $(RESULT_DIR) > summary.txt
+	$(PYTHON) pp2.py $(RESULT_DIR) > $(RESULT_DIR)/summary.txt
 	#$(LATEXMK) -pdf -outdir=$(RESULT_DIR) $(RESULT_DIR)/performance.tex
 
 nemdef-clean: $(NEMDEF_CLEAN)
