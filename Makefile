@@ -62,12 +62,12 @@ LIT = $(BUILDDIR_SLLVM)/bin/llvm-lit
 DISTRINET_DEB_URL = https://distrinet.cs.kuleuven.be/software/sancus/downloads
 CLANG_SANCUS_DEB  = clang-sancus_4.0.1-2_amd64.deb
 
-LLVM_REPO          = https://github.com/llvm/llvm-project.git
-LLVM_FORK          = https://github.com/hanswinderix/llvm-project.git
-LEGACY_SANCUS_REPO = https://github.com/sancus-pma/sancus-main.git
-LEGACY_SANCUS_FORK = https://github.com/hanswinderix/sancus-main.git
-VULCAN_REPO        = https://github.com/sancus-pma/vulcan.git
-VULCAN_FORK        = https://github.com/hanswinderix/vulcan.git
+LLVM_REPO          = git@github.com:llvm/llvm-project.git
+LLVM_FORK          = git@github.com:hanswinderix/llvm-project.git
+LEGACY_SANCUS_REPO = git@github.com:sancus-pma/sancus-main.git
+LEGACY_SANCUS_FORK = git@github.com:hanswinderix/sancus-main.git
+VULCAN_REPO        = git@github.com:sancus-pma/vulcan.git
+VULCAN_FORK        = git@github.com:hanswinderix/vulcan.git
 
 # See http://www.ti.com/tool/MSP430-GCC-OPENSOURCE
 TI_MSPGCC_DIR         = 9_3_0_1
@@ -114,7 +114,7 @@ CMAKE_FLAGS_SLLVM += -DLLVM_TARGETS_TO_BUILD="MSP430;RISCV"
 CMAKE_FLAGS_SLLVM += -DLLVM_ENABLE_PROJECTS="clang"
 CMAKE_FLAGS_SLLVM += -DLLVM_USE_LINKER=gold
 CMAKE_FLAGS_SLLVM += -DLLVM_ENABLE_PLUGINS=ON
-CMAKE_FLAGS_SLLVM += -DENABLE_EXPERIMENTAL_NEW_PASS_MANAGER=OFF
+CMAKE_FLAGS_SLLVM += -DLLVM_USE_NEWPM=OFF
 #CMAKE_FLAGS_SLLVM += -DLLVM_TARGETS_TO_BUILD="MSP430;X86"
 #CMAKE_FLAGS_SLLVM += -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 #CMAKE_FLAGS_SLLVM += -DLLVM_ENABLE_ASSERTIONS=ON
