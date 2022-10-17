@@ -497,13 +497,13 @@ status:
 	-$(GIT) -C $(SRCDIR_SANCUS_COMPILER) status -sb
 	-$(GIT) -C $(SRCDIR_SANCUS_SUPPORT)  status -sb
 	-$(GIT) -C $(SRCDIR_SANCUS_EXAMPLES) status -sb
-	-$(GIT) -C $(SRCDIR_VULCAN)          status -sb
+#	-$(GIT) -C $(SRCDIR_VULCAN)          status -sb
 	-$(GIT) -C $(SRCDIR_SLLVM)           status -sb
 
 .PHONY: pull
 pull: pull-sancus
 pull: pull-sllvm
-pull: pull-vulcan
+#pull: pull-vulcan
 	$(GIT) pull
 
 .PHONY: pull-sancus
