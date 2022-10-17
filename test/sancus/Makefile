@@ -88,8 +88,8 @@ NEMDEF += modexp.ifc
 
 # [Wu, 2018] (section 7)
 #NEMDEF += threeway   # Useless since LLVM generates CT code for mu() :-/
-NEMDEF += twofish
-NEMDEF += twofish.ifc
+#NEMDEF += twofish
+#NEMDEF += twofish.ifc
 
 # [Simon, 2018] (section 4.1.2)
 # OpenSSL, mbedTLS
@@ -138,8 +138,8 @@ NEMDEF += mathf
 NEMDEF += mathf.ifc
 NEMDEF += ffilter
 NEMDEF += ffilter.ifc
-NEMDEF += matrixmul
-NEMDEF += matrixmul.ifc
+#NEMDEF += matrixmul
+#NEMDEF += matrixmul.ifc
 
 #--------------------------------------------------------------------------
 

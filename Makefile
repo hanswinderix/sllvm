@@ -23,24 +23,22 @@ DEPS += cmake
 DEPS += g++
 DEPS += texinfo
 # Python 2 (required by vcdcat)
-DEPS += python
-DEPS += python-pip
-DEPS += python-numpy
-DEPS += python-matplotlib
+#DEPS += python
+#DEPS += python-pip
 # Python 3
 DEPS += python3
 DEPS += python3-pip
+DEPS += python3-numpy
 DEPS += gcc-msp430
 DEPS += expect
 DEPS += tcl
 DEPS += iverilog
 DEPS += gtkwave
 
-PIP2S =
-PIP2S += vcdvcd # for vcdcat
-
 PIP3S =
+PIP3S += vcdvcd # for vcdcat
 PIP3S += pyelftools
+PIP3S += matplotlib
 PIP3S += mplcursors # for adding annotations to matplotlib grahps
 
 WGET  = wget
@@ -190,7 +188,7 @@ all:
 install-deps:
 install-deps: install-clang-sancus
 	$(APT) install $(DEPS)
-	$(PIP2) install $(PIP2S)
+#	$(PIP2) install $(PIP2S)
 	$(PIP3) install $(PIP3S)
 
 # TODO: Currently, the 'build-legacy-sancus-compiler' target needs 
@@ -206,13 +204,13 @@ install-clang-sancus:
 .PHONY: fetch
 fetch: fetch-mspgcc
 fetch: fetch-legacy-sancus
-fetch: fetch-vulcan
+#fetch: fetch-vulcan
 fetch: fetch-sllvm
 
 .PHONY: configure
 configure: configure-mspgcc
 configure: configure-legacy-sancus
-configure: configure-vulcan
+#configure: configure-vulcan
 configure: configure-sllvm
 
 .PHONY: install
