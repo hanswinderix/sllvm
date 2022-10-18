@@ -571,6 +571,11 @@ checkout-master:
 	$(GIT) checkout master
 	$(GIT) -C $(SRCDIR_SLLVM) checkout master
 
+.PHONY: checkout-dma-attack
+checkout-dma-attack:
+	$(GIT) checkout dma-attack
+	$(GIT) -C $(SRCDIR_SLLVM) checkout dma-attack
+
 .PHONY: sync
 sync: sync-llvm
 sync: sync-legacy-sancus
