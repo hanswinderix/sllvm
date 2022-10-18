@@ -254,7 +254,7 @@ fetch-vulcan:
 fetch-sllvm:
 	$(GIT) clone $(LLVM_FORK) $(SRCDIR_SLLVM)
 	cd $(SRCDIR_SLLVM) && $(GIT) remote add upstream $(LLVM_REPO)
-	$(GIT) checkout dma-attack
+	cd $(SRCDIR_SLLVM) && $(GIT) checkout dma-attack
 
 # Based on $(SRCDIR_MSPGCC)/README-build.sh
 .PHONY: configure-mspgcc
