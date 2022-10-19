@@ -318,8 +318,8 @@ and &PMEM_ADDR, r10
 111|000|000
 
 ###############################################################################
-* CLASS 4: (writes to program memory, should not appear in well-behaved
-            sensitive regions)
+CLASS 4: writes to program memory, should not happen in well-behaved sensitive
+         regions
 ###############################################################################
 
 cmp 1(r7), 1(r7)
@@ -468,8 +468,8 @@ bit &PMEM_ADDR, &PMEM_ADDR
 111101|000000|000000
 
 ###############################################################################
-* CLASS 5: (writes to program memory, should not appear in well-behaved
-            sensitive regions)
+CLASS 5: writes to program memory, should not happen in well-behaved sensitive
+         regions
 ###############################################################################
 
 add 1(r7), 1(r7)
@@ -1122,8 +1122,8 @@ and &PMEM_ADDR, &PMEM_ADDR
 1111011|0000000|0000000
 
 ###############################################################################
-* CLASS 6: (writes to program memory, should not appear in well-behaved
-            sensitive regions)
+CLASS 6: writes to program memory, should not happen in well-behaved sensitive
+         regions
 ###############################################################################
 
 cmp @r7, 1(r7)
@@ -1200,8 +1200,8 @@ bit #0x42, &PMEM_ADDR
 11101|00000|00000
 
 ###############################################################################
-* CLASS 7: (writes to program memory, should not appear in well-behaved
-            sensitive regions)
+CLASS 7: writes to program memory, should not happen in well-behaved sensitive
+         regions
 ###############################################################################
 
 add @r7, 1(r7)
@@ -1929,7 +1929,7 @@ and &PMEM_ADDR, &DMEM_ADDR
 111001|000101|000000
 
 ###############################################################################
-CLASS 9: mov &PMEM_ADDR, &DMEM_ADDR   (requires a dummmy DMEM_ADDR)
+CLASS 9: mov &PMEM_ADDR, &DMEM_DUMMY_ADDR
 ###############################################################################
 
 mov 1(r7), 1(r6)
@@ -1970,8 +1970,7 @@ mov &PMEM_ADDR, &DMEM_ADDR
 111001|000001|000000
 
 ###############################################################################
-* CLASS 10: (writes to mmio memory, should not appear in well-behaved
-             sensitive regions)
+CLASS 10: writes to mmio, should not happen in well-behaved sensitive regions
 ###############################################################################
 
 add 1(r7), 1(r5)
@@ -2372,8 +2371,8 @@ and &PMEM_ADDR, &MMIO_ADDR
 111001|000000|000101
 
 ###############################################################################
-* CLASS 11: (writes to mmio memory, should not appear in well-behaved
-             sensitive regions)
+CLASS 11: writes to mmio memory, should not happen in well-behaved sensitive
+          regions
 ###############################################################################
 
 mov 1(r7), 1(r5)
@@ -2414,8 +2413,8 @@ mov &PMEM_ADDR, &MMIO_ADDR
 111001|000000|000001
 
 ###############################################################################
-* CLASS 12: (writes to program memory, should not appear in well-behaved
-             sensitive regions)
+CLASS 12: writes to program memory, should not happen in well-behaved sensitive
+          regions
 ###############################################################################
 
 mov 1(r7), 1(r7)
@@ -2492,8 +2491,8 @@ mov &PMEM_ADDR, &PMEM_ADDR
 1110011|0000000|0000000
 
 ###############################################################################
-* CLASS 13: (writes to program memory, should not appear in well-behaved
-             sensitive regions)
+CLASS 13: writes to program memory, should not happen in well-behaved sensitive
+          regions
 ###############################################################################
 
 rrc 1(r7)
@@ -2642,8 +2641,8 @@ bit #0x01, &PMEM_ADDR
 1101|0000|0000
 
 ###############################################################################
-* CLASS 14: (writes to program memory, should not appear in well-behaved
-             sensitive regions)
+CLASS 14: writes to program memory, should not happen in well-behaved sensitive
+          regions
 ###############################################################################
 
 add r10, 1(r7)
@@ -2864,8 +2863,8 @@ and #0x01, &PMEM_ADDR
 11011|00000|00000
 
 ###############################################################################
-* CLASS 15: (writes to program memory, should not appear in well-behaved
-             sensitive regions)
+CLASS 15: writes to program memory, should not happen in well-behaved sensitive
+          regions
 ###############################################################################
 
 cmp 1(r6), 1(r7)
@@ -2942,8 +2941,8 @@ bit &DMEM_ADDR, &PMEM_ADDR
 110101|010000|000000
 
 ###############################################################################
-* CLASS 16: (writes to program memory, should not appear in well-behaved
-             sensitive regions)
+CLASS 16: writes to program memory, should not happen in well-behaved sensitive
+          regions
 ###############################################################################
 
 cmp 1(r5), 1(r7)
@@ -3020,8 +3019,8 @@ bit &MMIO_ADDR, &PMEM_ADDR
 110101|000000|010000
 
 ###############################################################################
-* CLASS 17: (writes to program memory, should not appear in well-behaved
-             sensitive regions)
+CLASS 17: writes to program memory, should not happen in well-behaved sensitive
+          regions
 ###############################################################################
 
 add 1(r6), 1(r7)
@@ -3350,8 +3349,8 @@ and &DMEM_ADDR, &PMEM_ADDR
 1101011|0100000|0000000
 
 ###############################################################################
-* CLASS 18: (writes to program memory, should not appear in well-behaved
-             sensitive regions)
+CLASS 18: writes to program memory, should not happen in well-behaved sensitive
+          regions
 ###############################################################################
 
 add 1(r5), 1(r7)
@@ -3680,7 +3679,7 @@ and &MMIO_ADDR, &PMEM_ADDR
 1101011|0000000|0100000
 
 ###############################################################################
-CLASS 19: bic #0x42, &DMEM_ADDR (requires a dummmy DMEM_ADDR)
+CLASS 19: bic #0x42, &DMEM_DUMMY_ADDR
 ###############################################################################
 
 add @r7, 1(r6)
@@ -3883,7 +3882,7 @@ and #0x42, &DMEM_ADDR
 11001|00101|00000
 
 ###############################################################################
-CLASS 20: mov #0x42, &DMEM_ADDR (requires a dummmy DMEM_ADDR)
+CLASS 20: mov #0x42, &DMEM_DUMMY_ADDR
 ###############################################################################
 
 mov @r7, 1(r6)
@@ -3906,7 +3905,7 @@ mov #0x42, &DMEM_ADDR
 11001|00001|00000
 
 ###############################################################################
-CLASS 21: 
+CLASS 21: writes to mmio, should not happen in well-behaved sensitive regions
 ###############################################################################
 
 add @r7, 1(r5)
@@ -4109,7 +4108,7 @@ and #0x42, &MMIO_ADDR
 11001|00000|00101
 
 ###############################################################################
-CLASS 22: 
+CLASS 22: writes to mmio, should not happen in well-behaved sensitive regions
 ###############################################################################
 
 mov @r7, 1(r5)
@@ -4132,7 +4131,8 @@ mov #0x42, &MMIO_ADDR
 11001|00000|00001
 
 ###############################################################################
-CLASS 23: 
+CLASS 23: writes to program memory, should not happen in well-behaved sensitive
+          regions
 ###############################################################################
 
 push 1(r7)
@@ -4197,7 +4197,7 @@ mov #0x42, &PMEM_ADDR
 110011|000000|000000
 
 ###############################################################################
-CLASS 24: 
+CLASS 24: bic 42(r6), &DMEM_DUMMY_ADDR
 ###############################################################################
 
 add 1(r6), 1(r6)
