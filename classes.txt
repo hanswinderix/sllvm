@@ -5367,8 +5367,8 @@ sxt #0x42
 101|000|000
 
 ###############################################################################
-CLASS 37: cmp @r6, &PMEM_ADDR (updates the status bits!)
-          requires a register
+CLASS 37: cmp @r1, &PMEM_ADDR (updates the status bits!)
+          assumes that r1 points to data memory
 ###############################################################################
 
 cmp @r6, 1(r7)
@@ -6360,8 +6360,8 @@ mov #0x01, &PMEM_ADDR
 10011|00000|00000
 
 ###############################################################################
-CLASS 46: bic @r6, &DMEM_DUMMY_ADDR
-          requires a register
+CLASS 46: bic @r1, &DMEM_DUMMY_ADDR
+          assumes that r1 points to data memory
 ###############################################################################
 
 add @r6, 1(r6)
@@ -6498,8 +6498,8 @@ and @r6+, &DMEM_ADDR
 10001|10101|00000
 
 ###############################################################################
-CLASS 47: mov @r6, &DMEM_DUMMY_ADDR
-          requires a register
+CLASS 47: mov @r1, &DMEM_DUMMY_ADDR
+          assumes that r1 points to data memory
 ###############################################################################
 
 mov @r6, 1(r6)
@@ -7076,8 +7076,8 @@ push &MMIO_ADDR
 100011|000000|010000
 
 ###############################################################################
-CLASS 58: mov @r6, r3
-          requires a register
+CLASS 58: mov @r1, r3
+          assumes that r1 points to data memory
 ###############################################################################
 
 mov @r6, r10
