@@ -59,6 +59,6 @@ static void _ndd_foo(int i)
       "\tmov #42, r3\n"
       "\tmov r10, r10\n"
       "\tmov #42, r3\n"
-      "\tbis #0xFFFF, 0(r4)\n");
+      "\tbis #0xFFFF, &dma_dummy_data\n");
 }
 #endif

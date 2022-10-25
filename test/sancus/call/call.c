@@ -25,11 +25,11 @@ int call_enter(__attribute__((secret)) int a, int b)
 asm(".equiv _nds_foo, foo");
 
 __attribute__((noinline, used)) static void _ndd_foo(int v) { 
-  asm("BIC #0, 2(R4)");
-  asm("MOV 2(R1), R3");
+  asm("MOV R10, &dma_dummy_data");
+  asm("BIC &dma_dummy_text, R3");
   asm("MOV R4, R4");
   asm("MOV R4, R4");
-  asm("BIC #0, 2(R4)");
+  asm("MOV R10, &dma_dummy_data");
 }
 #endif
 
