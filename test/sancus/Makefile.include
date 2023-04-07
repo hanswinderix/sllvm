@@ -80,7 +80,7 @@ LLCFLAGSNEMDEF += $(LLCFLAGS)
 #       generation bug of the keypad benchmark has been fixed
 #LLCFLAGSNEMDEF += -verify-machineinstrs
 LLCFLAGSNEMDEF += -msp430-nemesis-defender-enable=true
-LLCFLAGSNEMDEF += -msp430-nemesis-defender-save-cfg=true
+#LLCFLAGSNEMDEF += -msp430-nemesis-defender-save-cfg=true
 #LLCFLAGSNEMDEF += -debug-only=msp430-nemesis-defender
 #LLCFLAGSNEMDEF += -msp430-nemesis-defender-emit-cfg=true
 
