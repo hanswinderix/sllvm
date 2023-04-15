@@ -188,7 +188,7 @@ all:
 .PHONY: install-deps
 install-deps:
 install-deps: install-clang-sancus
-	$(APT) install $(DEPS)
+	$(APT) install $(DEPS) -y
 #	$(PIP2) install $(PIP2S)
 	$(PIP3) install $(PIP3S)
 
