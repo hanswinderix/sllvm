@@ -60,12 +60,12 @@ LIT = $(BUILDDIR_SLLVM)/bin/llvm-lit
 DISTRINET_DEB_URL = https://distrinet.cs.kuleuven.be/software/sancus/downloads
 CLANG_SANCUS_DEB  = clang-sancus_4.0.1-2_amd64.deb
 
-LLVM_REPO          = git@github.com:llvm/llvm-project.git
-LLVM_FORK          = git@github.com:hanswinderix/llvm-project.git
-LEGACY_SANCUS_REPO = git@github.com:sancus-pma/sancus-main.git
-LEGACY_SANCUS_FORK = git@github.com:hanswinderix/sancus-main.git
-VULCAN_REPO        = git@github.com:sancus-pma/vulcan.git
-VULCAN_FORK        = git@github.com:hanswinderix/vulcan.git
+LLVM_REPO          = https://github.com/llvm/llvm-project
+LLVM_FORK          = https://github.com/hanswinderix/llvm-project
+LEGACY_SANCUS_REPO = https://github.com/sancus-pma/sancus-main
+LEGACY_SANCUS_FORK = https://github.com/hanswinderix/sancus-main
+VULCAN_REPO        = https://github.com/sancus-pma/vulcan
+VULCAN_FORK        = https://github.com/hanswinderix/vulcan
 
 # See http://www.ti.com/tool/MSP430-GCC-OPENSOURCE
 TI_MSPGCC_DIR         = 9_3_0_1

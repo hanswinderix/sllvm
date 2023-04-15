@@ -77,7 +77,7 @@ with open(sim_output) as f:
   l = f.read()
   attack_names = re.findall(r'attack: (.*)?', l)
 
-  l = re.findall(r'New SM config: ([0-9a-f]*) ([0-9a-f]*)', l)
+  l = re.findall(r'New SM 1 config: ([0-9a-f]*) ([0-9a-f]*)', l)
   assert len(l) > 0
   if len(l) == 1:
     l = l[0]
