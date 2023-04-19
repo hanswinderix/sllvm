@@ -154,8 +154,8 @@ for idx in range(len(attacks)):
     #x.xaxis.set_minor_locator(ml)
     #ml = MultipleLocator(5)
     #x.xaxis.set_major_locator(ml)
-    x.grid(b=True, which='major', color='lightgray', linestyle='-')
-    x.grid(b=True, which='minor', color='lightgray', linestyle=':')
+    x.grid(visible=True, which='major', color='lightgray', linestyle='-')
+    x.grid(visible=True, which='minor', color='lightgray', linestyle=':')
 
     # annotations for diamond.vulnerable (see paper)
     """
