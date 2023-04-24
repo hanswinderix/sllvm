@@ -34,6 +34,8 @@ DEPS += expect
 DEPS += tcl
 DEPS += iverilog
 DEPS += gtkwave
+DEPS += wget
+DEPS += unzip
 
 PIP3S =
 PIP3S += vcdvcd # for vcdcat
