@@ -189,20 +189,16 @@ all:
 
 .PHONY: install-deps
 install-deps:
-install-deps: install-clang-sancus
 	$(APT) install $(DEPS) -y
-#	$(PIP2) install $(PIP2S)
 	$(PIP3) install $(PIP3S)
-
 # TODO: Currently, the 'build-legacy-sancus-compiler' target needs
 #       clang-sancus. This dependency should be removed as SLLVM *probably*
 #       only needs the sm_support.h header from sancus-compiler header which
 #       is required to compile the Sancus examples.
-.PHONY: install-clang-sancus
-install-clang-sancus:
 	$(RM) $(CLANG_SANCUS_DEB)
 	$(WGET) $(DISTRINET_DEB_URL)/$(CLANG_SANCUS_DEB)
 	$(DPKG) -i $(CLANG_SANCUS_DEB)
+
 
 .PHONY: fetch
 fetch: fetch-mspgcc
