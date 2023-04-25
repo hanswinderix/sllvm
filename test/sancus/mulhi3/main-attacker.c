@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include "sancus_support/sm_io.h"
 #include "sancus_support/sancus_step.h"
 
@@ -39,7 +40,7 @@ void parse_dma(void)
     }
     offset += 80;
   }
-  printf("The leaked parameter is: %s\n", result);
+  printf("The leaked parameter is: %d\n", strtol(result, NULL, 2));
 }
 
 int main(void)
