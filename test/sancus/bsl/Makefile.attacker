@@ -1,0 +1,8 @@
+EXE = bsl.nemdef
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: bsl.nemdef.o
+$(EXE).nomac: main-attacker.o
