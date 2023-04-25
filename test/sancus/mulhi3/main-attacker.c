@@ -40,7 +40,7 @@ void parse_dma(void)
     }
     offset += 80;
   }
-  printf("The leaked parameter is: %d\n", strtol(result, NULL, 2));
+  printf("The leaked parameter is: %ld\n", strtol(result, NULL, 2));
 }
 
 int main(void)
