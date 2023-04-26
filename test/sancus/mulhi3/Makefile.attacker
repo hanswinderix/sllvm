@@ -1,0 +1,8 @@
+EXE = mulhi3.nemdef
+
+include ../Makefile.include
+
+LDFLAGS += -lsancus-step
+
+$(EXE).nomac: mulhi3.nemdef.o
+$(EXE).nomac: main-attacker.o
