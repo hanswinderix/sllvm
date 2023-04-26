@@ -251,7 +251,7 @@ fetch-vulcan:
 
 .PHONY: fetch-sllvm
 fetch-sllvm:
-	$(GIT) clone --progress $(LLVM_FORK) $(SRCDIR_SLLVM)
+	$(GIT) clone --depth 10 --branch dma-attack --progress $(LLVM_FORK) $(SRCDIR_SLLVM)
 	cd $(SRCDIR_SLLVM) && $(GIT) remote add upstream $(LLVM_REPO)
 
 # Based on $(SRCDIR_MSPGCC)/README-build.sh
