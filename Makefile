@@ -34,6 +34,8 @@ DEPS += expect
 DEPS += tcl
 DEPS += iverilog
 DEPS += gtkwave
+DEPS += wget
+DEPS += unzip
 
 PIP3S =
 PIP3S += vcdvcd # for vcdcat
@@ -60,12 +62,12 @@ LIT = $(BUILDDIR_SLLVM)/bin/llvm-lit
 DISTRINET_DEB_URL = https://distrinet.cs.kuleuven.be/software/sancus/downloads
 CLANG_SANCUS_DEB  = clang-sancus_4.0.1-2_amd64.deb
 
-LLVM_REPO          = git@github.com:llvm/llvm-project.git
-LLVM_FORK          = git@github.com:hanswinderix/llvm-project.git
-LEGACY_SANCUS_REPO = git@github.com:sancus-pma/sancus-main.git
-LEGACY_SANCUS_FORK = git@github.com:hanswinderix/sancus-main.git
-VULCAN_REPO        = git@github.com:sancus-pma/vulcan.git
-VULCAN_FORK        = git@github.com:hanswinderix/vulcan.git
+LLVM_REPO          = https://github.com/llvm/llvm-project
+LLVM_FORK          = https://github.com/hanswinderix/llvm-project
+LEGACY_SANCUS_REPO = https://github.com/sancus-pma/sancus-main
+LEGACY_SANCUS_FORK = https://github.com/hanswinderix/sancus-main
+VULCAN_REPO        = https://github.com/sancus-pma/vulcan
+VULCAN_FORK        = https://github.com/hanswinderix/vulcan
 
 # See http://www.ti.com/tool/MSP430-GCC-OPENSOURCE
 TI_MSPGCC_DIR         = 9_3_0_1
@@ -158,7 +160,7 @@ CONFIGURE_FLAGS_BINUTILS += --disable-werror
 
 CONFIGURE_FLAGS_GCC =
 CONFIGURE_FLAGS_GCC += $(CONFIGURE_FLAGS_COMMON)
-CONFIGURE_FLAGS_GCC += --enable-target-optspace 
+CONFIGURE_FLAGS_GCC += --enable-target-optspace
 CONFIGURE_FLAGS_GCC += --enable-newlib-nano-formatted-io
 
 CONFIGURE_FLAGS_GDB =
@@ -187,20 +189,16 @@ all:
 
 .PHONY: install-deps
 install-deps:
-install-deps: install-clang-sancus
-	$(APT) install $(DEPS)
-#	$(PIP2) install $(PIP2S)
+	$(APT) install $(DEPS) -y
 	$(PIP3) install $(PIP3S)
-
-# TODO: Currently, the 'build-legacy-sancus-compiler' target needs 
-#       clang-sancus. This dependency should be removed as SLLVM *probably* 
+# TODO: Currently, the 'build-legacy-sancus-compiler' target needs
+#       clang-sancus. This dependency should be removed as SLLVM *probably*
 #       only needs the sm_support.h header from sancus-compiler header which
 #       is required to compile the Sancus examples.
-.PHONY: install-clang-sancus
-install-clang-sancus:
 	$(RM) $(CLANG_SANCUS_DEB)
 	$(WGET) $(DISTRINET_DEB_URL)/$(CLANG_SANCUS_DEB)
 	$(DPKG) -i $(CLANG_SANCUS_DEB)
+
 
 .PHONY: fetch
 fetch: fetch-mspgcc
@@ -253,9 +251,8 @@ fetch-vulcan:
 
 .PHONY: fetch-sllvm
 fetch-sllvm:
-	$(GIT) clone $(LLVM_FORK) $(SRCDIR_SLLVM)
+	$(GIT) clone --progress $(LLVM_FORK) $(SRCDIR_SLLVM)
 	cd $(SRCDIR_SLLVM) && $(GIT) remote add upstream $(LLVM_REPO)
-	cd $(SRCDIR_SLLVM) && $(GIT) checkout dma-attack
 
 # Based on $(SRCDIR_MSPGCC)/README-build.sh
 .PHONY: configure-mspgcc
@@ -310,7 +307,7 @@ build-sancus-support:
 	cd $(BUILDDIR_SANCUS_SUPPORT) && \
 		$(CMAKE) $(CMAKE_FLAGS_SANCUS_SUPPORT) $(SRCDIR_SANCUS_SUPPORT)
 
-.PHONY: build-legacy-sancus-compiler 
+.PHONY: build-legacy-sancus-compiler
 build-legacy-sancus-compiler:
 	$(MKDIR) $(BUILDDIR_SANCUS_COMPILER)
 # Requires previously installed mspgcc binutils, hence "export PATH"
@@ -346,13 +343,13 @@ install-mspgcc-gcc: build-mspgcc-gcc
 	export PATH=$(INSTALLDIR)/bin:$$PATH; $(MAKE) -C $(BUILDDIR_GCC) install
 
 .PHONY: install-mspgcc-support-files
-install-mspgcc-support-files: 
+install-mspgcc-support-files:
 	$(RM) -r $(TI_MSPGCC_SUPPORT)
 	$(UNZIP) $(TI_MSPGCC_SUPPORT_ZIP)
 	$(MKDIR) $(INSTALLDIR)/include
 	cp -R $(TI_MSPGCC_SUPPORT)/include/* $(INSTALLDIR)/include
-# Overwrite the msp430.h and devices.csv support files of 
-#  $(TI_MSPGCC_SUPPORT_ZIP) with versions that include support for the Sancus 
+# Overwrite the msp430.h and devices.csv support files of
+#  $(TI_MSPGCC_SUPPORT_ZIP) with versions that include support for the Sancus
 #  security architecture.
 	cp $(SRCDIR_SANCUS)/$(TI_MSPGCC_SUPPORT)/devices.csv             \
 		$(SRCDIR_SANCUS)/$(TI_MSPGCC_SUPPORT)/msp430.h                 \
@@ -440,7 +437,7 @@ clean: clean-test-sllvm
 # TODO: LLVMConfig has to be removed to avoid a conflict with the legacy Sancus
 #        installation when configuring the legacy Sancus compiler. This conflict
 #        should be fixed.
-	$(RM) $(INSTALLDIR)/lib/cmake/llvm/LLVMConfig.cmake 
+	$(RM) $(INSTALLDIR)/lib/cmake/llvm/LLVMConfig.cmake
 
 .PHONY: clean-test-sllvm
 clean-test-sllvm:
@@ -518,11 +515,11 @@ pull-sancus:
 
 .PHONY: pull-vulcan
 pull-vulcan:
-	$(GIT) -C $(SRCDIR_VULCAN) pull 
+	$(GIT) -C $(SRCDIR_VULCAN) pull
 
 .PHONY: pull-sllvm
 pull-sllvm:
-	$(GIT) -C $(SRCDIR_SLLVM) pull 
+	$(GIT) -C $(SRCDIR_SLLVM) pull
 
 .PHONY: push
 push: push-sllvm
@@ -532,7 +529,7 @@ push: push-vulcan
 
 .PHONY: push-sllvm
 push-sllvm:
-	$(GIT) -C $(SRCDIR_SLLVM) push 
+	$(GIT) -C $(SRCDIR_SLLVM) push
 
 .PHONY: push-legacy-sancus
 push-legacy-sancus:
@@ -544,7 +541,7 @@ push-legacy-sancus:
 
 .PHONY: push-vulcan
 push-vulcan:
-	$(GIT) -C $(SRCDIR_VULCAN) push 
+	$(GIT) -C $(SRCDIR_VULCAN) push
 
 .PHONY: diff
 diff:
