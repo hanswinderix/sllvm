@@ -328,6 +328,7 @@ with open(fname1, 'w') as f1:
     lhcycles = []
     loptcycles = []
 
+    f.write("----------------------------------------------------------------------------------------------------\n")
     f.write("Benchmark               Baseline                               Overhead of balancing\n")
     f.write("---------         -----------------------          -------------------------------------------------\n")
     f.write("                  Size     Execution Time          Size       Execution Time          Execution Time\n")
@@ -390,6 +391,7 @@ with open(fname1, 'w') as f1:
     f.write(25 * ' ')
     f.write("%.02fx" % mean(loptcycles))
     f.write("\n")
+    f.write("----------------------------------------------------------------------------------------------------\n")
 
     # Third-party benchmarks
     f = f2
@@ -398,6 +400,7 @@ with open(fname1, 'w') as f1:
     lifcsizes = []
     lifccycles = []
 
+    f.write("--------------------------------------------------------------------------------------------------------\n");
     f.write("Benchmark             Baseline               Overhead of linearization          Overhead of balancing\n")
     f.write("---------         -----------------------  ----------------------------       --------------------------\n")
     f.write("                  Size     Execution Time       Size     Execution Time       Size        Execution Time\n")
@@ -455,3 +458,4 @@ with open(fname1, 'w') as f1:
     f.write(9 * ' ')
     f.write("%.02fx" % mean(lifccycles))
     f.write("\n")
+    f.write("--------------------------------------------------------------------------------------------------------\n");
