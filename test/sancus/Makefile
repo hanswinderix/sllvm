@@ -34,6 +34,8 @@ RMDIR = rm -rf
 MKDIR = mkdir -p
 PYTHON = PYTHONPATH=$(PYTHONPATH) python3
 LATEXMK = latexmk
+CAT = cat
+ECHO = echo
 
 NEMDEF =
 
@@ -157,7 +159,13 @@ nemdef-pp   : $(NEMDEF_PP)
 	$(RMDIR) $(RESULT_DIR)
 	$(MKDIR) $(RESULT_DIR)
 	$(PYTHON) pp2.py $(RESULT_DIR) > $(RESULT_DIR)/summary.txt
-	#$(LATEXMK) -pdf -outdir=$(RESULT_DIR) $(RESULT_DIR)/performance.tex
+	@$(ECHO)
+	@$(ECHO) "Synthetic benchmarks:"
+	@$(CAT) $(RESULT_DIR)/table1.txt
+	@$(ECHO)
+	@$(ECHO) "Third-party benchmarks:"
+	@$(CAT) $(RESULT_DIR)/table2.txt
+	@#$(LATEXMK) -pdf -outdir=$(RESULT_DIR) $(RESULT_DIR)/performance.tex
 
 nemdef-clean: $(NEMDEF_CLEAN)
 

@@ -142,8 +142,7 @@ with open(fname, 'w') as f:
 
       f.write("\n")
 
-# Generate LaTeX performance tables for EuroS&P paper
-
+# Synthetic benchmarks
 l1 = (
   'call',
   'diamond',
@@ -159,6 +158,7 @@ l1 = (
   'triangle'
 )
 
+# Third-party benchmarks
 l2 = (
   'bsl',
   'keypad',
@@ -172,22 +172,26 @@ l2 = (
   'twofish'
 )
 
+# Utility functions for reporting the overheads
+
+def get_optimum(experiments):
+  result = (None, 0, 0) # (expname, vcycles, hcycles)
+  for expname, vcycles, hcycles in experiments:
+    if vcycles > result[1]:
+      result = (expname, vcycles, hcycles)
+  return result
+
+def mean(l):
+  return functools.reduce(lambda x,y: x*y, l) ** (1.0 / len(l))
+
+# Generate LaTeX performance tables for EuroS&P paper
+
 fname1 = '%s/table1.tex' % result_dir
 fname2 = '%s/table2.tex' % result_dir
 with open(fname1, 'w') as f1:
   with open(fname2, 'w') as f2:
     
-    def get_optimum(experiments):
-      result = (None, 0, 0) # (expname, vcycles, hcycles)
-      for expname, vcycles, hcycles in experiments:
-        if vcycles > result[1]:
-          result = (expname, vcycles, hcycles)
-      return result
-
-    def mean(l):
-      return functools.reduce(lambda x,y: x*y, l) ** (1.0 / len(l))
-
-    # Self-made benchmarks
+    # Synthetic benchmarks
     f = f1
     lhsizes = []
     lhcycles = []
@@ -245,7 +249,7 @@ with open(fname1, 'w') as f1:
     f.write(r"\\")
     f.write("\n")
 
-    # External benchmarks
+    # Third-party benchmarks
     f = f2
     lhsizes2 = []
     lhcycles2 = []
@@ -310,3 +314,148 @@ with open(fname1, 'w') as f1:
     loptcycles.extend(lhcycles2)
     print("Geometric mean overhead size  : %.02f" % mean(lhsizes))
     print("Geometric mean overhead cycles: %.02f" % mean(loptcycles))
+
+# Generate ASCII performance tables
+
+fname1 = '%s/table1.txt' % result_dir
+fname2 = '%s/table2.txt' % result_dir
+with open(fname1, 'w') as f1:
+  with open(fname2, 'w') as f2:
+    
+    # Synthetic benchmarks
+    f = f1
+    lhsizes = []
+    lhcycles = []
+    loptcycles = []
+
+    f.write("----------------------------------------------------------------------------------------------------\n")
+    f.write("Benchmark               Baseline                               Overhead of balancing\n")
+    f.write("---------         -----------------------          -------------------------------------------------\n")
+    f.write("                  Size     Execution Time          Size       Execution Time          Execution Time\n")
+    f.write("                 (bytes)      (cycles)                                                (longest path)\n")
+    f.write("\n")
+
+    for benchmark in sorted([x for x in results.keys() if x in l1]):
+
+      vsize, hsize, experiments = results[benchmark]
+
+      f.write("%-19s" % benchmark)
+      f.write("%3d" % vsize)
+      f.write('   ')
+
+      komma = ''
+      count = 0
+      for _, vcycles, hcycles, in experiments:
+        f.write(komma)
+        komma = ', '
+        count = count + 1
+        f.write("%4d" % vcycles)
+      f.write(' ')
+      while count < 4:
+        f.write((4+2) * ' ')
+        count = count + 1
+      f.write('   ')
+
+      v = float(hsize)/vsize
+      lhsizes.append(v)
+      f.write("%.02fx" % round(v, 2))
+      f.write('   ')
+
+      komma = ''
+      count = 0
+      for _, vcycles, hcycles in experiments:
+        f.write(komma)
+        komma = ', '
+        count = count + 1
+        v = float(hcycles)/vcycles
+        lhcycles.append(v)
+        f.write("%.02fx" % round(v, 2))
+      f.write(' ')
+      while count < 4:
+        f.write((4+3) * ' ')
+        count = count + 1
+      f.write('   ')
+
+      _, vcycles, hcycles = get_optimum(experiments)
+      v = float(hcycles)/vcycles
+      loptcycles.append(v)
+      f.write("%.02fx" % round(v, 2))
+      f.write("\n")
+
+    f.write("\n")
+    f.write("%s" % "Geometric mean")
+    f.write(37 * ' ')
+    f.write("%.02fx" % mean(lhsizes))
+    f.write('   ')
+    f.write("%.02fx" % mean(lhcycles))
+    f.write(25 * ' ')
+    f.write("%.02fx" % mean(loptcycles))
+    f.write("\n")
+    f.write("----------------------------------------------------------------------------------------------------\n")
+
+    # Third-party benchmarks
+    f = f2
+    lhsizes2 = []
+    lhcycles2 = []
+    lifcsizes = []
+    lifccycles = []
+
+    f.write("--------------------------------------------------------------------------------------------------------\n");
+    f.write("Benchmark             Baseline               Overhead of linearization          Overhead of balancing\n")
+    f.write("---------         -----------------------  ----------------------------       --------------------------\n")
+    f.write("                  Size     Execution Time       Size     Execution Time       Size        Execution Time\n")
+    f.write("                 (bytes)      (cycles)\n")
+    f.write("\n")
+
+    for benchmark in sorted([x for x in results.keys() if x in l2]):
+
+      vsize, hsize, experiments = results[benchmark]
+
+      expname, vcycles, hcycles = get_optimum(experiments)
+
+      f.write("%-19s" % benchmark)
+
+      f.write("%3d" % vsize)
+      f.write(9 * ' ')
+
+      f.write("%5d" % vcycles)
+      f.write(12 * ' ')
+
+      v = float(hsize)/vsize
+      lhsizes2.append(v)
+      f.write("%.02fx" % round(v, 2))
+      f.write(9 * ' ')
+
+      v = float(hcycles)/vcycles
+      lhcycles2.append(v)
+      f.write("%.02fx" % round(v, 2))
+      f.write(12 * ' ')
+
+      ifc = find_benchmark_ifc(benchmark) 
+      assert ifc, benchmark
+      _, ifcsize, l   = ifc
+      _, _, ifccycles = find_experiment(l, expname)
+
+      v = float(ifcsize)/vsize
+      lifcsizes.append(v)
+      f.write("%.02fx" % round(v, 2))
+      f.write(9 * ' ')
+
+      v = float(ifccycles)/vcycles
+      lifccycles.append(v)
+      f.write("%.02fx" % round(v, 2))
+
+      f.write("\n")
+
+    f.write("\n")
+    f.write("%-19s" % "Geometric mean")
+    f.write(29 * ' ')
+    f.write("%.02fx" % mean(lhsizes2))
+    f.write(9 * ' ')
+    f.write("%.02fx" % mean(lhcycles2))
+    f.write(12 * ' ')
+    f.write("%.02fx" % mean(lifcsizes))
+    f.write(9 * ' ')
+    f.write("%.02fx" % mean(lifccycles))
+    f.write("\n")
+    f.write("--------------------------------------------------------------------------------------------------------\n");
