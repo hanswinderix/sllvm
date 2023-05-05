@@ -161,10 +161,10 @@ nemdef-pp   : $(NEMDEF_PP)
 	$(PYTHON) pp2.py $(RESULT_DIR) > $(RESULT_DIR)/summary.txt
 	@$(ECHO)
 	@$(ECHO) "Synthetic benchmarks:"
-	@$(CAT) $(RESULT_DIR)/table1.txt
+	@$(CAT) $(RESULT_DIR)/synthetic.txt
 	@$(ECHO)
 	@$(ECHO) "Third-party benchmarks:"
-	@$(CAT) $(RESULT_DIR)/table2.txt
+	@$(CAT) $(RESULT_DIR)/third-party.txt
 	@#$(LATEXMK) -pdf -outdir=$(RESULT_DIR) $(RESULT_DIR)/performance.tex
 
 nemdef-clean: $(NEMDEF_CLEAN)

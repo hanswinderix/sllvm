@@ -317,8 +317,8 @@ with open(fname1, 'w') as f1:
 
 # Generate ASCII performance tables
 
-fname1 = '%s/table1.txt' % result_dir
-fname2 = '%s/table2.txt' % result_dir
+fname1 = '%s/synthetic.txt' % result_dir
+fname2 = '%s/third-party.txt' % result_dir
 with open(fname1, 'w') as f1:
   with open(fname2, 'w') as f2:
     
@@ -421,16 +421,6 @@ with open(fname1, 'w') as f1:
       f.write("%5d" % vcycles)
       f.write(12 * ' ')
 
-      v = float(hsize)/vsize
-      lhsizes2.append(v)
-      f.write("%.02fx" % round(v, 2))
-      f.write(9 * ' ')
-
-      v = float(hcycles)/vcycles
-      lhcycles2.append(v)
-      f.write("%.02fx" % round(v, 2))
-      f.write(12 * ' ')
-
       ifc = find_benchmark_ifc(benchmark) 
       assert ifc, benchmark
       _, ifcsize, l   = ifc
@@ -444,6 +434,16 @@ with open(fname1, 'w') as f1:
       v = float(ifccycles)/vcycles
       lifccycles.append(v)
       f.write("%.02fx" % round(v, 2))
+
+      v = float(hsize)/vsize
+      lhsizes2.append(v)
+      f.write("%.02fx" % round(v, 2))
+      f.write(9 * ' ')
+
+      v = float(hcycles)/vcycles
+      lhcycles2.append(v)
+      f.write("%.02fx" % round(v, 2))
+      f.write(12 * ' ')
 
       f.write("\n")
 
