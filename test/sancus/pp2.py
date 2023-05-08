@@ -434,6 +434,7 @@ with open(fname1, 'w') as f1:
       v = float(ifccycles)/vcycles
       lifccycles.append(v)
       f.write("%.02fx" % round(v, 2))
+      f.write(12 * ' ')
 
       v = float(hsize)/vsize
       lhsizes2.append(v)
@@ -443,19 +444,18 @@ with open(fname1, 'w') as f1:
       v = float(hcycles)/vcycles
       lhcycles2.append(v)
       f.write("%.02fx" % round(v, 2))
-      f.write(12 * ' ')
 
       f.write("\n")
 
     f.write("\n")
     f.write("%-19s" % "Geometric mean")
     f.write(29 * ' ')
-    f.write("%.02fx" % mean(lhsizes2))
-    f.write(9 * ' ')
-    f.write("%.02fx" % mean(lhcycles2))
-    f.write(12 * ' ')
     f.write("%.02fx" % mean(lifcsizes))
     f.write(9 * ' ')
     f.write("%.02fx" % mean(lifccycles))
+    f.write(12 * ' ')
+    f.write("%.02fx" % mean(lhsizes2))
+    f.write(9 * ' ')
+    f.write("%.02fx" % mean(lhcycles2))
     f.write("\n")
     f.write("--------------------------------------------------------------------------------------------------------\n");
