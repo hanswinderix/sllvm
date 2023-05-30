@@ -431,7 +431,7 @@ test-vulcan: build-vulcan
 	$(MAKE) SLLVM_INSTALL_DIR=$(INSTALLDIR) -C $(SRCDIR_VULCAN) sim
 
 .PHONY: clean
-clean: clean-vulcan
+#clean: clean-vulcan
 clean: clean-test-sllvm
 	$(RM) -r $(BUILDDIR)
 # TODO: LLVMConfig has to be removed to avoid a conflict with the legacy Sancus
