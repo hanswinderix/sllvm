@@ -454,7 +454,7 @@ clean-fetch: clean
 	$(RM) $(TI_MSPGCC_SUPPORT_ZIP)
 	$(RM) -r $(TI_MSPGCC_SUPPORT)
 	$(RM) -r $(SRCDIR_SLLVM)
-	$(RM) -r $(SRCDIR_LEGACY_SANCUS)
+	#$(RM) -r $(SRCDIR_LEGACY_SANCUS)
 	$(RM) -r $(SRCDIR_VULCAN)
 	$(RM) $(CLANG_SANCUS_DEB)
 
